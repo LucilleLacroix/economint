@@ -1,2 +1,9 @@
-<h1>Pages#home</h1>
-<p>Find me in app/views/pages/home.html.erb</p>
+<h1>Bienvenue sur Economint</h1>
+
+<% if user_signed_in? %>
+  <p>Salut <%= current_user.email %> !</p>
+<% else %>
+  <p>Pour profiter de toutes les fonctionnalités, connectez-vous ou inscrivez-vous :</p>
+  <%= link_to "Se connecter", new_user_session_path, class: "btn btn-primary" %>
+  <%= link_to "S'inscrire", new_user_registration_path, class: "btn btn-secondary" %>
+<% end %>
