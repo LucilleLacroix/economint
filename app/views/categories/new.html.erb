@@ -1,0 +1,24 @@
+<h1 style="text-align:center;">Nouvelle catégorie</h1>
+
+<div style="max-width:400px; margin:auto;">
+
+  <%= form_with model: @category, url: categories_path, local: true do |f| %>
+
+    <div class="mb-3">
+      <%= f.label :name, "Nom de la catégorie", class: "form-label" %>
+      <%= f.text_field :name, class: "form-control", placeholder: "Ex: Food" %>
+    </div>
+
+    <div class="mb-3">
+      <%= f.label :color, "Couleur", class: "form-label" %>
+      <%= f.color_field :color, class: "form-control", value: @category.color || "#A3C4F3" %>
+    </div>
+
+    <div class="d-flex justify-content-between">
+      <%= f.submit "Créer", class: "btn btn-primary" %>
+      <%= link_to "Annuler", categories_path, class: "btn btn-secondary" %>
+    </div>
+
+  <% end %>
+
+</div>

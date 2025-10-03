@@ -15,16 +15,13 @@ class User < ApplicationRecord
   private
 
   def create_default_categories
-    default_categories = [
-      "Alimentation",
-      "Logement",
-      "Transport",
-      "Loisirs",
-      "Santé"
+    default_names = ["Food", "Transport", "Loisirs", "Logement", "Autre"]
+    default_colors = [
+      "#A3C4F3", "#CDB4DB", "#FFC8DD", "#B28DFF", "#FFB5E8"
     ]
 
-    default_categories.each do |name|
-      categories.create!(name: name) 
+    default_names.each_with_index do |name, i|
+      categories.create(name: name, color: default_colors[i])
     end
   end
 end
