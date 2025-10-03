@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_10_01_102346) do
+ActiveRecord::Schema[7.1].define(version: 2025_10_03_115809) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -19,6 +19,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_10_01_102346) do
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "color"
     t.index ["user_id"], name: "index_categories_on_user_id"
   end
 
@@ -83,6 +84,19 @@ ActiveRecord::Schema[7.1].define(version: 2025_10_01_102346) do
     t.index ["user_id"], name: "index_reconciliations_on_user_id"
   end
 
+  create_table "revenues", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.decimal "amount"
+    t.string "category"
+    t.text "description"
+    t.date "date"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "category_id", null: false
+    t.index ["category_id"], name: "index_revenues_on_category_id"
+    t.index ["user_id"], name: "index_revenues_on_user_id"
+  end
+
   create_table "transactions", force: :cascade do |t|
     t.bigint "reconciliation_id", null: false
     t.date "date"
@@ -118,6 +132,8 @@ ActiveRecord::Schema[7.1].define(version: 2025_10_01_102346) do
   add_foreign_key "goals", "users"
   add_foreign_key "predictions", "users"
   add_foreign_key "reconciliations", "users"
+  add_foreign_key "revenues", "categories"
+  add_foreign_key "revenues", "users"
   add_foreign_key "transactions", "expenses", column: "matched_expense_id"
   add_foreign_key "transactions", "reconciliations"
 end

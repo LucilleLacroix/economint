@@ -25,7 +25,15 @@ user2 = User.create!(
   password_confirmation: "password",
   username: "bob"
 )
-
+User.all.each do |user|
+  Revenue.create!(
+    user: user,
+    amount: 3000.0,
+    category: "Salaire",
+    description: "Revenu mensuel fixe",
+    date: Date.today.beginning_of_month
+  )
+end
 puts "Creating categories..."
 food = Category.create!(user: user1, name: "Food")
 transport = Category.create!(user: user1, name: "Transport")
