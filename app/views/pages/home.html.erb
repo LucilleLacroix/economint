@@ -5,34 +5,42 @@
   <div style="margin:20px auto; text-align:center;">
     <%= form_with url: root_path, method: :get, local: true, style: "display:inline-block;" do |f| %>
       <label for="start_date">Début :</label>
-      <%= date_field_tag :start_date, @start_date, class: "form-control", style: "margin-right:10px;" %>
+      <%= date_field_tag :start_date, @start_date, style: "margin-right:10px;" %>
 
       <label for="end_date">Fin :</label>
-      <%= date_field_tag :end_date, @end_date, class: "form-control", style: "margin-right:10px;" %>
+      <%= date_field_tag :end_date, @end_date, style: "margin-right:10px;" %>
 
       <%= submit_tag "Filtrer", class: "btn btn-info" %>
     <% end %>
   </div>
 
-  <div style="display:flex; flex-direction:column; align-items:center; margin-top:20px;">
-    <!-- Totaux -->
-    <div style="margin-top:20px; font-weight:bold; font-size:16px; text-align:center;">
-      <p style="color:#e74c3c;">💸 Total dépenses : <%= number_to_currency(@total_expenses || 0) %></p>
-      <p style="color:#2ecc71;">💰 Total revenus : <%= number_to_currency(@total_revenues || 0) %></p>
-      <p style="color:#3498db;">📊 Solde : <%= number_to_currency((@total_revenues || 0) - (@total_expenses || 0)) %></p>
-    </div>
+  <!-- Graphique -->
+  <div style="max-width: 400px; margin: 40px auto;">
+    <canvas id="financesChart"
+        data-controller="simple-chart"
+        data-simple-chart-chart-id-value="financesChart"
+        data-simple-chart-revenues-value="<%= @total_revenues %>"
+        data-simple-chart-expenses-value="<%= @total_expenses %>">
+    </canvas>
 
-    <!-- Boutons -->
-    <div style="text-align:center; margin-top:30px;">
-      <%= link_to "Voir mes dépenses", expenses_path, class: "btn btn-primary btn-lg" %>
-      <%= link_to "Voir mes revenus", revenues_path, class: "btn btn-success btn-lg", style: "margin-left:10px;" %>
-      <%= link_to "Gérer les catégories", categories_path, class: "btn btn-secondary btn-lg", style: "margin-left:10px;" %>
-    </div>
+  </div>
+
+  <!-- Totaux -->
+  <div style="text-align:center; margin-top: 20px;">
+    <p style="color:#2ecc71;">Trésorerie : <%= number_to_currency(@total_revenues || 0) %></p>
+    <p style="color:#e74c3c;">Total dépenses : <%= number_to_currency(@total_expenses || 0) %></p>
+    <p style="color:#3498db;">Solde : <%= number_to_currency((@total_revenues || 0) - (@total_expenses || 0)) %></p>
+  </div>
+
+  <!-- Boutons pour accéder aux dépenses et trésorerie -->
+  <div style="text-align:center; margin-top: 30px;">
+    <%= link_to "Voir mes dépenses", expenses_path, class: "btn btn-danger", style: "margin-right: 10px;" %>
+    <%= link_to "Voir ma trésorerie", revenues_path, class: "btn btn-success" %>
   </div>
 
 <% else %>
-  <p>Pour voir vos dépenses et revenus, connectez-vous.</p>
-  <div style="margin-top:10px;">
+  <p style="text-align:center;">Pour voir vos dépenses et trésorerie, connectez-vous.</p>
+  <div style="text-align:center; margin-top:10px;">
     <%= link_to "Se connecter", new_user_session_path, class:"btn btn-primary" %>
     <%= link_to "S'inscrire", new_user_registration_path, class:"btn btn-success" %>
   </div>

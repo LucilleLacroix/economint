@@ -1,12 +1,82 @@
-.navbar-lewagon {
-  justify-content: space-between;
-  background: white;
+.navbar {
+  background: #fff;
+  border-bottom: 1px solid #eee;
+  padding: 0.5rem 1rem;
+  font-family: "Helvetica Neue", sans-serif;
+
+  .navbar-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    .navbar-left,
+    .navbar-right {
+      flex: 1;
+      display: flex;
+      align-items: center;
+    }
+
+    .navbar-center {
+      flex: 0;
+      text-align: center;
+
+      .navbar-title {
+        font-weight: bold;
+        font-size: 1.5rem;
+        color: #333;
+        text-decoration: none;
+      }
+    }
+
+    .nav-link {
+      margin-left: 1rem;
+      text-decoration: none;
+      color: #333;
+      font-weight: 500;
+
+      &:hover {
+        color: #555;
+      }
+    }
+
+    .dropdown {
+      position: relative;
+
+      .dropdown-toggle {
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-weight: 500;
+        color: #333;
+      }
+
+      .dropdown-menu {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        background: #fff;
+        border: 1px solid #eee;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        display: none;
+        flex-direction: column;
+        min-width: 150px;
+        z-index: 1000;
+
+        .dropdown-item {
+          padding: 0.5rem 1rem;
+          color: #333;
+          text-decoration: none;
+
+          &:hover {
+            background: #f5f5f5;
+          }
+        }
+      }
+
+      &:hover .dropdown-menu {
+        display: flex;
+      }
+    }
+  }
 }
 
-.navbar-lewagon .navbar-collapse {
-  flex-grow: 0;
-}
-
-.navbar-lewagon .navbar-brand img {
-  width: 40px;
-}

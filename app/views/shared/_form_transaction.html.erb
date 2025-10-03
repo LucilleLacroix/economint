@@ -1,0 +1,25 @@
+<%= form_with(model: transaction, local: true) do |f| %>
+  <%= hidden_field_tag :category_type, category_type %>
+
+  <div class="form-group">
+    <%= f.label :category_id, "Catégorie" %>
+    <%= f.collection_select :category_id, categories, :id, :name, prompt: "Sélectionnez une catégorie" %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :amount, "Montant" %>
+    <%= f.number_field :amount, step: 0.01, class: "form-control" %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :description %>
+    <%= f.text_field :description, class: "form-control" %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :date %>
+    <%= f.date_field :date, class: "form-control", value: transaction.date || Date.today %>
+  </div>
+
+  <%= f.submit "Enregistrer", class: "btn btn-primary" %>
+<% end %>

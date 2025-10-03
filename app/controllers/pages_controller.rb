@@ -8,20 +8,17 @@ class PagesController < ApplicationController
     # Dépenses
     @expenses = current_user.expenses.includes(:category).where(date: @start_date..@end_date)
     @total_expenses = @expenses.sum(:amount)
-
     @expenses_by_category = @expenses.group(:category_id).sum(:amount).map do |cat_id, amount|
       category = current_user.categories.find_by(id: cat_id)
       [category&.name || "Sans catégorie", amount]
-    end.to_h
+    end.to_h.transform_keys(&:to_s)
 
     # Revenus
     @revenues = current_user.revenues.includes(:category).where(date: @start_date..@end_date)
     @total_revenues = @revenues.sum(:amount)
-
     @revenues_by_category = @revenues.group(:category_id).sum(:amount).map do |cat_id, amount|
       category = current_user.categories.find_by(id: cat_id)
       [category&.name || "Autre", amount]
-    end.to_h
-
+    end.to_h.transform_keys(&:to_s)
   end
 end
