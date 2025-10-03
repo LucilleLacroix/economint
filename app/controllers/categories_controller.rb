@@ -8,6 +8,9 @@ class CategoriesController < ApplicationController
 
   def new
     @category = current_user.categories.new
+    respond_to do |format|
+      format.html
+    end
   end
 
   def create
@@ -18,20 +21,12 @@ class CategoriesController < ApplicationController
       render :new, status: :unprocessable_entity
     end
   end
-  def edit
-  # Rien à faire ici si tu n’utilises pas de page dédiée
-  end
+
   def update
     if @category.update(category_params)
-      respond_to do |format|
-        format.html { redirect_to categories_path, notice: "Catégorie mise à jour !" }
-        format.json { render json: { success: true, category: @category } }
-      end
+      render json: { success: true, category: @category }
     else
-      respond_to do |format|
-        format.html { redirect_to categories_path, alert: "Impossible de mettre à jour" }
-        format.json { render json: { success: false, errors: @category.errors.full_messages }, status: :unprocessable_entity }
-      end
+      render json: { success: false, errors: @category.errors.full_messages }, status: :unprocessable_entity
     end
   end
 
@@ -44,10 +39,7 @@ class CategoriesController < ApplicationController
     @category.expenses.update_all(category_id: default_category.id)
 
     @category.destroy
-    respond_to do |format|
-      format.html { redirect_to categories_path, notice: "Catégorie supprimée" }
-      format.json { render json: { success: true, default_category_id: default_category.id } }
-    end
+    render json: { success: true, default_category_id: default_category.id }
   end
 
   private
