@@ -1,2 +1,39 @@
-<h1>Pages#home</h1>
-<p>Find me in app/views/pages/home.html.erb</p>
+<% if user_signed_in? %>
+  <h1 style="text-align:center; font-family:sans-serif;">Bienvenue <%= current_user.username %></h1>
+
+  <!-- Sélecteur de période -->
+  <div style="margin:20px auto; text-align:center;">
+    <%= form_with url: root_path, method: :get, local: true, style: "display:inline-block;" do |f| %>
+      <label for="start_date">Début :</label>
+      <%= date_field_tag :start_date, @start_date, class: "form-control", style: "margin-right:10px;" %>
+
+      <label for="end_date">Fin :</label>
+      <%= date_field_tag :end_date, @end_date, class: "form-control", style: "margin-right:10px;" %>
+
+      <%= submit_tag "Filtrer", class: "btn btn-info" %>
+    <% end %>
+  </div>
+
+  <div style="display:flex; flex-direction:column; align-items:center; margin-top:20px;">
+    <!-- Totaux -->
+    <div style="margin-top:20px; font-weight:bold; font-size:16px; text-align:center;">
+      <p style="color:#e74c3c;">💸 Total dépenses : <%= number_to_currency(@total_expenses || 0) %></p>
+      <p style="color:#2ecc71;">💰 Total revenus : <%= number_to_currency(@total_revenues || 0) %></p>
+      <p style="color:#3498db;">📊 Solde : <%= number_to_currency((@total_revenues || 0) - (@total_expenses || 0)) %></p>
+    </div>
+
+    <!-- Boutons -->
+    <div style="text-align:center; margin-top:30px;">
+      <%= link_to "Voir mes dépenses", expenses_path, class: "btn btn-primary btn-lg" %>
+      <%= link_to "Voir mes revenus", revenues_path, class: "btn btn-success btn-lg", style: "margin-left:10px;" %>
+      <%= link_to "Gérer les catégories", categories_path, class: "btn btn-secondary btn-lg", style: "margin-left:10px;" %>
+    </div>
+  </div>
+
+<% else %>
+  <p>Pour voir vos dépenses et revenus, connectez-vous.</p>
+  <div style="margin-top:10px;">
+    <%= link_to "Se connecter", new_user_session_path, class:"btn btn-primary" %>
+    <%= link_to "S'inscrire", new_user_registration_path, class:"btn btn-success" %>
+  </div>
+<% end %>
