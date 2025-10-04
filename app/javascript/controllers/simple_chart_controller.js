@@ -42,6 +42,8 @@ export default class extends Controller {
               }
             }
           },
+         
+
         },
         animation: {
           animateRotate: true,

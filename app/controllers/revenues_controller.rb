@@ -51,9 +51,16 @@ class RevenuesController < ApplicationController
   end
 
   def destroy
-    @revenue.destroy
-    redirect_to revenues_path, notice: "Revenu supprimé."
+    revenue = current_user.revenues.find(params[:id])
+    category_name = revenue.category&.name || "Default"
+    amount = revenue.amount
+    if revenue.destroy
+      render json: { success: true, category_name: category_name, amount: amount }
+    else
+      render json: { success: false }
+    end
   end
+
 
   private
 

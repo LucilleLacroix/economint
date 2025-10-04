@@ -1,13 +1,13 @@
-<h1 style="text-align:center;">Résumé des revenus</h1>
+<h1 class="text-center mb-4">Résumé des revenus</h1>
 
-<div style="display:flex; flex-direction:column; align-items:center; gap:20px; margin-bottom:20px;">
+<div class="d-flex flex-column align-items-center gap-3 mb-4">
 
   <!-- Formulaire de filtre -->
-  <div style="margin-bottom:20px;">
+  <div class="mb-3">
     <%= form_with url: revenues_path, method: :get, local: true, class: "form-inline" do %>
-      <label>Du : </label>
+      <label>Du :</label>
       <%= date_field_tag :start_date, params[:start_date] || 1.month.ago.to_date, class: "form-control mx-2" %>
-      <label>Au : </label>
+      <label>Au :</label>
       <%= date_field_tag :end_date, params[:end_date] || Date.today, class: "form-control mx-2" %>
       <%= submit_tag "Filtrer", class: "btn btn-primary mx-2" %>
       <%= link_to "Réinitialiser", revenues_path, class: "btn btn-secondary" %>
@@ -26,14 +26,14 @@
   </div>
 
   <!-- Boutons -->
-  <div style="display:flex; gap:20px;">
+  <div class="d-flex gap-3">
     <%= link_to "Ajouter un revenu", new_revenue_path, class: "btn btn-primary" %>
     <%= link_to "Gérer les catégories", categories_path(category_type: "revenue"), class: "btn btn-secondary" %>
   </div>
 </div>
 
 <!-- Tableau des revenus -->
-<div style="width:90%; max-width:900px; margin:auto;">
+<div class="table-responsive w-100" style="max-width:900px; margin:auto;">
   <table class="table table-striped">
     <thead>
       <tr>
@@ -44,7 +44,7 @@
         <th>Actions</th>
       </tr>
     </thead>
-    <tbody>
+    <tbody id="revenues_table_body">
       <% @revenues.each do |revenue| %>
         <tr data-revenue-id="<%= revenue.id %>">
           <td><%= revenue.category&.name || "Default" %></td>
