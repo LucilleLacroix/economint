@@ -49,7 +49,7 @@
         <tr data-revenue-id="<%= revenue.id %>">
           <td><%= revenue.category&.name || "Default" %></td>
           <td><%= revenue.description %></td>
-          <td><%= number_to_currency(revenue.amount) %></td>
+          <td><%= number_to_currency(revenue.amount, unit: "€") %></td>
           <td><%= revenue.date %></td>
           <td>
             <%= link_to "Éditer", edit_revenue_path(revenue), class: "btn btn-sm btn-warning" %>

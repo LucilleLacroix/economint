@@ -1,0 +1,10 @@
+fr:
+  hello: "Bonjour le monde"
+  number:
+    currency:
+      format:
+        format: "%n %u"       # Exemple : 1 234,56 €
+        unit: "€"
+        separator: ","
+        delimiter: " "
+        precision: 2
