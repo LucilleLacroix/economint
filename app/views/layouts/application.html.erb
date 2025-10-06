@@ -9,12 +9,17 @@
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
 
-    <!-- ApexCharts CDN -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartkick@4.1.1/dist/chartkick.min.js" defer></script>
+
 
   </head>
 
   <body>
-    <%= yield %>
+    <%= render "layouts/navbar" %>
+
+    <main>
+      <%= yield %>
+    </main>
   </body>
 </html>

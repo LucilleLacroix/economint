@@ -7,24 +7,32 @@ class User < ApplicationRecord
   has_many :reconciliations
   has_many :revenues
 
-  # Devise modules
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
 
   after_create :create_default_categories
-  private
 
   def create_default_categories
-    default_categories = [
-      "Alimentation",
-      "Logement",
-      "Transport",
-      "Loisirs",
-      "Santé"
-    ]
+    expense_names = ["Transport", "Loisir", "Logement", "Alimentaire"]
+    revenue_names = ["Salaire", "Bonus", "Freelance", "Cadeaux"]
 
-    default_categories.each do |name|
-      categories.create!(name: name) 
+    expense_colors = ["#A3C4F3", "#CDB4DB", "#FFC8DD", "#B28DFF"]
+    revenue_colors = ["#FFB5E8", "#FFDAC1", "#E2F0CB", "#B5EAEA"]
+
+    expense_names.each_with_index do |name, i|
+      categories.create(name: name, category_type: "expense", color: expense_colors[i])
     end
+
+    revenue_names.each_with_index do |name, i|
+      categories.create(name: name, category_type: "revenue", color: revenue_colors[i])
+    end
+  end
+
+  def expense_categories
+    categories.for_expenses
+  end
+
+  def revenue_categories
+    categories.for_revenues
   end
 end

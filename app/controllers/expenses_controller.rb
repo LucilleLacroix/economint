@@ -7,21 +7,27 @@ class ExpensesController < ApplicationController
     end_date   = params[:end_date].presence || Date.today
 
     @expenses = current_user.expenses.includes(:category)
-                        .where(date: start_date..end_date)
+                            .where(date: start_date..end_date)
 
-    # Hash { "Food" => 120.0, "Transport" => 50.0, ... }
     @expenses_by_category = @expenses.group(:category_id).sum(:amount).map do |cat_id, amount|
       category = current_user.categories.find_by(id: cat_id)
       [category&.name || "Default", amount]
     end.to_h
 
     @total_expenses = @expenses.sum(:amount)
-    @categories = current_user.categories
+    @category_type = "expense"                     # Indique le type pour le form partagé
+    @categories = current_user.categories.where(category_type: @category_type)
   end
 
   def new
     @expense = current_user.expenses.new(date: Date.today)
-    @categories = current_user.categories
+    @category_type = "expense"
+    @categories = current_user.categories.where(category_type: @category_type)
+  end
+
+  def edit
+    @category_type = "expense"
+    @categories = current_user.categories.where(category_type: @category_type)
   end
 
   def create
@@ -29,39 +35,31 @@ class ExpensesController < ApplicationController
     if @expense.save
       redirect_to expenses_path, notice: "Dépense créée avec succès !"
     else
-      @categories = current_user.categories
+      @category_type = "expense"
+      @categories = current_user.categories.where(category_type: @category_type)
       render :new
     end
-  end
-
-  def edit
-    @categories = current_user.categories
   end
 
   def update
     if @expense.update(expense_params)
       redirect_to expenses_path, notice: "Dépense mise à jour !"
     else
-      @categories = current_user.categories
+      @category_type = "expense"
+      @categories = current_user.categories.where(category_type: @category_type)
       render :edit
     end
   end
 
   def destroy
-    @expense = current_user.expenses.find(params[:id])
-    if @expense.destroy
-      # Recalculer les données pour le chart
-      expenses = current_user.expenses.includes(:category)
-      expenses_by_category = expenses.group(:category_id).sum(:amount).map do |cat_id, amount|
-        category = current_user.categories.find_by(id: cat_id)
-        [category&.name || "Default", amount]
-      end.to_h
-      render json: { success: true, expenses_by_category: expenses_by_category, expenses: expenses.as_json(include: :category) }
-    else
-      render json: { success: false }, status: :unprocessable_entity
-    end
+    @expense.destroy
+    expenses = current_user.expenses.includes(:category)
+    expenses_by_category = expenses.group(:category_id).sum(:amount).map do |cat_id, amount|
+      category = current_user.categories.find_by(id: cat_id)
+      [category&.name || "Default", amount]
+    end.to_h
+    render json: { success: true, expenses_by_category: expenses_by_category, expenses: expenses.as_json(include: :category) }
   end
-
 
   private
 
@@ -73,3 +71,4 @@ class ExpensesController < ApplicationController
     params.require(:expense).permit(:category_id, :amount, :description, :date)
   end
 end
+

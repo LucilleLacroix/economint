@@ -1,4 +1,4 @@
-<h1 style="text-align:center;">Mes catégories</h1>
+<h1 style="text-align:center;">Mes catégories (<%= @category_type.capitalize %>)</h1>
 
 <div style="width:400px; margin:auto;">
   <table id="categoriesTable" style="width:100%; border-collapse:collapse;">
@@ -24,8 +24,7 @@
   </table>
 
   <div style="margin-top:20px; text-align:center;">
-    <%= link_to "Ajouter une nouvelle catégorie", new_category_path, class: "btn btn-primary", data: { turbo: false } %>
-
+    <%= link_to "Ajouter une nouvelle catégorie", new_category_path(category_type: @category_type), class: "btn btn-primary", data: { turbo: false } %>
     <%= link_to "Retour à l'accueil", root_path, class: "btn btn-secondary" %>
   </div>
 </div>
@@ -81,7 +80,7 @@ document.addEventListener("DOMContentLoaded", function() {
       .then(data => {
         if(data.success) {
           row.remove();
-          alert("Catégorie supprimée ! Les dépenses associées sont passées à 'Default'.");
+          alert("Catégorie supprimée ! Les éléments associés sont passés à 'Default'.");
           if(typeof updateAllCharts === "function") updateAllCharts();
         }
       });
@@ -89,3 +88,4 @@ document.addEventListener("DOMContentLoaded", function() {
   });
 });
 </script>
+
