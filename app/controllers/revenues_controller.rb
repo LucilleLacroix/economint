@@ -3,18 +3,16 @@ class RevenuesController < ApplicationController
   before_action :set_revenue, only: %i[show edit update destroy]
 
   def index
-    start_date = params[:start_date].present? ? (Date.parse(params[:start_date]) rescue 1.month.ago.to_date) : 1.month.ago.to_date
-    end_date   = params[:end_date].present? ? (Date.parse(params[:end_date]) rescue Date.today) : Date.today
+    start_date = params[:start_date].present? ? Date.parse(params[:start_date]) : 1.month.ago.to_date
+    end_date   = params[:end_date].present? ? Date.parse(params[:end_date]) : Date.today
 
-    @revenues = current_user.revenues
-                          .left_outer_joins(:category)
-                          .where(date: start_date..end_date)
-                          .select('revenues.*, categories.name AS category_name')
+    @revenues = current_user.revenues.includes(:category)
+                           .where(date: start_date..end_date)
 
-    @revenues_by_category = @revenues.group_by { |r| r.category_name || "Default" }
-                                    .transform_values { |arr| arr.sum(&:amount) }
+    @revenues_by_category = @revenues.group_by { |r| r.category&.name || "Default" }
+                                     .transform_values { |arr| arr.sum(&:amount) }
 
-    @category_type = "revenue"
+    @category_type = "revenue"                       # Pour le form partagé
     @categories = current_user.categories.where(category_type: @category_type)
   end
 
