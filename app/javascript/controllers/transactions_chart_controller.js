@@ -56,7 +56,7 @@ export default class extends Controller {
                 const value = context.raw
                 const total = data.reduce((a,b)=>a+b,0)
                 const percent = ((value/total)*100).toFixed(1)
-                return `${context.label}: ${value} (${percent}%)`
+                return `${context.label}: ${value}`
               }
             }
           }

@@ -1,7 +1,7 @@
-// couleur simplechart
-:root {
-  --color-available: #ce17af;
-  --color-expenses:  #1bb6dd;
-  --color-savings:   #ebf834;
-  --color-chart-border: #110eb1;
+
+
+#financesChart {
+  width: 400px;   // largeur souhaitée
+  height: 400px;  // hauteur souhaitée
+  margin: 0 auto; // centrer le diagramme
 }

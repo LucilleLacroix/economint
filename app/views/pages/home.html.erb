@@ -1,51 +1,54 @@
 <% if user_signed_in? %>
-  <h1 style="text-align:center; font-family:sans-serif;">
-    Bienvenue <%= current_user.username %>
-  </h1>
+  <div class="welcome">
+    <h1>Bienvenue <%= current_user.username %></h1>
+  </div>
 
   <!-- 🗓️ Sélecteur de période -->
-  <div style="margin:20px auto; text-align:center;">
-    <%= form_with url: root_path, method: :get, local: true, style: "display:inline-block;" do |f| %>
+  <div class="period-selector">
+    <%= form_with url: root_path, method: :get, local: true do |f| %>
       <label for="start_date">Début :</label>
-      <%= date_field_tag :start_date, @start_date, style: "margin-right:10px;" %>
+      <%= date_field_tag :start_date, @start_date %>
 
       <label for="end_date">Fin :</label>
-      <%= date_field_tag :end_date, @end_date, style: "margin-right:10px;" %>
+      <%= date_field_tag :end_date, @end_date %>
 
-      <%= submit_tag "Filtrer", class: "btn btn-info" %>
+      <%= submit_tag "Filtrer", class: "btn" %>
     <% end %>
   </div>
 
   <!-- 📊 Graphique -->
-  <canvas id="financesChart"
-    data-controller="simple-chart"
-    data-simple-chart-chart-id-value="financesChart"
-    data-simple-chart-available-value="<%= @available_balance || 0 %>"
-    data-simple-chart-expenses-value="<%= @total_expenses || 0 %>"
-    data-simple-chart-savings-value="<%= @savings || 0 %>">
-  </canvas>
-
+  <div class="chart-container">
+    <canvas id="financesChart"
+      data-controller="simple-chart"
+      data-simple-chart-chart-id-value="financesChart"
+      data-simple-chart-available-value="<%= @available_balance || 0 %>"
+      data-simple-chart-expenses-value="<%= @total_expenses || 0 %>"
+      data-simple-chart-savings-value="<%= @savings || 0 %>">
+    </canvas>
+  </div>
 
   <!-- 💰 Totaux -->
-  <div style="text-align:center; margin-top: 20px;">
-    <p style="color:#2ecc71;">Trésorerie : <strong><%= number_to_currency(@total_revenues || 0) %></strong></p>
-    <p style="color:#e74c3c;">Total dépenses : <strong><%= number_to_currency(@total_expenses || 0) %></strong></p>
-    <p style="color:#27ae60;">Épargne (objectifs) : <strong><%= number_to_currency(@savings || 0) %></strong></p>
-    <hr style="width:60%; margin:10px auto;">
-    <p style="color:#3498db;">💼 Solde disponible : <strong><%= number_to_currency(@available_balance || 0) %></strong></p>
+  <div class="totals">
+    <p class="treasury">Trésorerie : <strong><%= number_to_currency(@total_revenues || 0) %></strong></p>
+    <p class="expenses">Total dépenses : <strong><%= number_to_currency(@total_expenses || 0) %></strong></p>
+    <p class="savings">Épargne (objectifs) : <strong><%= number_to_currency(@savings || 0) %></strong></p>
+    <hr>
+    <p class="available">💼 Solde disponible : <strong><%= number_to_currency(@available_balance || 0) %></strong></p>
   </div>
 
   <!-- 🔗 Boutons d’accès -->
-  <div style="text-align:center; margin-top: 30px;">
-    <%= link_to "Voir mes dépenses", expenses_path, class: "btn btn-danger", style: "margin-right: 10px;" %>
-    <%= link_to "Voir ma trésorerie", revenues_path, class: "btn btn-success", style: "margin-right: 10px;" %>
+  <div class="nav-buttons">
+    <%= link_to "Voir mes dépenses", expenses_path, class: "btn btn-danger" %>
+    <%= link_to "Voir ma trésorerie", revenues_path, class: "btn btn-success" %>
     <%= link_to "Mes Objectifs", goals_path, class: "btn btn-info" %>
   </div>
 
 <% else %>
-  <p style="text-align:center;">Pour voir vos finances, connectez-vous.</p>
-  <div style="text-align:center; margin-top:10px;">
-    <%= link_to "Se connecter", new_user_session_path, class:"btn btn-primary" %>
-    <%= link_to "S'inscrire", new_user_registration_path, class:"btn btn-success" %>
+  <div class="not-signed-in">
+    <p>Pour voir vos finances, connectez-vous.</p>
+    <div class="nav-buttons">
+      <%= link_to "Se connecter", new_user_session_path, class:"btn btn-primary" %>
+      <%= link_to "S'inscrire", new_user_registration_path, class:"btn btn-success" %>
+    </div>
   </div>
 <% end %>

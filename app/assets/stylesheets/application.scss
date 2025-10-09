@@ -12,3 +12,20 @@
 @import "components/index";
 @import "pages/index";
 @import "components/navbar";
+@import "config/boutons";
+body {
+  background-image: url('https://res.cloudinary.com/dw3eqi1tf/image/upload/v1760012965/pexels-diva-29915897_b9sp1w.jpg');
+  background-size: cover;          // prend tout l’écran
+  background-position: center;     // centre bien l’image
+  background-attachment: fixed;    // effet "parallaxe" doux
+  background-repeat: no-repeat;
+  background-color: #F4FBFA;       // couleur de fond de secours
+  font-family: $font-base; // ta police principale
+  color: $text-color;
+}
+h1, h2, h3 {
+  font-weight: 600;
+  margin-bottom: 1rem;
+  text-align: center;
+  color: $text-color;
+}

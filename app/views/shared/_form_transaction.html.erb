@@ -1,25 +1,27 @@
-<%= form_with(model: transaction, local: true) do |f| %>
+<%= form_with(model: transaction, local: true, html: { class: "soft-form" }) do |f| %>
   <%= hidden_field_tag :category_type, category_type %>
 
-  <div class="form-group">
+  <div class="form-field">
     <%= f.label :category_id, "Catégorie" %>
     <%= f.collection_select :category_id, categories, :id, :name, prompt: "Sélectionnez une catégorie" %>
   </div>
 
-  <div class="form-group">
+  <div class="form-field">
     <%= f.label :amount, "Montant" %>
-    <%= f.number_field :amount, step: 0.01, class: "form-control" %>
+    <%= f.number_field :amount, step: 0.01, placeholder: "Ex: 120.50" %>
   </div>
 
-  <div class="form-group">
-    <%= f.label :description %>
-    <%= f.text_field :description, class: "form-control" %>
+  <div class="form-field">
+    <%= f.label :description, "Description" %>
+    <%= f.text_field :description, placeholder: "Ex: courses, abonnement..." %>
   </div>
 
-  <div class="form-group">
-    <%= f.label :date %>
-    <%= f.date_field :date, class: "form-control", value: transaction.date || Date.today %>
+  <div class="form-field">
+    <%= f.label :date, "Date" %>
+    <%= f.date_field :date, value: transaction.date || Date.today %>
   </div>
 
-  <%= f.submit "Enregistrer", class: "btn btn-primary" %>
+  <div class="form-actions">
+    <%= f.submit "Enregistrer", class: "btn-main" %>
+  </div>
 <% end %>

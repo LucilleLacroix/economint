@@ -1,16 +1,19 @@
-<%= form_with model: @category, url: categories_path(category_type: @category_type), local: true do |f| %>
-  <div class="mb-3">
-    <%= f.label :name, "Nom de la catégorie", class: "form-label" %>
-    <%= f.text_field :name, class: "form-control", placeholder: "Ex: Food" %>
+<turbo-frame id="category_form">
+
+<%= form_with model: category, url: category.new_record? ? categories_path(category_type: category_type) : category_path(category), local: false do |f| %>
+  <div class="form-field">
+    <%= f.label :name, "Nom de la catégorie" %>
+    <%= f.text_field :name, placeholder: "Ex: Transport", required: true %>
   </div>
 
-  <div class="mb-3">
-    <%= f.label :color, "Couleur", class: "form-label" %>
-    <%= f.color_field :color, class: "form-control", value: @category.color || "#A3C4F3" %>
+  <div class="form-field">
+    <%= f.label :color, "Couleur" %>
+    <%= f.color_field :color, value: category&.color || "#4db6ac" %>
   </div>
 
-  <div class="d-flex justify-content-between">
-    <%= f.submit (@category.new_record? ? "Créer" : "Mettre à jour"), class: "btn btn-primary" %>
-    <%= link_to "Annuler", categories_path(category_type: @category_type), class: "btn btn-secondary" %>
+  <div class="form-actions">
+    <%= f.submit category.new_record? ? "Créer" : "Mettre à jour", class: "btn-main" %>
+    <%= link_to "Annuler", categories_path(category_type: category_type), class: "btn-cancel" %>
   </div>
 <% end %>
+</turbo-frame>
