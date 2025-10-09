@@ -1,0 +1,44 @@
+<h2 style="text-align:center;">Modifier un Objectif d'Épargne</h2>
+
+<!-- ✅ Message flash -->
+<% if flash[:notice] %>
+  <div class="alert alert-success" style="text-align:center;">
+    <%= flash[:notice] %>
+  </div>
+<% elsif flash[:alert] %>
+  <div class="alert alert-danger" style="text-align:center;">
+    <%= flash[:alert] %>
+  </div>
+<% end %>
+
+<!-- ✅ Formulaire -->
+<div style="width:60%; margin:auto; background:#f9f9f9; padding:30px; border-radius:12px; box-shadow:0 2px 8px rgba(0,0,0,0.1);">
+  <%= form_with model: @goal, local: true do |f| %>
+
+    <div class="form-group mb-3">
+      <%= f.label :title, "Titre de l’objectif" %>
+      <%= f.text_field :title, class:"form-control", required: true, placeholder:"Ex: Vacances à Rome" %>
+    </div>
+
+    <div class="form-group mb-3">
+      <%= f.label :target_amount, "Montant à atteindre (€)" %>
+      <%= f.number_field :target_amount, step:"0.01", min:"0", class:"form-control", required: true %>
+    </div>
+
+    <div class="form-group mb-3">
+      <%= f.label :current_amount, "Montant déjà épargné (€)" %>
+      <%= f.number_field :current_amount, step:"0.01", min:"0", class:"form-control" %>
+    </div>
+
+    <div class="form-group mb-3">
+      <%= f.label :deadline, "Date limite" %>
+      <%= f.date_field :deadline, class:"form-control" %>
+    </div>
+
+    <div style="text-align:center; margin-top:20px;">
+      <%= f.submit "Mettre à jour", class:"btn btn-success" %>
+      <%= link_to "Annuler", goals_path, class:"btn btn-secondary", style:"margin-left:10px;" %>
+    </div>
+
+  <% end %>
+</div>

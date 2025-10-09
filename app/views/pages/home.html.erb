@@ -1,7 +1,9 @@
 <% if user_signed_in? %>
-  <h1 style="text-align:center; font-family:sans-serif;">Bienvenue <%= current_user.username %></h1>
+  <h1 style="text-align:center; font-family:sans-serif;">
+    Bienvenue <%= current_user.username %>
+  </h1>
 
-  <!-- Sélecteur de période -->
+  <!-- 🗓️ Sélecteur de période -->
   <div style="margin:20px auto; text-align:center;">
     <%= form_with url: root_path, method: :get, local: true, style: "display:inline-block;" do |f| %>
       <label for="start_date">Début :</label>
@@ -14,32 +16,34 @@
     <% end %>
   </div>
 
-  <!-- Graphique -->
-  <div style="max-width: 400px; margin: 40px auto;">
-    <canvas id="financesChart"
-        data-controller="simple-chart"
-        data-simple-chart-chart-id-value="financesChart"
-        data-simple-chart-revenues-value="<%= @total_revenues %>"
-        data-simple-chart-expenses-value="<%= @total_expenses %>">
-    </canvas>
+  <!-- 📊 Graphique -->
+  <canvas id="financesChart"
+    data-controller="simple-chart"
+    data-simple-chart-chart-id-value="financesChart"
+    data-simple-chart-available-value="<%= @available_balance || 0 %>"
+    data-simple-chart-expenses-value="<%= @total_expenses || 0 %>"
+    data-simple-chart-savings-value="<%= @savings || 0 %>">
+  </canvas>
 
-  </div>
 
-  <!-- Totaux -->
+  <!-- 💰 Totaux -->
   <div style="text-align:center; margin-top: 20px;">
-    <p style="color:#2ecc71;">Trésorerie : <%= number_to_currency(@total_revenues || 0) %></p>
-    <p style="color:#e74c3c;">Total dépenses : <%= number_to_currency(@total_expenses || 0) %></p>
-    <p style="color:#3498db;">Solde : <%= number_to_currency((@total_revenues || 0) - (@total_expenses || 0)) %></p>
+    <p style="color:#2ecc71;">Trésorerie : <strong><%= number_to_currency(@total_revenues || 0) %></strong></p>
+    <p style="color:#e74c3c;">Total dépenses : <strong><%= number_to_currency(@total_expenses || 0) %></strong></p>
+    <p style="color:#27ae60;">Épargne (objectifs) : <strong><%= number_to_currency(@savings || 0) %></strong></p>
+    <hr style="width:60%; margin:10px auto;">
+    <p style="color:#3498db;">💼 Solde disponible : <strong><%= number_to_currency(@available_balance || 0) %></strong></p>
   </div>
 
-  <!-- Boutons pour accéder aux dépenses et trésorerie -->
+  <!-- 🔗 Boutons d’accès -->
   <div style="text-align:center; margin-top: 30px;">
     <%= link_to "Voir mes dépenses", expenses_path, class: "btn btn-danger", style: "margin-right: 10px;" %>
-    <%= link_to "Voir ma trésorerie", revenues_path, class: "btn btn-success" %>
+    <%= link_to "Voir ma trésorerie", revenues_path, class: "btn btn-success", style: "margin-right: 10px;" %>
+    <%= link_to "Mes Objectifs", goals_path, class: "btn btn-info" %>
   </div>
 
 <% else %>
-  <p style="text-align:center;">Pour voir vos dépenses et trésorerie, connectez-vous.</p>
+  <p style="text-align:center;">Pour voir vos finances, connectez-vous.</p>
   <div style="text-align:center; margin-top:10px;">
     <%= link_to "Se connecter", new_user_session_path, class:"btn btn-primary" %>
     <%= link_to "S'inscrire", new_user_registration_path, class:"btn btn-success" %>

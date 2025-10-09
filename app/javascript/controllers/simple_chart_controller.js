@@ -3,47 +3,52 @@ import { Controller } from "@hotwired/stimulus"
 export default class extends Controller {
   static values = {
     chartId: String,
-    revenues: Number,
-    expenses: Number
+    available: Number,
+    expenses: Number,
+    savings: Number
   }
 
   connect() {
     const ctx = document.getElementById(this.chartIdValue)
     if (!ctx) return
 
-    const totalRevenues = this.revenuesValue || 0
-    const totalExpenses = this.expensesValue || 0
-    const balance = totalRevenues - totalExpenses
+    const available = this.availableValue || 0
+    const expenses = this.expensesValue || 0
+    const savings = this.savingsValue || 0
+
+    const styles = getComputedStyle(document.documentElement)
+    const colorAvailable = styles.getPropertyValue("--color-available").trim()
+    const colorExpenses = styles.getPropertyValue("--color-expenses").trim()
+    const colorSavings = styles.getPropertyValue("--color-savings").trim()
+    const colorBorder   = styles.getPropertyValue("--color-chart-border").trim()
 
     new Chart(ctx, {
       type: "doughnut",
       data: {
-        labels: ["Revenus", "Dépenses"],
+        labels: ["Trésorerie", "Dépenses", "Épargne"],
         datasets: [{
-          data: [totalRevenues, totalExpenses],
-          backgroundColor: ["#cc2ebfff", "#7140ccff"],
-          borderColor: "#fff",
+          data: [available, expenses, savings],
+          backgroundColor: [colorAvailable, colorExpenses, colorSavings],
+          borderColor: colorBorder, 
           borderWidth: 2,
-          hoverOffset: 20
+          hoverOffset: 15
         }]
       },
       options: {
         responsive: true,
-        cutout: "55%",
+        cutout: "60%",
         plugins: {
           legend: { position: "bottom" },
           tooltip: {
             callbacks: {
-              label: function(context) {
+              label: function (context) {
                 const value = context.raw
-                const total = context.dataset.data.reduce((a,b)=>a+b,0)
-                const percent = ((value/total)*100).toFixed(1)
-                return `${context.label}: ${value}€ (${percent}%)`
+                const total = context.dataset.data.reduce((a, b) => a + b, 0)
+                const percent = ((value / total) * 100).toFixed(1)
+                return `${context.label}: ${value.toLocaleString()}€ (${percent}%)`
               }
             }
-          },
-         
-
+          }
         },
         animation: {
           animateRotate: true,
