@@ -1,58 +1,61 @@
-.nav-buttons {
+
+/* 💠 Boutons globaux */
+.btn {
+  padding: 0.6rem 1.2rem;
+  border-radius: 0.5rem;
+  border: none;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: $shadow-soft;
+  color: $white;
   text-align: center;
-  margin-top: 2rem;
 
-  .btn {
-    margin-right: 0.5rem;
-    padding: 0.7rem 1.4rem;
-    border-radius: 0.5rem;
-    font-weight: 500;
-    border: none;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    box-shadow: $shadow-soft;
-
-    &.btn-danger {
-      background-color: $error-color;
-      color: $white;
-
-      &:hover { background-color: $error-hover; }
-    }
-
-    &.btn-success {
-      background-color: $success-color;
-      color: $white;
-
-      &:hover { background-color: $success-hover; }
-    }
-
-    &.btn-info {
-      background-color: $info-color;
-      color: $white;
-
-      &:hover { background-color: $info-hover; }
-    }
-
-    &.btn-primary {
-      background-color: $primary-color;
-      color: $white;
-
-      &:hover { background-color: $primary-hover; }
-    }
+  &:hover {
+    box-shadow: $shadow-hover;
+    transform: translateY(-1px);
   }
 }
-.btn {
-    padding: 0.6rem 1.2rem;
-    border-radius: 0.5rem;
-    border: none;
-    background-color: $primary-color;
-    color: $white;
-    cursor: pointer;
-    font-weight: 500;
-    transition: all 0.2s ease;
 
-    &:hover {
-      background-color: $primary-hover;
-      box-shadow: $shadow-hover;
-    }
+/* ✅ Boutons succès / filtrer */
+.btn-success {
+  background-color: $success-color;
+  &:hover {
+    background-color: $success-hover;
   }
+}
+
+/* ℹ️ Boutons info / ajouter / gérer catégories */
+.btn-info {
+  background-color: $info-color;
+  &:hover {
+    background-color: $info-hover;
+  }
+}
+
+/* ❌ Boutons supprimer (spécifique) */
+.btn-danger {
+  background-color: $error-color;
+  &:hover {
+    background-color: $error-hover;
+  }
+}
+
+/* ❤️ Boutons danger / éditer */
+.btn-supp {
+  background-color: $warning-color;
+  color: $text-color;
+  &:hover {
+    background-color: $warning-hover;
+  }
+}
+
+/* 👌 Pour aligner les boutons dans les conteneurs */
+.actions-container,
+.filter-container {
+  display: flex;
+  gap: 0.8rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 1rem;
+}

@@ -44,14 +44,23 @@ export default class extends Controller {
       options: {
         responsive: true,
         plugins: {
-          legend: { position: "bottom" },
+          legend: {
+            position: "bottom",
+            labels: {
+              usePointStyle: true,      // ✅ rend le point en cercle
+              pointStyle: "circle",
+              color: "$text-color",         // ✅ couleur du texte (tu peux mettre n'importe quelle couleur)
+              font: { size: 16, weight: "500" },
+              padding: 20               // ✅ augmente l’espace entre les items de la légende
+            },
+           },
           tooltip: {
             callbacks: {
               label(context) {
                 const value = context.raw
                 const total = data.reduce((a, b) => a + b, 0)
                 const percent = ((value / total) * 100).toFixed(1)
-                return `${context.label}: ${value} (${percent}%)`
+                return `  ${value}`
               }
             }
           }

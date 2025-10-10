@@ -1,0 +1,61 @@
+.table-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-top: 2rem;
+
+  table.styled-table {
+    width: 90%;
+    border-collapse: collapse;
+    border: 3px solid $white;  // contour du tableau
+    border-radius: 1rem;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+
+    thead {
+
+      color: $white;
+      font-weight: 500;
+      text-align: left;
+
+      th {
+        padding: 0.8rem 1rem;
+        border-bottom: 2px solid $white; // séparation des th
+      }
+    }
+
+    tbody {
+      tr {
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+        &:hover {
+          transform: translateY(-2px);
+          box-shadow: $shadow-soft;
+        }
+
+        td {
+          padding: 0.4rem;
+          font-size: 1rem;
+          color: $text-color;
+          border-bottom: 1px solid lighten($background-light, 50%); // séparation lignes
+        }
+      }
+
+
+    }
+  }
+}
+.chart-container {
+  width: 100%;
+  max-width: 450px;   // largeur maximale du chart
+  height: 450px;      // hauteur fixe
+  margin: 2rem auto;  // centrage horizontal et espace vertical
+  padding: 1rem;
+  
+
+
+  canvas {
+    width: 100% !important;
+    height: 100% !important;
+  }
+}

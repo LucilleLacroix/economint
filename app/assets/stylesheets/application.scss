@@ -1,7 +1,6 @@
 // Graphical variables
 @import "config/fonts";
 @import "config/colors";
-@import "config/bootstrap_variables";
 @import "variables";
 
 // External libraries
@@ -14,6 +13,8 @@
 @import "components/navbar";
 @import "config/boutons";
 @import "devise";
+@import "pages/depense";
+
 body {
   background-image: url('https://res.cloudinary.com/dw3eqi1tf/image/upload/v1760090648/pexels-merlin-11280357_fu23wt.jpg');
   background-size: cover;          // prend tout l’écran

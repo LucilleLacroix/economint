@@ -4,13 +4,24 @@
   <!-- Formulaire de filtre -->
   <div class="filter-container">
     <%= form_with url: expenses_path, method: :get, local: true, class: "filter-form" do %>
+      <!-- Bouton Réinitialiser avec icône -->
+      <%= link_to expenses_path, class: "btn btn-success" do %>
+        <i class="fas fa-rotate-right"></i>
+      <% end %>
+
       <label>Du :</label>
       <%= date_field_tag :start_date, params[:start_date] || 1.month.ago.to_date, class: "input-field" %>
+
       <label>Au :</label>
       <%= date_field_tag :end_date, params[:end_date] || Date.today, class: "input-field" %>
-      <%= submit_tag "Filtrer", class: "btn-main" %>
-      <%= link_to "Réinitialiser", expenses_path, class: "btn-cancel" %>
+
+      <!-- Bouton Filtrer -->
+      <%= button_tag type: 'submit', class: "btn btn-success" do %>
+        <i class="fas fa-search"></i>
+      <% end %>
+
     <% end %>
+
   </div>
 
   <!-- Pie chart avec Stimulus -->
@@ -27,8 +38,8 @@
 
   <!-- Boutons -->
   <div class="actions-container">
-    <%= link_to "Ajouter une dépense", new_expense_path, class: "btn-main" %>
-    <%= link_to "Gérer les catégories", categories_path(category_type: "expense"), class: "btn-cancel" %>
+    <%= link_to "Ajouter une dépense", new_expense_path, class: "btn btn-info" %>
+    <%= link_to "Gérer les catégories", categories_path(category_type: "expense"), class: "btn btn-info" %>
   </div>
 
   <!-- Tableau des dépenses -->
@@ -45,14 +56,18 @@
       </thead>
       <tbody>
         <% @expenses.each do |expense| %>
-          <tr data-expense-id="<%= expense.id %>">
+          <tr style="background-color: <%= expense.category&.color || '#ffffff' %>;" data-expense-id="<%= expense.id %>">
             <td><%= expense.category&.name || "Default" %></td>
             <td><%= expense.description %></td>
             <td><%= number_to_currency(expense.amount) %></td>
             <td><%= expense.date %></td>
             <td class="actions-cell">
-              <%= link_to "Éditer", edit_expense_path(expense), class: "btn-small btn-warning" %>
-              <button class="btn-small btn-danger delete-expense" data-id="<%= expense.id %>">Supprimer</button>
+              <%= link_to edit_expense_path(expense), class: "btn btn-supp", title: "Éditer" do %>
+                <i class="fas fa-pencil-alt"></i>
+              <% end %>
+              <%= button_tag type: "button", class: "btn btn-danger delete-expense", data: { id: expense.id }, title: "Supprimer" do %>
+                <i class="fas fa-trash-alt"></i>
+              <% end %>
             </td>
           </tr>
         <% end %>
