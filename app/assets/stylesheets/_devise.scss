@@ -1,0 +1,101 @@
+.edit-account-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+
+
+  h1 {
+    text-align: center;
+    margin-bottom: 1.5rem;
+  }
+
+  .edit-form-card {
+    background: linear-gradient(135deg, #E6E6FA, #FDE2F3);
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    padding: 2rem;
+    width: 100%;
+    max-width: 400px;
+
+    .form-group {
+      margin-bottom: 1rem;
+
+      label {
+        display: block;
+        font-weight: 600;
+        color: #555;
+        margin-bottom: 0.4rem;
+      }
+
+      input {
+        width: 100%;
+        padding: 0.6rem;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: 0.2s ease;
+
+        &:focus {
+          border-color: #A8C0FF;
+          outline: none;
+          box-shadow: 0 0 0 3px rgba(168,192,255,0.2);
+        }
+      }
+    }
+
+    .actions {
+      text-align: center;
+      margin-top: 1.5rem;
+
+      .btn {
+        background: linear-gradient(90deg, #A8C0FF, #CBA6FF);
+        color: white;
+        border: none;
+        padding: 0.7rem 1.5rem;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: 0.2s ease;
+
+        &:hover {
+          transform: scale(1.05);
+        }
+      }
+    }
+
+    .cancel-account {
+      text-align: center;
+      margin-top: 2rem;
+
+      .delete-btn {
+        background: #FF92AA;
+        border: none;
+        color: white;
+        padding: 0.6rem 1.3rem;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: 0.2s ease;
+
+        &:hover {
+          background: #FF7B96;
+        }
+      }
+    }
+
+    .back-home {
+      display: block;
+      text-align: center;
+      margin-top: 1.5rem;
+      color: #7B68EE;
+      text-decoration: none;
+      font-weight: 500;
+      transition: 0.2s ease;
+
+      &:hover {
+        color: #CBA6FF;
+      }
+    }
+  }
+}
