@@ -43,24 +43,21 @@
 
 
 .totals {
+
   text-align: center;
-  margin-top: 2rem;
+  margin-bottom: 2rem;
+
 
   p {
     margin: 0.5rem 0;
     font-weight: 600;
+    font-size: 1rem;
+    &.available { color: #f8f7f3; }  // bleu pastel clair pour le solde dispo
 
-    strong {
-      font-weight: 700;
-    }
-  }
-
-  hr {
-    border: 1px solid $border-color;
-    margin: 1rem auto;
-    width: 60%;
+    strong { font-weight: 700; }
   }
 }
+
 
 
 p, label {
@@ -70,3 +67,32 @@ p, label {
 hr {
   opacity: 0.5;
 }
+
+.nav-buttons {
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+
+    .btn {
+      padding: 0.8rem 1.6rem;
+      border-radius: 0.5rem;
+      font-weight: 600;
+      color: #FFFFFF;
+
+      &.treasury-btn { background-color: #A8C0FF; }
+      &.expenses-btn { background-color: #CBA6FF; }
+      &.savings-btn  { background-color: #FF92AA; }
+
+      &:hover {
+        transform: translateY(-3px) scale(1.05);
+        box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+      }
+
+      &:active {
+        transform: translateY(0) scale(0.98);
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      }
+    }
+  }
