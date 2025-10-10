@@ -13,18 +13,17 @@
     <% end %>
   </div>
 
-
   <!-- Pie chart avec Stimulus -->
   <div class="chart-container">
-    <canvas id="expensesChart"
-            data-controller="transactions-chart"
-            data-transactions-chart-resource-value="expenses"
-            data-transactions-chart-chart-id-value="expensesChart"
-            data-transactions-chart-categories-value='<%= raw current_user.categories.for_expenses.to_json(only: [:name, :color]) %>'
-            data-transactions-chart-data-by-category='<%= raw @expenses_by_category.to_json %>'>
+    <canvas
+      id="expensesChart"
+      data-controller="transactions-chart"
+      data-transactions-chart-resource-value="expenses"
+      data-transactions-chart-chart-id-value="expensesChart"
+      data-transactions-chart-categories-value="<%= current_user.categories.for_expenses.to_json(only: [:name, :color]) %>"
+      data-transactions-chart-data-by-category-value="<%= @expenses_by_category.to_json %>">
     </canvas>
   </div>
-
 
   <!-- Boutons -->
   <div class="actions-container">
@@ -32,32 +31,32 @@
     <%= link_to "Gérer les catégories", categories_path(category_type: "expense"), class: "btn-cancel" %>
   </div>
 
-
-<!-- Tableau des dépenses -->
-<div class="table-container">
-  <table class="styled-table">
-    <thead>
-      <tr>
-        <th>Catégorie</th>
-        <th>Description</th>
-        <th>Montant</th>
-        <th>Date</th>
-        <th>Actions</th>
-      </tr>
-    </thead>
-    <tbody>
-      <% @expenses.each do |expense| %>
-        <tr data-expense-id="<%= expense.id %>">
-          <td><%= expense.category&.name || "Default" %></td>
-          <td><%= expense.description %></td>
-          <td><%= number_to_currency(expense.amount) %></td>
-          <td><%= expense.date %></td>
-          <td class="actions-cell">
-            <%= link_to "Éditer", edit_expense_path(expense), class: "btn-small btn-warning" %>
-            <button class="btn-small btn-danger delete-expense" data-id="<%= expense.id %>">Supprimer</button>
-          </td>
+  <!-- Tableau des dépenses -->
+  <div class="table-container">
+    <table class="styled-table">
+      <thead>
+        <tr>
+          <th>Catégorie</th>
+          <th>Description</th>
+          <th>Montant</th>
+          <th>Date</th>
+          <th>Actions</th>
         </tr>
-      <% end %>
-    </tbody>
-  </table>
+      </thead>
+      <tbody>
+        <% @expenses.each do |expense| %>
+          <tr data-expense-id="<%= expense.id %>">
+            <td><%= expense.category&.name || "Default" %></td>
+            <td><%= expense.description %></td>
+            <td><%= number_to_currency(expense.amount) %></td>
+            <td><%= expense.date %></td>
+            <td class="actions-cell">
+              <%= link_to "Éditer", edit_expense_path(expense), class: "btn-small btn-warning" %>
+              <button class="btn-small btn-danger delete-expense" data-id="<%= expense.id %>">Supprimer</button>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
 </div>

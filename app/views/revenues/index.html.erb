@@ -14,14 +14,15 @@
     <% end %>
   </div>
 
-  <!-- Pie chart -->
-  <div style="width:400px; height:400px;">
-    <canvas id="revenues_chart"
-            data-controller="transactions-chart"
-            data-transactions-chart-resource-value="revenues"
-            data-transactions-chart-chart-id-value="revenues_chart"
-            data-transactions-chart-categories-value='<%= raw current_user.categories.for_revenues.to_json(only: [:name, :color]) %>'
-            data-transactions-chart-data-by-category='<%= raw @revenues_by_category.to_json %>'>
+  <!-- Pie chart avec Stimulus -->
+  <div class="chart-container" style="width:400px; height:400px;">
+    <canvas
+      id="revenues_chart"
+      data-controller="transactions-chart"
+      data-transactions-chart-resource-value="revenues"
+      data-transactions-chart-chart-id-value="revenues_chart"
+      data-transactions-chart-categories-value="<%= current_user.categories.for_revenues.to_json(only: [:name, :color]) %>"
+      data-transactions-chart-data-by-category-value="<%= @revenues_by_category.to_json %>">
     </canvas>
   </div>
 
@@ -34,8 +35,8 @@
 
 <!-- Tableau des revenus -->
 <div class="table-responsive w-100" style="max-width:900px; margin:auto;">
-  <table class="table table-striped">
-    <thead>
+  <table class="table table-striped align-middle text-center">
+    <thead class="table-light">
       <tr>
         <th>Catégorie</th>
         <th>Description</th>

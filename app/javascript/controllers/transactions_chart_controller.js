@@ -1,24 +1,19 @@
 // app/javascript/controllers/transactions_chart_controller.js
 import { Controller } from "@hotwired/stimulus"
 
-// Si tu veux utiliser Chart.js via importmap, tu dois ajouter le bundle global dans application.js
-// et ne pas utiliser import "chart.js/auto" ici.
-// On suppose que Chart est disponible globalement via <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
 export default class extends Controller {
   static values = {
-    resource: String,    // "expenses" ou "revenues"
-    chartId: String,     // ID du canvas
-    categories: Array    // tableau JSON des catégories
+    resource: String,       // "expenses" ou "revenues"
+    chartId: String,        // ID du canvas
+    categories: Array,      // JSON des catégories
+    dataByCategory: Object  // ✅ Ajouté ici
   }
 
   connect() {
     this.canvas = document.getElementById(this.chartIdValue)
     if (!this.canvas) return
 
-    const dataByCategory = JSON.parse(this.data.get("dataByCategory") || "{}")
-
-    this.renderChart(dataByCategory)
+    this.renderChart(this.dataByCategoryValue) // ✅ plus besoin de JSON.parse
     this.attachDeleteEvents()
   }
 
@@ -36,27 +31,27 @@ export default class extends Controller {
     }
 
     window[this.chartIdValue] = new Chart(ctx, {
-      type: 'pie',
+      type: "pie",
       data: {
-        labels: labels,
+        labels,
         datasets: [{
-          data: data,
+          data,
           backgroundColor: colors,
-          borderColor: '#fff',
+          borderColor: "#fff",
           borderWidth: 2
         }]
       },
       options: {
         responsive: true,
         plugins: {
-          legend: { position: 'bottom' },
+          legend: { position: "bottom" },
           tooltip: {
             callbacks: {
-              label: function(context) {
+              label(context) {
                 const value = context.raw
-                const total = data.reduce((a,b)=>a+b,0)
-                const percent = ((value/total)*100).toFixed(1)
-                return `${context.label}: ${value}`
+                const total = data.reduce((a, b) => a + b, 0)
+                const percent = ((value / total) * 100).toFixed(1)
+                return `${context.label}: ${value} (${percent}%)`
               }
             }
           }
@@ -67,8 +62,7 @@ export default class extends Controller {
   }
 
   attachDeleteEvents() {
-    // Map pour convertir resource plural en singulier
-    const singularMap = { "expenses": "expense", "revenues": "revenue" }
+    const singularMap = { expenses: "expense", revenues: "revenue" }
     const singularResource = singularMap[this.resourceValue] || this.resourceValue
 
     document.querySelectorAll(`.delete-${singularResource}`).forEach(btn => {
@@ -85,12 +79,8 @@ export default class extends Controller {
         })
         .then(res => res.json())
         .then(data => {
-          if (data.success) {
-            // Recharger la page ou mettre à jour dynamiquement le tableau + chart
-            window.location.reload()
-          } else {
-            alert("Erreur lors de la suppression !")
-          }
+          if (data.success) window.location.reload()
+          else alert("Erreur lors de la suppression !")
         })
       })
     })
