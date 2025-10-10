@@ -1,1 +1,72 @@
 // Specific CSS for your home-page
+.period-selector {
+  margin: 2rem auto;
+  text-align: center;
+
+  label {
+    margin-right: 0.5rem;
+    font-weight: 500;
+  }
+
+  input[type="date"] {
+    padding: 0.5rem 0.6rem;
+    border: 1px solid $border-color;
+    border-radius: 0.5rem;
+    font-size: 0.95rem;
+    background-color: $primary-color;
+    margin-right: 1rem;
+
+    &:focus {
+      outline: none;
+      border-color: $primary-color;
+      box-shadow: 0 0 0 3px rgba($primary-color, 0.2);
+    }
+  }
+
+  .btn {
+    padding: 0.6rem 1.2rem;
+    border-radius: 0.5rem;
+    border: none;
+    background-color: $primary-color;
+    color: $white;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.2s ease;
+
+    &:hover {
+      background-color: $primary-hover;
+      box-shadow: $shadow-hover;
+    }
+  }
+}
+
+
+
+.totals {
+  text-align: center;
+  margin-top: 2rem;
+
+  p {
+    margin: 0.5rem 0;
+    font-weight: 600;
+
+    strong {
+      font-weight: 700;
+    }
+  }
+
+  hr {
+    border: 1px solid $border-color;
+    margin: 1rem auto;
+    width: 60%;
+  }
+}
+
+
+p, label {
+  font-size: 0.95rem;
+}
+
+hr {
+  opacity: 0.5;
+}

@@ -2,9 +2,10 @@
 @import url('https://fonts.googleapis.com/css?family=Nunito:400,700|Work+Sans:400,700&display=swap');
 
 // Define fonts for body and headers
-$body-font: "Work Sans", "Helvetica", "sans-serif";
-$headers-font: "Nunito", "Helvetica", "sans-serif";
-
+$body-font: 'Poppins', 'Inter', sans-serif;
+$headers-font: 'Poppins', 'Inter', sans-serif;
+$form-font: 'Poppins', 'Inter', sans-serif;
+$font-base: 'Poppins', 'Inter', sans-serif;
 // To use a font file (.woff) uncomment following lines
 // @font-face {
 //   font-family: "Font Name";

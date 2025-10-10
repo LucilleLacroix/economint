@@ -7,4 +7,41 @@ $yellow: #FFC65A;
 $orange: #E67E22;
 $green: #1EDD88;
 $gray: #0E0000;
-$light-gray: #F4F4F4;
+$light-gray: #f4f4f4;
+
+// ===============================
+// 🎨 Palette pastel bleue / menthe
+// ===============================
+
+// 💠 Couleurs principales
+$primary-color: #4db6ac;     // Menthe douce
+$primary-hover: #80cbc4;     // Menthe soutenue
+$secondary-color: #b2dfdb;   // Aqua clair
+$highlight-color: #e0f2f1;   // Brillance subtile
+
+// 💚 Couleurs de validation / succès
+$success-color: #A8E6CF;     // Vert pastel tendre
+$success-hover: #8ADBB8;
+
+// 💙 Couleurs informatives
+$info-color: #B8E1FF;        // Bleu ciel clair
+$info-hover: #9ED3FF;
+
+// 💛 Couleurs d’avertissement
+$warning-color: #FFF5BA;     // Jaune pastel doux
+$warning-hover: #FFE48A;
+
+// ❤️ Couleurs d’erreur
+$error-color: #FFB5B5;       // Rouge rosé très doux
+$error-hover: #FF8F8F;
+
+// ⚫ Couleurs neutres
+$text-color: #2F3E46;        // Gris-vert foncé lisible
+$text-muted: #6B7C80;        // Gris doux
+$border-color: #D8E3E7;      // Gris bleuté clair
+$background-light: #b2dfdb;  // Fond global clair
+$white: #FFFFFF;
+
+// ✨ Ombres & transparence
+$shadow-soft: 0 2px 8px rgba(0, 0, 0, 0.05);
+$shadow-hover: 0 4px 12px rgba(0, 0, 0, 0.08);

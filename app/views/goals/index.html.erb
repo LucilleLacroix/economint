@@ -1,0 +1,14 @@
+<h2 style="text-align:center;">Mes Objectifs d'Épargne</h2>
+
+<!-- ✅ Flash messages -->
+<div id="flash_messages"></div>
+
+<!-- ✅ Bouton pour créer un nouvel objectif -->
+<div style="text-align:center; margin-bottom:20px;">
+  <%= link_to "Nouvel objectif", new_goal_path, class:"btn btn-primary" %>
+</div>
+
+<!-- ✅ Tableau principal -->
+<div id="goals_table">
+  <%= render partial: "goals_table", locals: { goals: @goals } %>
+</div>

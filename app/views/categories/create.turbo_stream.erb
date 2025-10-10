@@ -1,0 +1,11 @@
+<turbo-stream target="categories" action="append">
+  <template>
+    <%= render partial: "categories/category_row", locals: { category: @category } %>
+  </template>
+</turbo-stream>
+
+<turbo-stream target="category_form" action="replace">
+  <template>
+    <%= render "form", category: Category.new(category_type: @category.category_type), category_type: @category.category_type %>
+  </template>
+</turbo-stream>

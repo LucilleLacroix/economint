@@ -20,5 +20,9 @@ class PagesController < ApplicationController
       category = current_user.categories.find_by(id: cat_id)
       [category&.name || "Autre", amount]
     end.to_h.transform_keys(&:to_s)
+
+    @savings = current_user.goals.sum(:current_amount)
+
+    @available_balance = (@total_revenues || 0) - (@total_expenses || 0) - (@savings || 0)
   end
 end

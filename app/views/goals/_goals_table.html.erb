@@ -1,0 +1,65 @@
+
+<div id="goals_table">
+  <table class="table table-striped" style="width:80%; margin:auto;">
+    <!-- ✅ Solde disponible -->
+  <p style="text-align:center;">
+    Solde disponible : <strong><%= number_to_currency(@available_balance) %></strong>
+  </p>
+</div>
+    <thead>
+      <tr>
+        <th>Titre</th>
+        <th>Objectif</th>
+        <th>Épargné</th>
+        <th>Progression</th>
+        <th>Échéance</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @goals.each do |goal| %>
+        <% progress = (goal.target_amount.to_f > 0) ? ((goal.current_amount.to_f / goal.target_amount.to_f) * 100).round(1) : 0 %>
+        <tr>
+          <td><%= goal.title %></td>
+          <td><%= number_to_currency(goal.target_amount) %></td>
+          <td><%= number_to_currency(goal.current_amount) %></td>
+
+          <!-- ✅ Barre de progression -->
+          <td style="width:200px;">
+            <div style="background:#e0e0e0; border-radius:10px; height:20px; overflow:hidden;">
+              <div style="width:<%= [progress,100].min %>%; height:100%; background:#27ae60;"></div>
+            </div>
+            <small><%= progress %>%</small>
+          </td>
+
+          <td><%= goal.deadline %></td>
+
+          <!-- ✅ Boutons d’action -->
+          <td>
+            <%= link_to "Éditer", edit_goal_path(goal), class:"btn btn-warning btn-sm" %>
+
+            <!-- Supprimer -->
+            <%= button_to "Supprimer", goal_path(goal),
+                method: :delete,
+                data: { turbo_confirm: "Supprimer cet objectif ?" },
+                class: "btn btn-danger btn-sm",
+                form: { style: "display:inline-block;" } %>
+
+            <!-- Ajouter de l’argent -->
+            <%= form_with url: add_money_goal_path(goal),
+                method: :post,
+                local: false,
+                style: "display:inline-block;" do |f| %>
+              <%= number_field_tag :amount, nil,
+                  placeholder:"€",
+                  step:"0.01",
+                  min:"0",
+                  style:"width:70px; margin-right:5px;" %>
+              <%= f.submit "Ajouter", class:"btn btn-success btn-sm" %>
+            <% end %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

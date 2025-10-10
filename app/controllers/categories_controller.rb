@@ -2,40 +2,96 @@ class CategoriesController < ApplicationController
   before_action :authenticate_user!
   before_action :set_category, only: [:update, :destroy]
 
-  # GET /categories
   def index
     @category_type = category_type_param
     @categories = current_user.categories.where(category_type: @category_type)
-  end
-
-  # GET /categories/new
-  def new
-    @category_type = category_type_param
     @category = current_user.categories.new(category_type: @category_type)
   end
 
   # POST /categories
   def create
-    @category_type = category_type_param
+    @category_type = params[:category_type] || "expense"
     @category = current_user.categories.new(category_params.merge(category_type: @category_type))
 
     if @category.save
-      redirect_to categories_path(category_type: @category_type), notice: "Catégorie créée !"
+      respond_to do |format|
+        format.turbo_stream do
+          render turbo_stream: [
+            # 👇 Ajoute la nouvelle ligne à la fin du <tbody id="categories">
+            turbo_stream.append(
+              "categories",
+              partial: "categories/category_row",
+              locals: { category: @category }
+            ),
+
+            # 👇 Remplace le formulaire par un nouveau vide
+            turbo_stream.replace(
+              "category_form",
+              partial: "categories/form",
+              locals: {
+                category: current_user.categories.new(category_type: @category_type),
+                category_type: @category_type
+              }
+            )
+          ]
+        end
+
+        format.html do
+          redirect_to categories_path(category_type: @category_type),
+                      notice: "Catégorie créée !"
+        end
+      end
     else
-      render :new, status: :unprocessable_entity
+      respond_to do |format|
+        format.turbo_stream do
+          render turbo_stream: turbo_stream.replace(
+            "category_form",
+            partial: "categories/form",
+            locals: { category: @category, category_type: @category_type }
+          )
+        end
+
+        format.html { render :new, status: :unprocessable_entity }
+      end
     end
   end
+
+
+
 
   # PATCH/PUT /categories/:id
   def update
     if @category.update(category_params)
-      render json: { success: true, category: @category }
+      respond_to do |format|
+        format.turbo_stream do
+          render turbo_stream: [
+            turbo_stream.replace("category_#{@category.id}", partial: "categories/category_row", locals: { category: @category }),
+            turbo_stream.replace("category_form", partial: "categories/form", locals: { category: current_user.categories.new(category_type: @category.category_type), category_type: @category.category_type })
+          ]
+        end
+        format.html { redirect_to categories_path(category_type: @category.category_type), notice: "Catégorie mise à jour !" }
+      end
     else
-      render json: { success: false, errors: @category.errors.full_messages }, status: :unprocessable_entity
+      respond_to do |format|
+        format.turbo_stream { render turbo_stream: turbo_stream.replace("category_form", partial: "categories/form", locals: { category: @category, category_type: @category.category_type }) }
+        format.html { render :edit, status: :unprocessable_entity }
+      end
     end
   end
 
-  # DELETE /categories/:id
+
+
+  # GET /categories/:id/edit
+  def edit
+    @category = current_user.categories.find(params[:id])
+    @category_type = @category.category_type
+
+    respond_to do |format|
+      format.turbo_stream { render turbo_stream: turbo_stream.replace("category_form", partial: "categories/form", locals: { category: @category, category_type: @category_type }) }
+      format.html # fallback classique si Turbo non utilisé
+    end
+  end
+
   def destroy
     default_category = current_user.categories.find_or_create_by(
       name: "Default", category_type: @category.category_type
@@ -45,7 +101,11 @@ class CategoriesController < ApplicationController
     @category.revenues.update_all(category_id: default_category.id) if @category.revenues.any?
 
     @category.destroy
-    render json: { success: true, default_category_id: default_category.id }
+
+    respond_to do |format|
+      format.turbo_stream
+      format.html { redirect_to categories_path(category_type: @category.category_type), notice: "Catégorie supprimée !" }
+    end
   end
 
   private
@@ -62,4 +122,3 @@ class CategoriesController < ApplicationController
     params.require(:category).permit(:name, :color)
   end
 end
-

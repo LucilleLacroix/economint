@@ -2,19 +2,20 @@
 
 <div style="display:flex; flex-direction:column; align-items:center; gap:20px; margin-bottom:20px;">
   <!-- Formulaire de filtre -->
-  <div style="margin-bottom:20px;">
-    <%= form_with url: expenses_path, method: :get, local: true, class: "form-inline" do %>
-      <label>Du : </label>
-      <%= date_field_tag :start_date, params[:start_date] || 1.month.ago.to_date, class: "form-control mx-2" %>
-      <label>Au : </label>
-      <%= date_field_tag :end_date, params[:end_date] || Date.today, class: "form-control mx-2" %>
-      <%= submit_tag "Filtrer", class: "btn btn-primary mx-2" %>
-      <%= link_to "Réinitialiser", expenses_path, class: "btn btn-secondary" %>
+  <div class="filter-container">
+    <%= form_with url: expenses_path, method: :get, local: true, class: "filter-form" do %>
+      <label>Du :</label>
+      <%= date_field_tag :start_date, params[:start_date] || 1.month.ago.to_date, class: "input-field" %>
+      <label>Au :</label>
+      <%= date_field_tag :end_date, params[:end_date] || Date.today, class: "input-field" %>
+      <%= submit_tag "Filtrer", class: "btn-main" %>
+      <%= link_to "Réinitialiser", expenses_path, class: "btn-cancel" %>
     <% end %>
   </div>
 
+
   <!-- Pie chart avec Stimulus -->
-  <div style="width:400px; height:400px;">
+  <div class="chart-container">
     <canvas id="expensesChart"
             data-controller="transactions-chart"
             data-transactions-chart-resource-value="expenses"
@@ -24,16 +25,17 @@
     </canvas>
   </div>
 
+
   <!-- Boutons -->
-  <div style="display:flex; gap:20px;">
-    <%= link_to "Ajouter une dépense", new_expense_path, class: "btn btn-primary" %>
-    <%= link_to "Gérer les catégories", categories_path(category_type: "expense"), class: "btn btn-secondary" %>
+  <div class="actions-container">
+    <%= link_to "Ajouter une dépense", new_expense_path, class: "btn-main" %>
+    <%= link_to "Gérer les catégories", categories_path(category_type: "expense"), class: "btn-cancel" %>
   </div>
-</div>
+
 
 <!-- Tableau des dépenses -->
-<div style="width:90%; max-width:900px; margin:auto;">
-  <table class="table table-striped">
+<div class="table-container">
+  <table class="styled-table">
     <thead>
       <tr>
         <th>Catégorie</th>
@@ -50,9 +52,9 @@
           <td><%= expense.description %></td>
           <td><%= number_to_currency(expense.amount) %></td>
           <td><%= expense.date %></td>
-          <td>
-            <%= link_to "Éditer", edit_expense_path(expense), class: "btn btn-sm btn-warning" %>
-            <button class="btn btn-sm btn-danger delete-expense" data-id="<%= expense.id %>">Supprimer</button>
+          <td class="actions-cell">
+            <%= link_to "Éditer", edit_expense_path(expense), class: "btn-small btn-warning" %>
+            <button class="btn-small btn-danger delete-expense" data-id="<%= expense.id %>">Supprimer</button>
           </td>
         </tr>
       <% end %>

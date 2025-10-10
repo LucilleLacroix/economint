@@ -1,91 +1,22 @@
 <h1 style="text-align:center;">Mes catégories (<%= @category_type.capitalize %>)</h1>
 
-<div style="width:400px; margin:auto;">
-  <table id="categoriesTable" style="width:100%; border-collapse:collapse;">
-    <thead>
-      <tr>
-        <th>Nom</th>
-        <th>Couleur</th>
-        <th>Actions</th>
-      </tr>
-    </thead>
-    <tbody>
-      <% @categories.each do |category| %>
-        <tr data-id="<%= category.id %>">
-          <td><input type="text" value="<%= category.name %>" class="category-name" style="width:100%;"/></td>
-          <td><input type="color" value="<%= category.color %>" class="category-color"/></td>
-          <td>
-            <button class="save-btn btn btn-sm btn-success">Sauvegarder</button>
-            <button class="delete-btn btn btn-sm btn-danger">Supprimer</button>
-          </td>
+<turbo-frame id="categories_list">
+  <div style="width:400px; margin:auto;">
+    <table style="width:100%; border-collapse:collapse;">
+      <thead>
+        <tr>
+          <th>Nom</th>
+          <th>Couleur</th>
+          <th>Actions</th>
         </tr>
-      <% end %>
-    </tbody>
-  </table>
-
-  <div style="margin-top:20px; text-align:center;">
-    <%= link_to "Ajouter une nouvelle catégorie", new_category_path(category_type: @category_type), class: "btn btn-primary", data: { turbo: false } %>
-    <%= link_to "Retour à l'accueil", root_path, class: "btn btn-secondary" %>
+      </thead>
+      <tbody id="categories">
+        <%= render partial: "categories/category_row", collection: @categories, as: :category %>
+      </tbody>
+    </table>
   </div>
-</div>
+</turbo-frame>
 
-<script>
-document.addEventListener("DOMContentLoaded", function() {
-  const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-
-  // Sauvegarde des modifications
-  document.querySelectorAll(".save-btn").forEach(btn => {
-    btn.addEventListener("click", function() {
-      const row = this.closest("tr");
-      const categoryId = row.dataset.id;
-      const name = row.querySelector(".category-name").value;
-      const color = row.querySelector(".category-color").value;
-
-      fetch(`/categories/${categoryId}`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          "X-CSRF-Token": csrfToken
-        },
-        body: JSON.stringify({ category: { name, color } })
-      })
-      .then(response => response.json())
-      .then(data => {
-        if(data.success) {
-          alert("Catégorie mise à jour !");
-          if(typeof updateAllCharts === "function") updateAllCharts();
-        } else {
-          alert("Erreur : " + data.errors.join(", "));
-        }
-      });
-    });
-  });
-
-  // Suppression d'une catégorie
-  document.querySelectorAll(".delete-btn").forEach(btn => {
-    btn.addEventListener("click", function() {
-      if(!confirm("Êtes-vous sûr ?")) return;
-
-      const row = this.closest("tr");
-      const categoryId = row.dataset.id;
-
-      fetch(`/categories/${categoryId}`, {
-        method: "DELETE",
-        headers: {
-          "X-CSRF-Token": csrfToken,
-          "Accept": "application/json"
-        }
-      })
-      .then(response => response.json())
-      .then(data => {
-        if(data.success) {
-          row.remove();
-          alert("Catégorie supprimée ! Les éléments associés sont passés à 'Default'.");
-          if(typeof updateAllCharts === "function") updateAllCharts();
-        }
-      });
-    });
-  });
-});
-</script>
-
+<turbo-frame id="category_form">
+  <%= render "form", category: @category, category_type: @category_type %>
+</turbo-frame>

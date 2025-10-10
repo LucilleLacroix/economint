@@ -1,10 +1,104 @@
-// In bootstrap 5 legend floats left and requires the following element
-// to be cleared. In a radio button or checkbox group the element after
-// the legend will be the automatically generated hidden input; the fix
-// in https://github.com/twbs/bootstrap/pull/30345 applies to the hidden
-// input and has no visual effect. Here we try to fix matters by
-// applying the clear to the div wrapping the first following radio button
-// or checkbox.
-legend ~ div.form-check:first-of-type {
-  clear: left;
+@import "../config/colors";
+
+.soft-form {
+  font-family: 'Poppins', sans-serif;
+  background-color: #80cbc4;
+  border-radius: 1rem;
+  padding: 2rem;
+  box-shadow: $shadow-soft;
+  width: 100%;
+  max-width: 600px;
+  margin: 2rem auto;
+  border: 1px solid $border-color;
+  transition: box-shadow 0.3s ease;
+
+  &:hover {
+    box-shadow: $shadow-hover;
+  }
+
+  h1, h2, h3 {
+    text-align: center;
+    color: $text-color;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+  }
+
+  .form-field {
+    margin-bottom: 1.5rem;
+
+    label {
+      display: block;
+      font-weight: 500;
+      margin-bottom: 0.4rem;
+      font-size: 0.95rem;
+      color: $text-color;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 0.7rem 0.9rem;
+      border: 1px solid $border-color;
+      border-radius: 0.6rem;
+      font-size: 0.95rem;
+      background-color: lighten($background-light, 1%);
+      color: $text-color;
+      transition: all 0.2s ease;
+
+      &:focus {
+        outline: none;
+        border-color: $primary-color;
+        box-shadow: 0 0 0 3px rgba($primary-color, 0.2);
+        background-color: $white;
+      }
+
+      &::placeholder {
+        color: lighten($text-muted, 20%);
+        font-style: italic;
+      }
+    }
+  }
+
+  .form-actions {
+    text-align: center;
+    margin-top: 1.5rem;
+
+    .btn-main {
+      background-color: $primary-color;
+      color: $white;
+      border: none;
+      padding: 0.8rem 1.6rem;
+      border-radius: 0.6rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background-color 0.2s ease, transform 0.1s ease;
+
+      &:hover {
+        background-color: $primary-hover;
+        transform: translateY(-2px);
+      }
+
+      &:active {
+        transform: translateY(0);
+      }
+    }
+  }
+
+  // Messages d'alerte intégrés
+  .alert {
+    padding: 1rem;
+    border-radius: 0.6rem;
+    margin-top: 1rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+
+    &.alert-success {
+      background-color: $success-color;
+      border-left: 4px solid $success-hover;
+    }
+
+    &.alert-error {
+      background-color: $error-color;
+      border-left: 4px solid $error-hover;
+    }
+  }
 }
