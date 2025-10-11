@@ -1,19 +1,23 @@
-// app/javascript/controllers/transactions_chart_controller.js
 import { Controller } from "@hotwired/stimulus"
 
+// Contrôleur pour le graphique et interactions avec le tableau
 export default class extends Controller {
   static values = {
     resource: String,       // "expenses" ou "revenues"
     chartId: String,        // ID du canvas
     categories: Array,      // JSON des catégories
-    dataByCategory: Object  // ✅ Ajouté ici
+    dataByCategory: Object  // Données agrégées par catégorie
   }
 
   connect() {
     this.canvas = document.getElementById(this.chartIdValue)
     if (!this.canvas) return
 
-    this.renderChart(this.dataByCategoryValue) // ✅ plus besoin de JSON.parse
+    this.table = document.querySelector(".styled-table tbody")
+    this.legendContainer = document.getElementById(`${this.chartIdValue}Legend`)
+    this.selectedIndex = null // Pour garder la sélection active
+
+    this.renderChart(this.dataByCategoryValue)
     this.attachDeleteEvents()
   }
 
@@ -30,44 +34,146 @@ export default class extends Controller {
       window[this.chartIdValue].destroy()
     }
 
-    window[this.chartIdValue] = new Chart(ctx, {
+    const chart = new Chart(ctx, {
       type: "pie",
       data: {
         labels,
         datasets: [{
           data,
           backgroundColor: colors,
-          borderColor: "#fff",
-          borderWidth: 2
+          borderColor: "#B0C7FF",
+          borderWidth: 2,
+          hoverOffset: 55,
+          hoverBorderColor: "rgba(7, 170, 235, 0.7)",
+          hoverBorderWidth: 3
         }]
       },
       options: {
         responsive: true,
+        layout: { padding: { top: 35, bottom: 30, left: 0, right: 0 } },
         plugins: {
-          legend: {
-            position: "bottom",
-            labels: {
-              usePointStyle: true,      // ✅ rend le point en cercle
-              pointStyle: "circle",
-              color: "white",         // ✅ couleur du texte (tu peux mettre n'importe quelle couleur)
-              font: { size: 16, weight: "500" },
-              padding: 20               // ✅ augmente l’espace entre les items de la légende
-            },
-           },
+          legend: { display: false }, // on masque la légende native
           tooltip: {
             callbacks: {
-              label(context) {
+              label: (context) => {
                 const value = context.raw
-                const total = data.reduce((a, b) => a + b, 0)
-                const percent = ((value / total) * 100).toFixed(1)
-                return `  ${value}`
+                const total = data.reduce((a,b)=>a+b,0)
+                const percent = ((value/total)*100).toFixed(1)
+                return `${value} (${percent}%)`
               }
             }
           }
         },
-        animation: { animateRotate: true, animateScale: true, duration: 1200 }
-      }
+        animation: {
+          animateRotate: true,
+          animateScale: true,
+          duration: 1000,
+          easing: "easeOutElastic"
+        },
+        onClick: (evt, elements) => {
+          if (!elements.length) return
+          const index = elements[0].index
+          const category = chart.data.labels[index]
+          this.filterByCategory(category)
+          this.highlightSlice(chart, index)
+          this.renderLegend(chart)
+        }
+      },
+      plugins: [{
+        id: 'customLegend',
+        afterUpdate: (chart) => this.renderLegend(chart),
+      }]
     })
+
+    if (this.selectedIndex !== null) {
+      this.highlightSlice(chart, this.selectedIndex)
+    }
+
+    window[this.chartIdValue] = chart
+    this.renderLegend(chart)
+  }
+
+  filterByCategory(categoryName) {
+    if (!this.table) return
+    const rows = this.table.querySelectorAll("tr")
+    rows.forEach(row => {
+      const catCell = row.children[0]?.textContent.trim()
+      row.style.display = catCell === categoryName ? "" : "none"
+    })
+  }
+
+  showAllRows() {
+    if (!this.table) return
+    this.table.querySelectorAll("tr").forEach(row => row.style.display = "")
+  }
+
+  highlightSlice(chart, index) {
+    this.selectedIndex = index
+    const dataset = chart.data.datasets[0]
+    dataset.borderColor = dataset.data.map((_, i) =>
+      i === index ? "rgba(7, 170, 235, 0.7)" : "#fff"
+    )
+    dataset.borderWidth = dataset.data.map((_, i) => i === index ? 4 : 2)
+    dataset.offset = dataset.data.map((_, i) => i === index ? 55 : 0)
+    chart.update()
+  }
+
+  resetHighlight(chart) {
+    this.selectedIndex = null
+    const dataset = chart.data.datasets[0]
+    dataset.borderColor = dataset.data.map(() => "#fff")
+    dataset.borderWidth = dataset.data.map(() => 2)
+    dataset.offset = dataset.data.map(() => 0)
+    chart.update()
+  }
+
+  resetFilter() {
+    const chart = window[this.chartIdValue]
+    if (chart) this.resetHighlight(chart)
+    this.showAllRows()
+    this.renderLegend(chart)
+  }
+
+  renderLegend(chart) {
+    if (!this.legendContainer) return
+    this.legendContainer.innerHTML = ''
+    this.legendContainer.style.textAlign = 'center'
+    this.legendContainer.style.marginBottom = '20px';
+
+    // Légende des catégories
+    chart.data.labels.forEach((label, index) => {
+      const colorBox = document.createElement('span')
+      colorBox.style.display = 'inline-block'
+      colorBox.style.width = '12px'
+      colorBox.style.height = '12px'
+      colorBox.style.backgroundColor = chart.data.datasets[0].backgroundColor[index]
+      colorBox.style.margin = '0 6px'
+      colorBox.style.borderRadius = '50%'
+
+      const labelText = document.createElement('span')
+      labelText.textContent = label
+      labelText.style.color = 'white'
+      labelText.style.marginRight = '10px'
+      labelText.style.cursor = 'pointer'
+
+      labelText.addEventListener('click', () => {
+        this.filterByCategory(label)
+        this.highlightSlice(chart, index)
+        this.renderLegend(chart)
+      })
+
+      this.legendContainer.appendChild(colorBox)
+      this.legendContainer.appendChild(labelText)
+    })
+
+    // Bouton Reset sous les labels
+    const resetBtn = document.createElement('button')
+    resetBtn.innerHTML = '<i class="fas fa-undo-alt"></i>'
+    resetBtn.className = 'btn btn-success'
+    resetBtn.style.marginTop = '8px'
+    resetBtn.addEventListener('click', () => this.resetFilter())
+    this.legendContainer.appendChild(document.createElement('br')) // ligne séparatrice
+    this.legendContainer.appendChild(resetBtn)
   }
 
   attachDeleteEvents() {
@@ -77,7 +183,6 @@ export default class extends Controller {
     document.querySelectorAll(`.delete-${singularResource}`).forEach(btn => {
       btn.addEventListener("click", (event) => {
         if (!confirm("Voulez-vous vraiment supprimer ?")) return
-
         const id = event.currentTarget.dataset.id
         fetch(`/${this.resourceValue}/${id}`, {
           method: "DELETE",

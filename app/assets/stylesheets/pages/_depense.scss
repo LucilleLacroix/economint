@@ -2,7 +2,7 @@
   width: 100%;
   display: flex;
   justify-content: center;
-  margin-top: 2rem;
+  margin-top: 0.5rem;
 
   table.styled-table {
     width: 70%;
@@ -123,6 +123,10 @@
       box-shadow: 0 0 0 2px rgba(168, 192, 255, 0.3);
     }
   }
-
-
+}
+.actions-container {
+  margin-top: 30px; // espace au-dessus
+  display: flex;
+  gap: 15px;         // espace entre les boutons
+  justify-content: center; // centre les boutons horizontalement
 }

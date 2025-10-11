@@ -17,8 +17,7 @@ export default class extends Controller {
     const savings = this.savingsValue || 0;
 
     // Création de dégradés radiaux pour chaque section
-    // Gradient disponible → Bleu pastel
-    // Gradient disponible → Bleu pastel doux
+
     const gradientAvailable = ctx.getContext('2d').createRadialGradient(225, 225, 50, 225, 225, 200);
     gradientAvailable.addColorStop(0, "#A8C0FF");   // centre - $primary-color
     gradientAvailable.addColorStop(0.5, "#B0C7FF"); // milieu - intermédiaire
@@ -53,12 +52,20 @@ export default class extends Controller {
       },
       options: {
         responsive: true,
-        cutout: "50%",
+        cutout: "40%",
+        layout: {
+          padding: {
+            top: 50,    // augmente pour pousser le graphique vers le bas
+            bottom: 20, // optionnel
+            left: 0,
+            right: 0
+          }
+        },
         plugins: {
           legend: {
           position: "bottom",
           labels: {
-            padding: 20,
+            padding: 30,
             usePointStyle: true,
             pointStyle: "circle",
             color: "#2d3a9e",
