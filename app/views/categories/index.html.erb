@@ -1,22 +1,29 @@
-<h1 style="text-align:center;">Mes catégories (<%= @category_type.capitalize %>)</h1>
+<h1 class="categories-title">
+  Mes catégories de
+  <%= @category_type == "expense" ? "Dépenses" : "Revenus" %>
+</h1>
 
-<turbo-frame id="categories_list">
-  <div style="width:400px; margin:auto;">
-    <table style="width:100%; border-collapse:collapse;">
-      <thead>
-        <tr>
-          <th>Nom</th>
-          <th>Couleur</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody id="categories">
-        <%= render partial: "categories/category_row", collection: @categories, as: :category %>
-      </tbody>
-    </table>
-  </div>
-</turbo-frame>
+<div class="categories-container">
+  <!-- Tableau -->
+  <turbo-frame id="categories_list">
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Nom</th>
+            <th>Couleur</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="categories">
+          <%= render partial: "categories/category_row", collection: @categories, as: :category %>
+        </tbody>
+      </table>
+    </div>
+  </turbo-frame>
 
-<turbo-frame id="category_form">
-  <%= render "form", category: @category, category_type: @category_type %>
-</turbo-frame>
+  <!-- Formulaire -->
+  <turbo-frame id="category_form">
+    <%= render "form", category: @category, category_type: @category_type %>
+  </turbo-frame>
+</div>

@@ -1,0 +1,133 @@
+/* Wrapper pour le tableau */
+.table-wrapper {
+  max-width: 400px;       // largeur limitée
+  margin: 2rem auto;      // centré
+  border: 2px solid $white; // bordure extérieure
+  border-radius: 1.5rem;
+  overflow: hidden;
+  background-color: rgba(255, 255, 255, 0.05); // léger fond si besoin
+
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    border: none; // on utilise la bordure du wrapper
+    border-radius: 1.2rem;
+    overflow: hidden;
+
+    thead {
+      background:  rgba(104, 66, 96, 0.288);
+      color: $white;
+      font-weight: 600;
+
+      th {
+        padding: 0.6rem 0.8rem;
+        text-align: left;
+        border-bottom: 2px solid $white;
+
+      }
+    }
+
+    tbody {
+      background-color: rgba(104, 66, 96, 0.096);
+
+      td {
+        padding: 0.5rem 0.8rem;
+        color: $text-color;
+        border-bottom: 2px solid rgba(104, 66, 96, 0.288);
+      }
+    }
+  }
+}
+.actions-cell {
+  display: flex;        // aligne les enfants horizontalement
+  gap: 0.5rem;          // espace entre les boutons
+  justify-content: flex-start; // ou center si tu veux centrer
+
+  .inline-form {
+    display: inline;    // le form du button_to devient inline
+  }
+}
+
+
+/* Formulaire */
+#category_form {
+  max-width: 400px;
+  margin: 2rem auto 0; // descend le formulaire
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+
+
+  h2.rajout-categories {
+    text-align: center;
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    text-transform: capitalize;
+    padding: 0.5rem 1rem;
+    border-radius: 0.8rem;
+    background-color: rgba(104, 66, 96, 0.123);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    width: 100%;
+    justify-content: center;
+
+    /* Chaque champ */
+    .form-field {
+      display: flex;
+      flex-direction: column;
+      align-items: center; // centre le label et l'input
+      text-align: center;
+      width: 100%;
+
+
+      label {
+        font-weight: 600;
+        margin-bottom: 0.4rem;
+        color: $text-color;
+        font-size: 1rem;
+      }
+
+      input[type="text"],
+      select {
+        padding: 0.5rem 0.8rem;
+        border-radius: 0.4rem;
+        border: 1px solid $border-color;
+        width: 80%; // réduit un peu la largeur pour un effet plus élégant
+        background-color: transparent;
+        text-align: center;
+      }
+
+      input[type="color"] {
+        padding: 0.2rem;          // moins de padding
+        width: 50px;              // largeur réduite
+        height: 35px;             // hauteur adaptée
+        border: 1px solid $border-color;
+        border-radius: 0.3rem;
+        cursor: pointer;
+
+      }
+    }
+    .form-actions {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin-top: 0.5rem;
+      width: 100%;         // important pour occuper la largeur du formulaire
+      margin-top: 1rem;
+
+      .btn {
+        min-width: 100px;  // optionnel : harmonise la taille
+        text-align: center;
+      }
+      }
+
+  }
+}

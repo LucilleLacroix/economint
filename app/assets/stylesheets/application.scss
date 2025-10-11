@@ -1,7 +1,6 @@
 // Graphical variables
 @import "config/fonts";
 @import "config/colors";
-@import "config/bootstrap_variables";
 @import "variables";
 
 // External libraries
@@ -13,8 +12,14 @@
 @import "pages/index";
 @import "components/navbar";
 @import "config/boutons";
+@import "devise";
+@import "pages/depense";
+@import "pages/categories";
+@import "pages/goals";
+
+
 body {
-  background-image: url('https://res.cloudinary.com/dw3eqi1tf/image/upload/v1760012965/pexels-diva-29915897_b9sp1w.jpg');
+  background-image: url('https://res.cloudinary.com/dw3eqi1tf/image/upload/v1760090648/pexels-merlin-11280357_fu23wt.jpg');
   background-size: cover;          // prend tout l’écran
   background-position: center;     // centre bien l’image
   background-attachment: fixed;    // effet "parallaxe" doux

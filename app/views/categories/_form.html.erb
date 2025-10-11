@@ -1,5 +1,7 @@
 <turbo-frame id="category_form">
-
+  <h2 class= "rajout-categories">
+    <%= category.new_record? ? "Créer une nouvelle catégorie" : "Éditer la catégorie" %>
+  </h2>
 <%= form_with model: category, url: category.new_record? ? categories_path(category_type: category_type) : category_path(category), local: false do |f| %>
   <div class="form-field">
     <%= f.label :name, "Nom de la catégorie" %>
@@ -12,8 +14,8 @@
   </div>
 
   <div class="form-actions">
-    <%= f.submit category.new_record? ? "Créer" : "Mettre à jour", class: "btn-main" %>
-    <%= link_to "Annuler", categories_path(category_type: category_type), class: "btn-cancel" %>
+    <%= f.submit category.new_record? ? "Créer" : "Mettre à jour", class: "btn btn-success" %>
+    <%= link_to "Annuler", categories_path(category_type: category_type), class: "btn btn-danger" %>
   </div>
 <% end %>
 </turbo-frame>

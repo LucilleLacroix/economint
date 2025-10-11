@@ -3,9 +3,14 @@
   <td>
     <div style="width:30px; height:20px; background:<%= category.color %>; border-radius:4px;"></div>
   </td>
-  <td>
-    <%= link_to "Éditer", edit_category_path(category), data: { turbo_frame: "category_form" }, class: "btn-main btn-sm" %>
-    <%= button_to "Supprimer", category_path(category), method: :delete, data: { confirm: "Voulez-vous vraiment supprimer ?" }, class: "btn-cancel btn-sm" %>
+  <td class="actions-cell">
+    <%= link_to edit_category_path(category), data: { turbo_frame: "category_form" }, class: "btn btn-supp", title: "Éditer" do %>
+      <i class="fas fa-pencil-alt"></i>
+    <% end %>
 
+    <%= button_to category_path(category), method: :delete, data: { turbo_confirm: "Êtes-vous sûr ?" }, class: "btn btn-danger delete-category", form: { data: { turbo_frame: "categories_list" } }, title: "Supprimer" do %>
+      <i class="fas fa-trash-alt"></i>
+    <% end %>
   </td>
+
 </tr>

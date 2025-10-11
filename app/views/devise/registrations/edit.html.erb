@@ -1,19 +1,56 @@
-<h2>Sign up</h2>
+<div class="edit-account-page">
+  <div class="edit-form-card">
+    <h1>Modifier mon compte</h1>
 
-<%= simple_form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
-  <%= f.error_notification %>
+    <%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put }) do |f| %>
+      <%= render "devise/shared/error_messages", resource: resource %>
 
-  <div class="form-inputs">
-    <%= f.input :username, required: true, autofocus: true, input_html: { autocomplete: "username" } %>
-    <%= f.input :email, required: true, input_html: { autocomplete: "email" } %>
-    <%= f.input :password, required: true, input_html: { autocomplete: "new-password" } %>
-    <%= f.input :password_confirmation, required: true, input_html: { autocomplete: "new-password" } %>
+      <div class="form-group">
+        <%= f.label :email, "Adresse e-mail" %>
+        <%= f.email_field :email, autofocus: true, autocomplete: "email" %>
+      </div>
+
+      <% if resource.respond_to?(:username) %>
+        <div class="form-group">
+          <%= f.label :username, "Nom d'utilisateur" %>
+          <%= f.text_field :username, autocomplete: "username" %>
+        </div>
+      <% end %>
+
+      <div class="form-group">
+        <%= f.label :password, "Nouveau mot de passe" %>
+        <%= f.password_field :password, autocomplete: "new-password", placeholder: "Laissez vide pour ne pas changer" %>
+      </div>
+
+      <div class="form-group">
+        <%= f.label :password_confirmation, "Confirmer le nouveau mot de passe" %>
+        <%= f.password_field :password_confirmation, autocomplete: "new-password" %>
+      </div>
+
+      <div class="form-group">
+        <%= f.label :current_password, "Mot de passe actuel" %>
+        <%= f.password_field :current_password, autocomplete: "current-password" %>
+        <small>(Requis pour confirmer les changements)</small>
+      </div>
+
+      <div class="actions">
+        <%= f.submit "Mettre à jour", class: "btn" %>
+      </div>
+    <% end %>
+
+    <hr>
+
+    <div class="cancel-account">
+      <h3>Supprimer mon compte</h3>
+      <p>Cette action est irréversible.</p>
+
+      <%= button_to "Supprimer mon compte",
+                    registration_path(resource_name),
+                    data: { confirm: "Es-tu sûr de vouloir supprimer ton compte ?" },
+                    method: :delete,
+                    class: "delete-btn" %>
+    </div>
+
+    <%= link_to "Retour à l'accueil", root_path, class: "back-home" %>
   </div>
-
-  <div class="form-actions">
-    <%= f.button :submit, "Sign up" %>
-  </div>
-<% end %>
-
-<%= render "devise/shared/links" %>
-
+</div>

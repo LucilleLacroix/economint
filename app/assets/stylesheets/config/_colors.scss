@@ -9,39 +9,35 @@ $green: #1EDD88;
 $gray: #0E0000;
 $light-gray: #f4f4f4;
 
-// ===============================
-// 🎨 Palette pastel bleue / menthe
-// ===============================
-
-// 💠 Couleurs principales
-$primary-color: #4db6ac;     // Menthe douce
-$primary-hover: #80cbc4;     // Menthe soutenue
-$secondary-color: #b2dfdb;   // Aqua clair
-$highlight-color: #e0f2f1;   // Brillance subtile
+// 🎨 Palette principale
+$primary-color: #A8C0FF;      // Bleu pastel
+$primary-hover: #8FAEFF;      // Bleu pastel plus soutenu
+$secondary-color: #CBA6FF;    // Lavande doux
+$highlight-color: #E5D4FF;    // Violet très clair
 
 // 💚 Couleurs de validation / succès
-$success-color: #A8E6CF;     // Vert pastel tendre
-$success-hover: #8ADBB8;
+$success-color: #B8F2D0;      // Vert menthe pastel
+$success-hover: #9DEBC8;
 
 // 💙 Couleurs informatives
-$info-color: #B8E1FF;        // Bleu ciel clair
-$info-hover: #9ED3FF;
+$info-color: #A0D8FF;         // Bleu ciel pastel
+$info-hover: #85CFFF;
 
 // 💛 Couleurs d’avertissement
-$warning-color: #FFF5BA;     // Jaune pastel doux
-$warning-hover: #FFE48A;
+$warning-color: #FFF1BA;      // Jaune doux pastel
+$warning-hover: #FFE88A;
 
 // ❤️ Couleurs d’erreur
-$error-color: #FFB5B5;       // Rouge rosé très doux
-$error-hover: #FF8F8F;
+$error-color: #FFB5C5;        // Rose doux
+$error-hover: #FF92AA;
 
 // ⚫ Couleurs neutres
-$text-color: #2F3E46;        // Gris-vert foncé lisible
-$text-muted: #6B7C80;        // Gris doux
-$border-color: #D8E3E7;      // Gris bleuté clair
-$background-light: #b2dfdb;  // Fond global clair
+$text-color: #2d3a9e;         // Gris foncé doux pour le texte
+$text-muted: #7A7D8C;         // Gris clair pour les textes secondaires
+$border-color: #D6D3E1;       // Gris lavande clair pour les bordures
+$background-light: #F6F5FF;   // Fond global très clair pastel
 $white: #FFFFFF;
 
 // ✨ Ombres & transparence
-$shadow-soft: 0 2px 8px rgba(0, 0, 0, 0.05);
-$shadow-hover: 0 4px 12px rgba(0, 0, 0, 0.08);
+$shadow-soft: 0 2px 8px rgba(59, 62, 86, 0.05);
+$shadow-hover: 0 4px 12px rgba(59, 62, 86, 0.08);

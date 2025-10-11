@@ -1,21 +1,27 @@
 <h1 class="text-center mb-4">Résumé des revenus</h1>
 
-<div class="d-flex flex-column align-items-center gap-3 mb-4">
+<div style="display:flex; flex-direction:column; align-items:center; gap:20px; margin-bottom:20px;">
 
   <!-- Formulaire de filtre -->
-  <div class="mb-3">
-    <%= form_with url: revenues_path, method: :get, local: true, class: "form-inline" do %>
+  <div class="filter-container">
+    <%= link_to revenues_path, class: "btn btn-success" do %>
+        <i class="fas fa-rotate-right"></i>
+    <% end %>
+    <%= form_with url: revenues_path, method: :get, local: true do %>
       <label>Du :</label>
-      <%= date_field_tag :start_date, params[:start_date] || 1.month.ago.to_date, class: "form-control mx-2" %>
+      <%= date_field_tag :start_date, params[:start_date] || 1.month.ago.to_date, class: "input-field" %>
+
       <label>Au :</label>
-      <%= date_field_tag :end_date, params[:end_date] || Date.today, class: "form-control mx-2" %>
-      <%= submit_tag "Filtrer", class: "btn btn-primary mx-2" %>
-      <%= link_to "Réinitialiser", revenues_path, class: "btn btn-secondary" %>
+      <%= date_field_tag :end_date, params[:end_date] || Date.today, class: "input-field" %>
+
+      <%= button_tag type: 'submit', class: "btn btn-success" do %>
+        <i class="fas fa-search"></i>
+      <% end %>
     <% end %>
   </div>
 
-  <!-- Pie chart avec Stimulus -->
-  <div class="chart-container" style="width:400px; height:400px;">
+  <!-- Pie chart -->
+  <div class="chart-container">
     <canvas
       id="revenues_chart"
       data-controller="transactions-chart"
@@ -27,37 +33,41 @@
   </div>
 
   <!-- Boutons -->
-  <div class="d-flex gap-3">
-    <%= link_to "Ajouter un revenu", new_revenue_path, class: "btn btn-primary" %>
-    <%= link_to "Gérer les catégories", categories_path(category_type: "revenue"), class: "btn btn-secondary" %>
+  <div class="actions-container">
+    <%= link_to "Ajouter un revenu", new_revenue_path, class: "btn btn-info" %>
+    <%= link_to "Gérer les catégories", categories_path(category_type: "revenue"), class: "btn btn-info" %>
   </div>
-</div>
 
-<!-- Tableau des revenus -->
-<div class="table-responsive w-100" style="max-width:900px; margin:auto;">
-  <table class="table table-striped align-middle text-center">
-    <thead class="table-light">
-      <tr>
-        <th>Catégorie</th>
-        <th>Description</th>
-        <th>Montant</th>
-        <th>Date</th>
-        <th>Actions</th>
-      </tr>
-    </thead>
-    <tbody id="revenues_table_body">
-      <% @revenues.each do |revenue| %>
-        <tr data-revenue-id="<%= revenue.id %>">
-          <td><%= revenue.category&.name || "Default" %></td>
-          <td><%= revenue.description %></td>
-          <td><%= number_to_currency(revenue.amount, unit: "€") %></td>
-          <td><%= revenue.date %></td>
-          <td>
-            <%= link_to "Éditer", edit_revenue_path(revenue), class: "btn btn-sm btn-warning" %>
-            <button class="btn btn-sm btn-danger delete-revenue" data-id="<%= revenue.id %>">Supprimer</button>
-          </td>
+  <!-- Tableau des revenus -->
+  <div class="table-container">
+    <table class="styled-table">
+      <thead>
+        <tr>
+          <th data-sort="string">Catégorie</th>
+          <th data-sort="string">Description</th>
+          <th data-sort="number">Montant</th>
+          <th data-sort="date">Date</th>
+          <th>Actions</th>
         </tr>
-      <% end %>
-    </tbody>
-  </table>
+      </thead>
+      <tbody>
+        <% @revenues.each do |revenue| %>
+          <tr class="category-row" style="color: <%= revenue.category&.color || '#000000' %>;" data-revenue-id="<%= revenue.id %>">
+            <td><%= revenue.category&.name || "Default" %></td>
+            <td><%= revenue.description %></td>
+            <td><%= number_to_currency(revenue.amount, unit: "€") %></td>
+            <td><%= revenue.date %></td>
+            <td class="actions-cell">
+              <%= link_to edit_revenue_path(revenue), class: "btn btn-supp", title: "Éditer" do %>
+                <i class="fas fa-pencil-alt"></i>
+              <% end %>
+              <%= button_tag type: "button", class: "btn btn-danger delete-revenue", data: { id: revenue.id }, title: "Supprimer" do %>
+                <i class="fas fa-trash-alt"></i>
+              <% end %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
 </div>
