@@ -1,0 +1,125 @@
+
+#goals_table {
+  width: 90%;
+  max-width: 1500px;
+  margin: 2rem auto;
+  border-radius: 16px;
+  padding: 1.5rem;
+  overflow-x: auto;
+}
+
+/* --- Table --- */
+#goals_table table {
+  backdrop-filter: blur(10px);
+  width: 100%;
+  border-collapse: collapse;
+  color: $text-color;
+  font-size: 0.95rem;
+  text-align: center;
+}
+
+/* --- En-tête --- */
+#goals_table thead {
+  background: rgba(255, 255, 255, 0.15);
+  font-weight: 600;
+  text-transform: uppercase;
+  color: white;
+}
+
+#goals_table th {
+  padding: 0.8rem;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+/* --- Lignes --- */
+#goals_table tbody tr {
+  transition: background 0.2s ease;
+}
+
+#goals_table tbody tr:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+#goals_table td {
+  padding: 0.8rem;
+  vertical-align: middle;
+}
+
+/* --- Barre de progression --- */
+.progress-bar {
+  width: 100%;
+  height: 20px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+  overflow: hidden;
+  position: relative;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #a8ff78, #78ffd6);
+  border-radius: 10px;
+  transition: width 0.4s ease-in-out;
+}
+
+.progress-cell small {
+  display: block;
+  margin-top: 0.2rem;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.8rem;
+}
+
+/* --- Actions --- */
+.actions-cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+/* --- Champs du mini-formulaire --- */
+.inline-form {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.inline-form .input-amount {
+  width: 70px;
+  border-radius: 0.5rem;
+  padding: 0.6rem 1.2rem;
+  border: none;
+  font-weight: 500;
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+  text-align: left;
+  transition: all 0.2s ease;
+  box-shadow: $shadow-soft;
+  color: $white;
+  text-align: center;
+}
+
+.inline-form .input-amount:focus {
+  outline: none;
+  border-color: #a8c0ff;
+  box-shadow: 0 0 0 2px rgba(168, 192, 255, 0.3);
+}
+
+.balance-text{
+
+  text-align: center;
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: $text-color;
+  margin: 1.5rem 0;
+  text-shadow: $shadow-soft;
+
+    strong {
+      color: $text-color; 
+      font-weight: 700;
+    }
+
+
+
+  }

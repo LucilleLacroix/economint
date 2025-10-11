@@ -5,22 +5,53 @@
   margin-top: 2rem;
 
   table.styled-table {
-    width: 90%;
+    width: 70%;
+    max-width: 800px;
     border-collapse: collapse;
-    border: 3px solid $white;  // contour du tableau
-    border-radius: 1rem;
+    border: 2px solid $white;
+    border-radius: 2rem;
     overflow: hidden;
     box-shadow: 0 4px 12px rgba(0,0,0,0.05);
 
     thead {
-
-      color: $white;
       font-weight: 500;
-      text-align: left;
+      color: $white;
+
 
       th {
-        padding: 0.8rem 1rem;
+        background: linear-gradient(
+          to right,
+          rgba(168, 192, 255, 0.3),  // bleu pastel semi-transparent
+          rgba(203, 166, 255, 0.3)   // lavande semi-transparent
+        );
+        padding: 1rem;
+        font-size: 1.2rem;
         border-bottom: 2px solid $white; // séparation des th
+        text-align: left;
+        cursor: pointer;
+        position: relative;
+
+        &[data-sort] {
+          // Flèche de tri
+          &::after {
+            content: '▾';
+            font-size: 1rem;
+            color: $white;
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            transition: transform 0.2s;
+          }
+
+          &.asc::after {
+            transform: translateY(-50%) rotate(180deg);
+          }
+
+          &.desc::after {
+            transform: translateY(-50%) rotate(0deg);
+          }
+        }
       }
     }
 
@@ -30,32 +61,68 @@
 
         &:hover {
           transform: translateY(-2px);
-          box-shadow: $shadow-soft;
+          box-shadow: 0 4px 12px rgba(59, 62, 86, 0.08);
         }
 
         td {
-          padding: 0.4rem;
-          font-size: 1rem;
-          color: $text-color;
+          background-color: rgba(104, 66, 96, 0.63);
+          padding: 1rem;
+          font-size: 0.95rem;
+          text-shadow: 0 0 4px rgba(0, 0, 0, 0.8);
           border-bottom: 1px solid lighten($background-light, 50%); // séparation lignes
         }
       }
-
-
     }
   }
 }
 .chart-container {
   width: 100%;
-  max-width: 450px;   // largeur maximale du chart
-  height: 450px;      // hauteur fixe
+  max-width: 500px;   // plus large que précédemment
+  height: 500px;      // hauteur plus grande
   margin: 2rem auto;  // centrage horizontal et espace vertical
   padding: 1rem;
-  
-
+  background: linear-gradient(
+    135deg,
+    rgba(168, 192, 255, 0.1),
+    rgba(203, 166, 255, 0.1)
+  ); // gradient pastel très léger pour le fond
 
   canvas {
     width: 100% !important;
     height: 100% !important;
   }
+}
+.filter-container {
+  width: 100%;
+  max-width: 600px;          // limite la largeur
+  display: flex;
+  flex-wrap: wrap;           // permet aux éléments de passer à la ligne si besoin
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;                 // espace entre les éléments
+  margin-bottom: 2rem;
+
+  label {
+    font-weight: 700;
+    margin-right: 0.5rem;
+    color: $text-color;
+  }
+
+  .input-field {
+    background-color: transparent;;
+    padding: 0.5rem 0.8rem;
+    border-radius: 0.5rem;
+    border: 2px solid $border-color;
+    font-size: 1rem;
+    outline: none;
+    transition: border-color 0.2s;
+    color: white;
+
+    &:focus {
+      border-color: $primary-color;
+      box-shadow: 0 0 0 2px rgba(168, 192, 255, 0.3);
+    }
+  }
+
+
 }

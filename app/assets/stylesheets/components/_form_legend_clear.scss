@@ -2,7 +2,11 @@
 
 .soft-form {
   font-family: 'Poppins', sans-serif;
-  background-color: #80cbc4;
+  background-color: linear-gradient(
+          to right,
+          rgba(168, 192, 255, 0.3),  // bleu pastel semi-transparent
+          rgba(203, 166, 255, 0.3)   // lavande semi-transparent
+        );
   border-radius: 1rem;
   padding: 2rem;
   box-shadow: $shadow-soft;
@@ -28,7 +32,7 @@
 
     label {
       display: block;
-      font-weight: 500;
+      font-weight: 600;
       margin-bottom: 0.4rem;
       font-size: 0.95rem;
       color: $text-color;
@@ -40,7 +44,11 @@
       border: 1px solid $border-color;
       border-radius: 0.6rem;
       font-size: 0.95rem;
-      background-color: lighten($background-light, 1%);
+      background: linear-gradient(
+          to right,
+          rgba(168, 192, 255, 0.3),  // bleu pastel semi-transparent
+          rgba(203, 166, 255, 0.3)   // lavande semi-transparent
+        );
       color: $text-color;
       transition: all 0.2s ease;
 
@@ -52,7 +60,7 @@
       }
 
       &::placeholder {
-        color: lighten($text-muted, 20%);
+        color: lighten($text-color, 20%);
         font-style: italic;
       }
     }
@@ -61,26 +69,6 @@
   .form-actions {
     text-align: center;
     margin-top: 1.5rem;
-
-    .btn-main {
-      background-color: $primary-color;
-      color: $white;
-      border: none;
-      padding: 0.8rem 1.6rem;
-      border-radius: 0.6rem;
-      font-weight: 500;
-      cursor: pointer;
-      transition: background-color 0.2s ease, transform 0.1s ease;
-
-      &:hover {
-        background-color: $primary-hover;
-        transform: translateY(-2px);
-      }
-
-      &:active {
-        transform: translateY(0);
-      }
-    }
   }
 
   // Messages d'alerte intégrés

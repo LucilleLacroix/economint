@@ -42,7 +42,7 @@
 }
 
 /* ❤️ Boutons danger / éditer */
-.btn-supp {
+a.btn-supp {
   background-color: $warning-color;
   color: $text-color;
   &:hover {
@@ -58,4 +58,55 @@
   flex-wrap: wrap;
   justify-content: center;
   margin-top: 1rem;
+}
+.btn-action {
+  padding: 0.6rem 1.2rem;
+  border-radius: 0.5rem;
+  border: none;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: $shadow-soft;
+  color: $white;
+  text-align: center;
+
+  &:hover {
+    box-shadow: $shadow-hover;
+    transform: translateY(-1px);
+  } // couleur par défaut de l’icône
+
+  i {
+    pointer-events: none; // empêche les clics sur l’icône
+  }
+
+  &:hover {
+    transform: scale(1.1);
+  }
+
+  &.edit {
+    background-color: rgba(255, 193, 7, 0.2); // jaune doux
+    color: #ffc107;
+
+    &:hover {
+      background-color: rgba(255, 193, 7, 0.4);
+    }
+  }
+
+  &.delete {
+    background-color: #ffb5c58e; // rouge doux
+    color: $error-hover;
+
+    &:hover {
+      background-color: $error-hover;
+    }
+  }
+
+  &.add {
+    background-color: rgba(46, 204, 112, 0.363); // vert doux
+    color: #3ce783;
+
+    &:hover {
+      background-color: rgba(46, 204, 113, 0.4);
+    }
+  }
 }

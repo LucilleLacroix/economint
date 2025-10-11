@@ -49,7 +49,7 @@ export default class extends Controller {
             labels: {
               usePointStyle: true,      // ✅ rend le point en cercle
               pointStyle: "circle",
-              color: "$text-color",         // ✅ couleur du texte (tu peux mettre n'importe quelle couleur)
+              color: "white",         // ✅ couleur du texte (tu peux mettre n'importe quelle couleur)
               font: { size: 16, weight: "500" },
               padding: 20               // ✅ augmente l’espace entre les items de la légende
             },

@@ -26,9 +26,9 @@ export default class extends Controller {
 
     // Gradient dépenses → Lavande pastel
     const gradientExpenses = ctx.getContext('2d').createRadialGradient(225, 225, 50, 225, 225, 200);
-    gradientExpenses.addColorStop(0, "#CBA6FF");   // centre - $secondary-color
+    gradientExpenses.addColorStop(0, "#925fdaff");   // centre - $secondary-color
     gradientExpenses.addColorStop(0.5, "#D6B8FF"); // milieu - intermédiaire
-    gradientExpenses.addColorStop(1, "#E5D4FF");   // bord - $highlight-color
+    gradientExpenses.addColorStop(1, "#c4a2f7ff");   // bord - $highlight-color
 
     // Gradient épargne → Rose / violet pastel
     const gradientSavings = ctx.getContext('2d').createRadialGradient(225, 225, 50, 225, 225, 200);

@@ -43,20 +43,22 @@
   </div>
 
   <!-- Tableau des dépenses -->
-  <div class="table-container">
+  <div class="table-container" data-controller="table-container">
     <table class="styled-table">
       <thead>
         <tr>
-          <th>Catégorie</th>
-          <th>Description</th>
-          <th>Montant</th>
-          <th>Date</th>
-          <th>Actions</th>
+          <th data-sort="string">Catégorie</th>
+          <th data-sort="string">Description</th>
+          <th data-sort="number">Montant</th>
+          <th data-sort="date">Date</th>
+          <th></th>
         </tr>
       </thead>
       <tbody>
         <% @expenses.each do |expense| %>
-          <tr style="background-color: <%= expense.category&.color || '#ffffff' %>;" data-expense-id="<%= expense.id %>">
+          <tr class="category-row"
+            style="color: <%= expense.category&.color || '#000000' %>;"
+            data-expense-id="<%= expense.id %>">
             <td><%= expense.category&.name || "Default" %></td>
             <td><%= expense.description %></td>
             <td><%= number_to_currency(expense.amount) %></td>
