@@ -1,7 +1,7 @@
-
+@import "../config/colors";
 .top-navbar {
   position: relative;
-  top: -10px; /* ajustable */
+  top: 0;
   left: 0;
   width: 100%;
   height: 60px;
@@ -9,9 +9,8 @@
   align-items: center;
   justify-content: space-between;
   padding: 0 1rem;
-  background-color: rgba(0,0,0,0); /* fond transparent */
+  background-color: transparent;
   z-index: 300;
-  box-shadow: none;
 
   .nav-left,
   .nav-center,
@@ -26,36 +25,36 @@
   }
 
   .sidebar-title {
-    font-weight: 700;
-    color: #FFFFFF;
-    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
-    text-decoration: none;
-    font-family: 'Great Vibes', cursive; /* Calligraphie */
+    font-family: 'Great Vibes', cursive;
     font-size: 1.8rem;
+    font-weight: 700;
+    color: $white;
+    text-shadow: 0 2px 4px $shadow-soft;
+    @include link-style;
 
     &:hover {
-      color: #CBA6FF;
+      color: $secondary-color;
     }
   }
 
   .menu-btn {
     cursor: pointer;
-    color: #A8C0FF;
     font-size: 2rem;
+    color: $primary-color;
     transition: color 0.3s ease;
 
     &:hover {
-      color: #CBA6FF;
+      color: $secondary-color;
     }
   }
 
   .nav-user {
     font-size: 1rem;
     font-weight: 500;
-    color: #FFFFFF;
+    color: $white;
     cursor: pointer;
-    position: relative;
     user-select: none;
+    position: relative;
   }
 
   .user-dropdown {
@@ -66,24 +65,23 @@
       position: absolute;
       right: 0;
       top: 100%;
-      background: linear-gradient(180deg, #A8C0FF, #CBA6FF);
+      background: $gradient-dropdown;
       list-style: none;
       padding: 0.5rem 0;
       margin: 0;
       border-radius: 6px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+      box-shadow: 0 2px 6px $shadow-soft;
       z-index: 400;
 
       li {
         padding: 0.5rem 1rem;
 
         a {
-          color: #fff;
-          text-decoration: none;
-          font-weight: 500;
+          @include link-style;
+          color: $white;
 
           &:hover {
-            color: #FF92AA;
+            color: $error-hover;
           }
         }
       }
@@ -95,16 +93,14 @@
   }
 }
 
-/* ========================
-   Sidebar
-======================== */
+/* Sidebar */
 .sidebar {
   position: fixed;
   top: 0;
-  left: -250px; /* cachée par défaut */
+  left: -250px;
   width: 250px;
   height: 100%;
-  background: linear-gradient(280deg, #650981, #CBA6FF);
+  background: $gradient-main;
   padding: 2rem 1rem;
   transition: left 0.3s ease;
   z-index: 200;
@@ -119,23 +115,19 @@
       margin-bottom: 1.5rem;
 
       a {
-        text-decoration: none;
-        color: white;
-        font-weight: 500;
+        @include link-style;
+        color: $white;
         font-size: 1.1rem;
-        transition: color 0.3s ease;
 
         &:hover {
-          color: #FF92AA;
+          color: $error-hover;
         }
       }
     }
   }
 }
 
-/* ========================
-   Affichage sidebar quand menu toggle
-======================== */
+/* Toggle sidebar */
 .menu-toggle:checked + .top-navbar + .sidebar {
   left: 0;
 }
