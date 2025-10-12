@@ -1,10 +1,6 @@
 class CategoryPolicy < ApplicationPolicy
-  def index?
-    true
-  end
-
   def show?
-    record.user == user
+    user == record.user
   end
 
   def create?
@@ -12,11 +8,11 @@ class CategoryPolicy < ApplicationPolicy
   end
 
   def update?
-    record.user == user
+    user == record.user
   end
 
   def destroy?
-    record.user == user
+    user == record.user
   end
 
   class Scope < Scope
@@ -25,4 +21,3 @@ class CategoryPolicy < ApplicationPolicy
     end
   end
 end
-

@@ -76,3 +76,4 @@ end
 gem 'devise'
 gem 'chartkick'
 gem 'groupdate'
+gem 'pundit'

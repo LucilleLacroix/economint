@@ -142,3 +142,7 @@
   color: var(--row-color)!important;
   transition: all 0.2s ease;
 }
+
+.retour {
+  @include flex-center;
+}

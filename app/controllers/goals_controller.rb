@@ -1,9 +1,10 @@
 class GoalsController < ApplicationController
+  include PunditResources
   before_action :authenticate_user!
   before_action :set_goal, only: [:edit, :update, :destroy, :add_money]
 
   def index
-    @goals = current_user.goals
+    @goals = policy_scope(current_user.goals)
     @total_revenues = current_user.revenues.sum(:amount)
     @total_expenses = current_user.expenses.sum(:amount)
     @available_balance = current_user.revenues.sum(:amount) - current_user.expenses.sum(:amount) - current_user.goals.sum(:current_amount)
@@ -11,10 +12,12 @@ class GoalsController < ApplicationController
 
   def new
     @goal = current_user.goals.new
+    authorize @goal
   end
 
   def create
     @goal = current_user.goals.new(goal_params)
+    authorize @goal
     if @goal.save
       redirect_to goals_path, notice: "Objectif créé avec succès !"
     else
@@ -23,9 +26,11 @@ class GoalsController < ApplicationController
   end
 
   def edit
+    authorize @goal
   end
 
   def update
+    authorize @goal
     if @goal.update(goal_params)
       redirect_to goals_path, notice: "Objectif mis à jour."
     else
@@ -34,6 +39,7 @@ class GoalsController < ApplicationController
   end
 
   def destroy
+    authorize @goal
     @goal.destroy
     redirect_to goals_path, notice: "Objectif supprimé."
   end
@@ -41,6 +47,7 @@ class GoalsController < ApplicationController
   # ✅ Action pour ajouter de l’argent à un objectif
   def add_money
     @goal = current_user.goals.find(params[:id])
+    authorize @goal
     amount = params[:amount].to_f
 
     # Recalcul du solde disponible avant l'ajout

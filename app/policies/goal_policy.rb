@@ -1,10 +1,6 @@
 class GoalPolicy < ApplicationPolicy
-  def index?
-    true
-  end
-
-  def show?
-    record.user == user
+ def show?
+    user == record.user
   end
 
   def create?
@@ -12,11 +8,11 @@ class GoalPolicy < ApplicationPolicy
   end
 
   def update?
-    record.user == user
+    user == record.user
   end
 
   def destroy?
-    record.user == user
+    user == record.user
   end
 
   class Scope < Scope

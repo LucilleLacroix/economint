@@ -1,7 +1,7 @@
 class CategoriesController < ApplicationController
   before_action :authenticate_user!
   before_action :set_category, only: [:update, :destroy]
-
+  
   def index
     @category_type = category_type_param
     @categories = current_user.categories.where(category_type: @category_type)
