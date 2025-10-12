@@ -1,0 +1,23 @@
+<table style="width:100%; border-collapse:collapse;">
+  <thead>
+    <tr>
+      <th>Nom</th>
+      <th>Couleur</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% categories.each do |category| %>
+      <tr id="category_<%= category.id %>">
+        <td><%= category.name %></td>
+        <td>
+          <div style="width:30px; height:30px; background-color:<%= category.color %>; border-radius:50%;"></div>
+        </td>
+        <td class="actions-cell">
+          <%= link_to "Éditer", edit_category_path(category), data: { turbo_frame: "category_form" }, class: "btn btn-supp" %>
+          <%= link_to "Supprimer", category_path(category), method: :delete, data: { turbo_confirm: "Êtes-vous sûr ?", turbo_frame: "categories_list" }, class: "btn btn-danger" %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

@@ -1,53 +1,119 @@
-.menu-btn {
-  position: fixed;
-  top: 2rem;
-  left: 1rem;
-  font-size: 2rem;
-  cursor: pointer;
-  z-index: 200;
-  color: #A8C0FF;
-  transition: color 0.3s ease;
 
-  &:hover { color: #CBA6FF; }
-}
-
-.sidebar {
-  position: fixed;
-  top: 0;
-  left: -300px; // cachée
-  width: 300px;
-  height: 100%;
-  background: linear-gradient(180deg, #A8C0FF, #CBA6FF);
-  padding: 2rem 1rem;
-  transition: left 0.3s ease;
-  z-index: 100;
+.top-navbar {
+  position: relative;
+  top: -10px; /* ajustable */
+  left: 0;
+  width: 100%;
+  height: 60px;
   display: flex;
-  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1rem;
+  background-color: rgba(0,0,0,0); /* fond transparent */
+  z-index: 300;
+  box-shadow: none;
 
-  .sidebar-header {
+  .nav-left,
+  .nav-center,
+  .nav-right {
     display: flex;
     align-items: center;
-    margin-bottom: 2rem;
+  }
 
-    .sidebar-title {
-      color: #09abb1;
-      font-size: 2rem;
-      font-weight: 700;
-      text-decoration: none;
-      text-shadow: 0 2px 4px rgba(255,255,255,0.6);
-      margin-left: 2rem; // espace après le bouton
-      transition: transform 0.3s ease;
+  .nav-center {
+    flex: 1;
+    justify-content: center;
+  }
 
+  .sidebar-title {
+    font-weight: 700;
+    color: #FFFFFF;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    text-decoration: none;
+    font-family: 'Great Vibes', cursive; /* Calligraphie */
+    font-size: 1.8rem;
 
-      &:hover {
-        transform: scale(1.05);
-      }
+    &:hover {
+      color: #CBA6FF;
     }
   }
 
+  .menu-btn {
+    cursor: pointer;
+    color: #A8C0FF;
+    font-size: 2rem;
+    transition: color 0.3s ease;
+
+    &:hover {
+      color: #CBA6FF;
+    }
+  }
+
+  .nav-user {
+    font-size: 1rem;
+    font-weight: 500;
+    color: #FFFFFF;
+    cursor: pointer;
+    position: relative;
+    user-select: none;
+  }
+
+  .user-dropdown {
+    position: relative;
+
+    .dropdown-menu {
+      display: none;
+      position: absolute;
+      right: 0;
+      top: 100%;
+      background: linear-gradient(180deg, #A8C0FF, #CBA6FF);
+      list-style: none;
+      padding: 0.5rem 0;
+      margin: 0;
+      border-radius: 6px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+      z-index: 400;
+
+      li {
+        padding: 0.5rem 1rem;
+
+        a {
+          color: #fff;
+          text-decoration: none;
+          font-weight: 500;
+
+          &:hover {
+            color: #FF92AA;
+          }
+        }
+      }
+    }
+
+    &:hover .dropdown-menu {
+      display: block;
+    }
+  }
+}
+
+/* ========================
+   Sidebar
+======================== */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: -250px; /* cachée par défaut */
+  width: 250px;
+  height: 100%;
+  background: linear-gradient(280deg, #650981, #CBA6FF);
+  padding: 2rem 1rem;
+  transition: left 0.3s ease;
+  z-index: 200;
+  display: flex;
+  flex-direction: column;
+
   .sidebar-links {
     list-style: none;
-    padding: 0;
+    padding: 2rem 0;
 
     li {
       margin-bottom: 1.5rem;
@@ -59,13 +125,17 @@
         font-size: 1.1rem;
         transition: color 0.3s ease;
 
-        &:hover { color: #FF92AA; }
+        &:hover {
+          color: #FF92AA;
+        }
       }
     }
   }
 }
 
-// Affichage de la sidebar quand le menu est coché
-.menu-toggle:checked + .menu-btn + .sidebar {
+/* ========================
+   Affichage sidebar quand menu toggle
+======================== */
+.menu-toggle:checked + .top-navbar + .sidebar {
   left: 0;
 }
