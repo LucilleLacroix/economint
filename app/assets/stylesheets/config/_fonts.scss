@@ -1,17 +1,10 @@
-// Import Google fonts
-@import url('https://fonts.googleapis.com/css?family=Nunito:400,700|Work+Sans:400,700&display=swap');
+// Import Google Fonts
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=Great+Vibes&family=Playfair+Display:wght@400;600;700&display=swap');
 
-// Define fonts for body and headers
-$body-font: 'Poppins', 'Inter', sans-serif;
-$headers-font: 'Poppins', 'Inter', sans-serif;
-$form-font: 'Poppins', 'Inter', sans-serif;
+// Font families
 $font-base: 'Poppins', 'Inter', sans-serif;
-// To use a font file (.woff) uncomment following lines
-// @font-face {
-//   font-family: "Font Name";
-//   src: font-url('FontFile.eot');
-//   src: font-url('FontFile.eot?#iefix') format('embedded-opentype'),
-//        font-url('FontFile.woff') format('woff'),
-//        font-url('FontFile.ttf') format('truetype')
-// }
-// $my-font: "Font Name";
+$font-alt: 'Playfair Display', serif; // pour titres élégants
+$font-script: 'Great Vibes', cursive; // calligraphie
+$font-body: $font-base;
+$font-headers: $font-alt;
+$form-font: $font-base;

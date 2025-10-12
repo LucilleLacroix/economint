@@ -1,65 +1,103 @@
+
+
 .edit-account-page {
   display: flex;
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-
+  padding: 2rem;
+  background: linear-gradient(
+    135deg,
+    rgba($primary-color, 0.1),
+    rgba($secondary-color, 0.1)
+  );
 
   h1 {
     text-align: center;
     margin-bottom: 1.5rem;
+    color: $text-color;
+    font-weight: 700;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
   }
 
   .edit-form-card {
-    background: linear-gradient(135deg, #E6E6FA, #FDE2F3);
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    background: linear-gradient(
+      135deg,
+      rgba($primary-color, 0.35),
+      rgba($secondary-color, 0.35)
+    );
+    border-radius: 1rem;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
     padding: 2rem;
     width: 100%;
-    max-width: 400px;
+    max-width: 420px;
+    border: 1px solid $border-color;
+    backdrop-filter: blur(10px);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+    &:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 22px rgba(0, 0, 0, 0.12);
+    }
 
     .form-group {
-      margin-bottom: 1rem;
+      margin-bottom: 1.2rem;
 
       label {
         display: block;
         font-weight: 600;
-        color: #555;
-        margin-bottom: 0.4rem;
+        color: $text-color;
+        margin-bottom: 0.5rem;
+        font-size: 0.95rem;
       }
 
       input {
         width: 100%;
-        padding: 0.6rem;
-        border: 1px solid #ddd;
-        border-radius: 8px;
+        padding: 0.7rem 1rem;
+        border: 1px solid $border-color;
+        border-radius: 0.6rem;
         font-size: 1rem;
-        transition: 0.2s ease;
+        background: rgba(255, 255, 255, 0.1);
+        color: $white;
+        transition: all 0.2s ease;
 
         &:focus {
-          border-color: #A8C0FF;
+          border-color: $primary-color;
           outline: none;
-          box-shadow: 0 0 0 3px rgba(168,192,255,0.2);
+          box-shadow: 0 0 0 3px rgba($primary-color, 0.25);
+          background: rgba($white, 0.15);
+        }
+
+        &::placeholder {
+          color: lighten($text-color, 25%);
+          font-style: italic;
         }
       }
     }
 
     .actions {
       text-align: center;
-      margin-top: 1.5rem;
+      margin-top: 1.8rem;
 
       .btn {
-        background: linear-gradient(90deg, #A8C0FF, #CBA6FF);
-        color: white;
+        background: linear-gradient(90deg, $primary-color, $secondary-color);
+        color: $white;
         border: none;
-        padding: 0.7rem 1.5rem;
-        border-radius: 8px;
+        padding: 0.8rem 1.6rem;
+        border-radius: 0.8rem;
         font-weight: 600;
         cursor: pointer;
-        transition: 0.2s ease;
+        transition: all 0.25s ease;
+        box-shadow: 0 4px 12px rgba($violet-base, 0.15);
 
         &:hover {
-          transform: scale(1.05);
+          transform: translateY(-3px) scale(1.05);
+          box-shadow: 0 6px 16px rgba($violet-base, 0.25);
+        }
+
+        &:active {
+          transform: translateY(0) scale(0.98);
+          box-shadow: 0 3px 8px rgba($violet-base, 0.15);
         }
       }
     }
@@ -69,17 +107,24 @@
       margin-top: 2rem;
 
       .delete-btn {
-        background: #FF92AA;
+        background: linear-gradient(90deg, $accent-color, lighten($accent-color, 10%));
         border: none;
-        color: white;
-        padding: 0.6rem 1.3rem;
-        border-radius: 8px;
+        color: $white;
+        padding: 0.7rem 1.4rem;
+        border-radius: 0.8rem;
         font-weight: 600;
         cursor: pointer;
-        transition: 0.2s ease;
+        transition: all 0.25s ease;
+        box-shadow: 0 4px 10px rgba($accent-color, 0.25);
 
         &:hover {
-          background: #FF7B96;
+          filter: brightness(1.1);
+          transform: scale(1.05);
+          box-shadow: 0 6px 14px rgba($accent-color, 0.3);
+        }
+
+        &:active {
+          transform: scale(0.97);
         }
       }
     }
@@ -88,13 +133,15 @@
       display: block;
       text-align: center;
       margin-top: 1.5rem;
-      color: #7B68EE;
+      color: $violet-base;
       text-decoration: none;
       font-weight: 500;
-      transition: 0.2s ease;
+      transition: color 0.2s ease, transform 0.2s ease;
+
 
       &:hover {
-        color: #CBA6FF;
+        color: lighten($secondary-color, 10%);
+        transform: translateY(-2px);
       }
     }
   }

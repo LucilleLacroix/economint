@@ -110,3 +110,49 @@ a.btn-supp {
     }
   }
 }
+/* ========================
+   NAVIGATION BUTTONS
+======================== */
+.nav-buttons {
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 2rem;
+
+  .btn {
+    padding: 0.8rem 1.6rem;
+    border-radius: 0.8rem;
+    font-weight: 600;
+    color: $white;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+
+    &.treasury-btn {
+      background-color: #A8C0FF;
+    }
+
+    &.expenses-btn {
+      background-color: #CBA6FF;
+    }
+
+    &.savings-btn {
+      background-color: #FF92AA;
+    }
+
+    &:hover {
+      transform: translateY(-3px) scale(1.05);
+      box-shadow: 0 6px 18px rgba($violet-base, 0.2);
+      filter: brightness(1.05);
+    }
+
+    &:active {
+      transform: translateY(0) scale(0.98);
+      box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+      filter: brightness(0.95);
+    }
+  }
+}

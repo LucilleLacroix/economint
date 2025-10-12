@@ -1,0 +1,53 @@
+<% if user_signed_in? %>
+  <div class="home-page">
+    <!-- 👋 Welcome -->
+    <div class="welcome">
+      <h1>Bienvenue <%= current_user.username %></h1>
+    </div>
+
+    <!-- 🗓️ Sélecteur de période -->
+    <div class="period-selector">
+      <%= form_with url: root_path, method: :get, local: true do %>
+        <label for="start_date">Début :</label>
+        <%= date_field_tag :start_date, @start_date %>
+
+        <label for="end_date">Fin :</label>
+        <%= date_field_tag :end_date, @end_date %>
+
+        <%= submit_tag "Filtrer", class: "btn treasury-btn" %>
+      <% end %>
+    </div>
+
+    <!-- 📊 Graphique -->
+
+      <canvas id="financesChart"
+        data-controller="simple-chart"
+        data-simple-chart-chart-id-value="financesChart"
+        data-simple-chart-available-value="<%= @available_balance || 0 %>"
+        data-simple-chart-expenses-value="<%= @total_expenses || 0 %>"
+        data-simple-chart-savings-value="<%= @savings || 0 %>">
+      </canvas>
+
+
+    <!-- 💰 Totaux -->
+    <div class="totals">
+      <p class="available">Solde Disponible : <strong><%= number_to_currency(@available_balance || 0) %></strong></p>
+    </div>
+
+    <!-- 🔗 Boutons d’accès -->
+    <div class="nav-buttons">
+      <%= link_to "Voir mes Dépenses", expenses_path, class: "btn expenses-btn" %>
+      <%= link_to "Voir ma Trésorerie", revenues_path, class: "btn treasury-btn" %>
+      <%= link_to "Mon Épargne", goals_path, class: "btn savings-btn" %>
+    </div>
+  </div>
+
+<% else %>
+  <div class="home-page not-signed-in">
+    <p>Pour voir vos finances, connectez-vous.</p>
+    <div class="nav-buttons">
+      <%= link_to "Se connecter", new_user_session_path, class:"btn treasury-btn" %>
+      <%= link_to "S'inscrire", new_user_registration_path, class:"btn savings-btn" %>
+    </div>
+  </div>
+<% end %>

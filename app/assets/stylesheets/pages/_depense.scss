@@ -1,7 +1,12 @@
+@import "../config/colors";
+
+
+/* ========================
+   TABLE STYLÉE
+======================== */
 .table-container {
   width: 100%;
-  display: flex;
-  justify-content: center;
+  @include flex-center;
   margin-top: 0.5rem;
 
   table.styled-table {
@@ -11,28 +16,22 @@
     border: 2px solid $white;
     border-radius: 2rem;
     overflow: hidden;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 
     thead {
       font-weight: 500;
       color: $white;
 
-
       th {
-        background: linear-gradient(
-          to right,
-          rgba(168, 192, 255, 0.3),  // bleu pastel semi-transparent
-          rgba(203, 166, 255, 0.3)   // lavande semi-transparent
-        );
+        @include pastel-gradient(0.3);
         padding: 1rem;
         font-size: 1.2rem;
-        border-bottom: 2px solid $white; // séparation des th
+        border-bottom: 2px solid $white;
         text-align: left;
         cursor: pointer;
         position: relative;
 
         &[data-sort] {
-          // Flèche de tri
           &::after {
             content: '▾';
             font-size: 1rem;
@@ -60,46 +59,52 @@
         transition: transform 0.2s ease, box-shadow 0.2s ease;
 
         &:hover {
-          transform: translateY(-2px);
-          box-shadow: 0 4px 12px rgba(59, 62, 86, 0.08);
+          transform: translateY(-4px);
+          box-shadow: 0 4px 12px rgba($violet-base, 0.25);
+          background-color: rgba($highlight-color, 0.9)
         }
 
         td {
-          background-color: rgba(104, 66, 96, 0.63);
+          background-color: rgba($violet-base, 0.5);
           padding: 1rem;
           font-size: 0.95rem;
           text-shadow: 0 0 4px rgba(0, 0, 0, 0.8);
-          border-bottom: 1px solid lighten($background-light, 50%); // séparation lignes
+          border-bottom: 1px solid rgba($white, 0.3);
+          color: $white;
         }
       }
     }
   }
 }
+
+/* ========================
+   CHART CONTAINER
+======================== */
 .chart-container {
   width: 100%;
-  max-width: 500px;   // plus large que précédemment
-  height: 500px;      // hauteur plus grande
-  margin: 2rem auto;  // centrage horizontal et espace vertical
+  max-width: 500px;
+  height: 500px;
+  margin: 2rem auto;
   padding: 1rem;
-  background: linear-gradient(
-    135deg,
-    rgba(168, 192, 255, 0.1),
-    rgba(203, 166, 255, 0.1)
-  ); // gradient pastel très léger pour le fond
+  background: transparent;
+  border-radius: 1.2rem;
+
 
   canvas {
     width: 100% !important;
     height: 100% !important;
   }
 }
+
+/* ========================
+   FILTER CONTAINER
+======================== */
 .filter-container {
   width: 100%;
-  max-width: 600px;          // limite la largeur
-  display: flex;
-  flex-wrap: wrap;           // permet aux éléments de passer à la ligne si besoin
-  align-items: center;
-  justify-content: center;
-  gap: 1rem;                 // espace entre les éléments
+  max-width: 600px;
+  @include flex-center;
+  flex-wrap: wrap;
+  gap: 1rem;
   margin-bottom: 2rem;
 
   label {
@@ -109,24 +114,31 @@
   }
 
   .input-field {
-    background-color: transparent;;
+    background-color: transparent;
     padding: 0.5rem 0.8rem;
     border-radius: 0.5rem;
     border: 2px solid $border-color;
     font-size: 1rem;
     outline: none;
-    transition: border-color 0.2s;
-    color: white;
+    transition: all 0.2s;
+    color: $white;
 
     &:focus {
       border-color: $primary-color;
-      box-shadow: 0 0 0 2px rgba(168, 192, 255, 0.3);
+      box-shadow: 0 0 0 3px rgba($primary-color, 0.3);
     }
   }
 }
+
+/* ========================
+   ACTIONS CONTAINER
+======================== */
 .actions-container {
-  margin-top: 60px; // espace au-dessus
-  display: flex;
-  gap: 15px;         // espace entre les boutons
-  justify-content: center; // centre les boutons horizontalement
+  margin-top: 60px;
+  @include flex-center;
+  gap: 15px;
+}
+.category-row td {
+  color: var(--row-color)!important;
+  transition: all 0.2s ease;
 }

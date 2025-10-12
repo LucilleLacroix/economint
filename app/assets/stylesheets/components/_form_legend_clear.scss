@@ -1,12 +1,9 @@
 @import "../config/colors";
+@import "../config/fonts";
 
 .soft-form {
-  font-family: 'Poppins', sans-serif;
-  background-color: linear-gradient(
-          to right,
-          rgba(168, 192, 255, 0.3),  // bleu pastel semi-transparent
-          rgba(203, 166, 255, 0.3)   // lavande semi-transparent
-        );
+  font-family: $font-base;
+  background: $gradient-pastel;
   border-radius: 1rem;
   padding: 2rem;
   box-shadow: $shadow-soft;
@@ -21,9 +18,6 @@
   }
 
   h1, h2, h3 {
-    text-align: center;
-    color: $text-color;
-    font-weight: 600;
     margin-bottom: 1.5rem;
   }
 
@@ -44,11 +38,7 @@
       border: 1px solid $border-color;
       border-radius: 0.6rem;
       font-size: 0.95rem;
-      background: linear-gradient(
-          to right,
-          rgba(168, 192, 255, 0.3),  // bleu pastel semi-transparent
-          rgba(203, 166, 255, 0.3)   // lavande semi-transparent
-        );
+      background: $gradient-pastel;
       color: $text-color;
       transition: all 0.2s ease;
 
@@ -69,24 +59,5 @@
   .form-actions {
     text-align: center;
     margin-top: 1.5rem;
-  }
-
-  // Messages d'alerte intégrés
-  .alert {
-    padding: 1rem;
-    border-radius: 0.6rem;
-    margin-top: 1rem;
-    font-size: 0.9rem;
-    font-weight: 500;
-
-    &.alert-success {
-      background-color: $success-color;
-      border-left: 4px solid $success-hover;
-    }
-
-    &.alert-error {
-      background-color: $error-color;
-      border-left: 4px solid $error-hover;
-    }
   }
 }

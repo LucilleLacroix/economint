@@ -55,7 +55,7 @@
       </thead>
       <tbody>
         <% @revenues.each do |revenue| %>
-          <tr class="category-row" style="color: <%= revenue.category&.color || '#000000' %>;" data-revenue-id="<%= revenue.id %>">
+          <tr class="category-row" style="--row-color: <%= revenue.category&.color || '#000000' %>;" data-revenue-id="<%= revenue.id %>">
             <td><%= revenue.category&.name || "Default" %></td>
             <td><%= revenue.description %></td>
             <td><%= number_to_currency(revenue.amount, unit: "€") %></td>

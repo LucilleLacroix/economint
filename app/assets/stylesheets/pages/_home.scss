@@ -1,82 +1,27 @@
-// Specific CSS for your home-page
-.period-selector {
-  margin: 2rem auto;
-  text-align: center;
+@import "../config/colors";
 
-  label {
-    margin-right: 0.5rem;
-    font-weight: 500;
-  }
-
-  input[type="date"] {
-    padding: 0.5rem 0.6rem;
-    border: 1px solid $border-color;
-    border-radius: 0.5rem;
-    font-size: 0.95rem;
-    background-color: $primary-color;
-    margin-right: 1rem;
-
-    &:focus {
-      outline: none;
-      border-color: $primary-color;
-      box-shadow: 0 0 0 3px rgba($primary-color, 0.2);
-    }
-  }
-}
-
-
-
+/* ========================
+   TOTALS
+======================== */
 .totals {
-
   text-align: center;
   margin-bottom: 2rem;
 
-
   p {
-    margin: 0.5rem 0;
+    margin: 0.6rem 0;
     font-weight: 600;
     font-size: 1rem;
-    &.available { color: #f8f7f3; }  // bleu pastel clair pour le solde dispo
+    color: $text-color;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.2);
 
-    strong { font-weight: 700; }
-  }
-}
+    &.available {
+      color: $white; // couleur douce pour le solde disponible
+      text-shadow: 0 0 8px rgba($secondary-color, 0.6);
+    }
 
-
-
-p, label {
-  font-size: 0.95rem;
-}
-
-hr {
-  opacity: 0.5;
-}
-
-.nav-buttons {
-    text-align: center;
-    display: flex;
-    justify-content: center;
-    gap: 1rem;
-    flex-wrap: wrap;
-
-    .btn {
-      padding: 0.8rem 1.6rem;
-      border-radius: 0.5rem;
-      font-weight: 600;
-      color: #FFFFFF;
-
-      &.treasury-btn { background-color: #A8C0FF; }
-      &.expenses-btn { background-color: #CBA6FF; }
-      &.savings-btn  { background-color: #FF92AA; }
-
-      &:hover {
-        transform: translateY(-3px) scale(1.05);
-        box-shadow: 0 4px 16px rgba(0,0,0,0.12);
-      }
-
-      &:active {
-        transform: translateY(0) scale(0.98);
-        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-      }
+    strong {
+      font-weight: 700;
+      color: $secondary-color;
     }
   }
+}
