@@ -15,7 +15,7 @@ export default class extends Controller {
 
     this.table = document.querySelector(".styled-table tbody")
     this.legendContainer = document.getElementById(`${this.chartIdValue}Legend`)
-    this.selectedIndex = null // Pour garder la sélection active
+    this.selectedIndexes = new Set() // Multi-sélection
 
     this.renderChart(this.dataByCategoryValue)
     this.attachDeleteEvents()
@@ -59,7 +59,7 @@ export default class extends Controller {
                 const value = context.raw
                 const total = data.reduce((a,b)=>a+b,0)
                 const percent = ((value/total)*100).toFixed(1)
-                return `${value} (${percent}%)`
+                return `${value}`
               }
             }
           }
@@ -74,8 +74,7 @@ export default class extends Controller {
           if (!elements.length) return
           const index = elements[0].index
           const category = chart.data.labels[index]
-          this.filterByCategory(category)
-          this.highlightSlice(chart, index)
+          this.toggleCategorySelection(chart, index)
           this.renderLegend(chart)
         }
       },
@@ -85,20 +84,45 @@ export default class extends Controller {
       }]
     })
 
-    if (this.selectedIndex !== null) {
-      this.highlightSlice(chart, this.selectedIndex)
-    }
-
     window[this.chartIdValue] = chart
     this.renderLegend(chart)
   }
 
-  filterByCategory(categoryName) {
+  // Toggle la sélection d'une catégorie
+  toggleCategorySelection(chart, index) {
+    if (this.selectedIndexes.has(index)) {
+      this.selectedIndexes.delete(index)
+    } else {
+      this.selectedIndexes.add(index)
+    }
+    this.updateChartHighlight(chart)
+    this.filterBySelectedCategories(chart)
+  }
+
+  updateChartHighlight(chart) {
+    const dataset = chart.data.datasets[0]
+
+    dataset.borderColor = dataset.data.map((_, i) =>
+      this.selectedIndexes.has(i) ? "rgba(7, 170, 235, 0.7)" : "#fff"
+    )
+    dataset.borderWidth = dataset.data.map((_, i) =>
+      this.selectedIndexes.has(i) ? 4 : 2
+    )
+    dataset.offset = dataset.data.map((_, i) =>
+      this.selectedIndexes.has(i) ? 55 : 0
+    )
+
+    chart.update()
+  }
+
+  filterBySelectedCategories(chart) {
     if (!this.table) return
     const rows = this.table.querySelectorAll("tr")
+    const selectedLabels = Array.from(this.selectedIndexes).map(i => chart.data.labels[i])
+
     rows.forEach(row => {
       const catCell = row.children[0]?.textContent.trim()
-      row.style.display = catCell === categoryName ? "" : "none"
+      row.style.display = selectedLabels.length === 0 || selectedLabels.includes(catCell) ? "" : "none"
     })
   }
 
@@ -107,29 +131,11 @@ export default class extends Controller {
     this.table.querySelectorAll("tr").forEach(row => row.style.display = "")
   }
 
-  highlightSlice(chart, index) {
-    this.selectedIndex = index
-    const dataset = chart.data.datasets[0]
-    dataset.borderColor = dataset.data.map((_, i) =>
-      i === index ? "rgba(7, 170, 235, 0.7)" : "#fff"
-    )
-    dataset.borderWidth = dataset.data.map((_, i) => i === index ? 4 : 2)
-    dataset.offset = dataset.data.map((_, i) => i === index ? 55 : 0)
-    chart.update()
-  }
-
-  resetHighlight(chart) {
-    this.selectedIndex = null
-    const dataset = chart.data.datasets[0]
-    dataset.borderColor = dataset.data.map(() => "#fff")
-    dataset.borderWidth = dataset.data.map(() => 2)
-    dataset.offset = dataset.data.map(() => 0)
-    chart.update()
-  }
-
   resetFilter() {
     const chart = window[this.chartIdValue]
-    if (chart) this.resetHighlight(chart)
+    if (!chart) return
+    this.selectedIndexes.clear()
+    this.updateChartHighlight(chart)
     this.showAllRows()
     this.renderLegend(chart)
   }
@@ -138,7 +144,7 @@ export default class extends Controller {
     if (!this.legendContainer) return
     this.legendContainer.innerHTML = ''
     this.legendContainer.style.textAlign = 'center'
-    this.legendContainer.style.marginBottom = '20px';
+    this.legendContainer.style.marginBottom = '20px'
 
     // Légende des catégories
     chart.data.labels.forEach((label, index) => {
@@ -157,8 +163,7 @@ export default class extends Controller {
       labelText.style.cursor = 'pointer'
 
       labelText.addEventListener('click', () => {
-        this.filterByCategory(label)
-        this.highlightSlice(chart, index)
+        this.toggleCategorySelection(chart, index)
         this.renderLegend(chart)
       })
 
@@ -172,7 +177,7 @@ export default class extends Controller {
     resetBtn.className = 'btn btn-success'
     resetBtn.style.marginTop = '8px'
     resetBtn.addEventListener('click', () => this.resetFilter())
-    this.legendContainer.appendChild(document.createElement('br')) // ligne séparatrice
+    this.legendContainer.appendChild(document.createElement('br'))
     this.legendContainer.appendChild(resetBtn)
   }
 
