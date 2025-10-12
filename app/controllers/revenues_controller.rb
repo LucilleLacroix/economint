@@ -1,4 +1,5 @@
 class RevenuesController < ApplicationController
+  include PunditResources
   before_action :authenticate_user!
   before_action :set_revenue, only: %i[show edit update destroy]
 
@@ -6,8 +7,8 @@ class RevenuesController < ApplicationController
     start_date = params[:start_date].present? ? Date.parse(params[:start_date]) : 1.month.ago.to_date
     end_date   = params[:end_date].present? ? Date.parse(params[:end_date]) : Date.today
 
-    @revenues = current_user.revenues.includes(:category)
-                           .where(date: start_date..end_date)
+    @revenues = policy_scope(current_user.revenues.includes(:category)
+                           .where(date: start_date..end_date))
 
     @revenues_by_category = @revenues.group_by { |r| r.category&.name || "Default" }
                                      .transform_values { |arr| arr.sum(&:amount) }
@@ -16,21 +17,26 @@ class RevenuesController < ApplicationController
     @categories = current_user.categories.where(category_type: @category_type)
   end
 
-  def show; end
+  def show
+    authorize @revenue
+  end
 
   def new
     @revenue = current_user.revenues.new
+    authorize @revenue
     @category_type = "revenue"
     @categories = current_user.categories.where(category_type: @category_type)
   end
 
   def edit
+    authorize @revenue
     @category_type = "revenue"
     @categories = current_user.categories.where(category_type: @category_type)
   end
 
   def create
     @revenue = current_user.revenues.new(revenue_params)
+    authorize @revenue
     if @revenue.save
       redirect_to revenues_path, notice: "Revenu créé avec succès."
     else
@@ -41,6 +47,7 @@ class RevenuesController < ApplicationController
   end
 
   def update
+    authorize @revenue
     if @revenue.update(revenue_params)
       redirect_to revenues_path, notice: "Revenu mis à jour."
     else
@@ -52,6 +59,7 @@ class RevenuesController < ApplicationController
 
   def destroy
     revenue = current_user.revenues.find(params[:id])
+    authorize @revenue
     category_name = revenue.category&.name || "Default"
     amount = revenue.amount
     if revenue.destroy
