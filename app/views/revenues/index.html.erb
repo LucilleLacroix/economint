@@ -3,11 +3,11 @@
 <div style="display:flex; flex-direction:column; align-items:center; gap:20px; margin-bottom:20px;">
 
   <!-- Formulaire de filtre -->
-  <div class="filter-container">
+  <div class="filter-container" style="display:flex; gap:10px; align-items:center;">
     <%= link_to revenues_path, class: "btn btn-success" do %>
-        <i class="fas fa-rotate-right"></i>
+      <i class="fas fa-rotate-right"></i>
     <% end %>
-    <%= form_with url: revenues_path, method: :get, local: true do %>
+    <%= form_with url: revenues_path, method: :get, local: true, class: "d-flex align-items-center gap-2" do %>
       <label>Du :</label>
       <%= date_field_tag :start_date, params[:start_date] || 1.month.ago.to_date, class: "input-field" %>
 
@@ -20,8 +20,8 @@
     <% end %>
   </div>
 
-  <!-- Pie chart -->
-  <div class="chart-container">
+  <!-- Pie chart et légende -->
+  <div class="chart-container" style="text-align:center;">
     <canvas
       id="revenues_chart"
       data-controller="transactions-chart"
@@ -30,16 +30,19 @@
       data-transactions-chart-categories-value="<%= current_user.categories.for_revenues.to_json(only: [:name, :color]) %>"
       data-transactions-chart-data-by-category-value="<%= @revenues_by_category.to_json %>">
     </canvas>
+
+    <!-- Légende personnalisée -->
+    <div id="revenues_chartLegend" style="text-align:center; margin-top:10px;"></div>
   </div>
 
   <!-- Boutons -->
-  <div class="actions-container">
+  <div class="actions-container" style="margin-top:20px;">
     <%= link_to "Ajouter un revenu", new_revenue_path, class: "btn btn-info" %>
     <%= link_to "Gérer les catégories", categories_path(category_type: "revenue"), class: "btn btn-info" %>
   </div>
 
   <!-- Tableau des revenus -->
-  <div class="table-container">
+  <div class="table-container" style="width:100%;">
     <table class="styled-table">
       <thead>
         <tr>

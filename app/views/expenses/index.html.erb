@@ -34,8 +34,9 @@
       data-transactions-chart-categories-value="<%= current_user.categories.for_expenses.to_json(only: [:name, :color]) %>"
       data-transactions-chart-data-by-category-value="<%= @expenses_by_category.to_json %>">
     </canvas>
-  </div>
 
+    <div id="expensesChartLegend" style="text-align:center; margin-top:10px;"></div>
+  </div>
   <!-- Boutons -->
   <div class="actions-container">
     <%= link_to "Ajouter une dépense", new_expense_path, class: "btn btn-info" %>
