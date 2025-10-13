@@ -1,0 +1,13 @@
+<h1>Mes Prédictions</h1>
+
+<%= link_to "Nouvelle Prediction", new_prediction_path %>
+
+<ul>
+  <% @predictions.each do |prediction| %>
+    <li>
+      <%= link_to prediction.scenario_name, prediction_path(prediction) %>
+      - <%= link_to "Editer", edit_prediction_path(prediction) %>
+      - <%= link_to "Supprimer", prediction_path(prediction), method: :delete, data: { confirm: "Êtes-vous sûr ?" } %>
+    </li>
+  <% end %>
+</ul>

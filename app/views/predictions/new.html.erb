@@ -1,0 +1,19 @@
+<h1><%= action_name.capitalize %> Prediction</h1>
+
+<%= form_with model: @prediction, local: true do |f| %>
+  <div>
+    <%= f.label :scenario_name %><br>
+    <%= f.text_field :scenario_name %>
+  </div>
+
+  <div>
+    <%= f.label :forecast_data %><br>
+    <%= f.text_area :forecast_data %>
+  </div>
+
+  <div>
+    <%= f.submit %>
+  </div>
+<% end %>
+
+<%= link_to "Retour", predictions_path %>

@@ -1,0 +1,6 @@
+<h1><%= @prediction.scenario_name %></h1>
+
+<p>Forecast Data :</p>
+<pre><%= JSON.pretty_generate(@prediction.forecast_data || {}) %></pre>
+
+<%= link_to "Retour", predictions_path %>

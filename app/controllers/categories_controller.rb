@@ -1,30 +1,31 @@
 class CategoriesController < ApplicationController
+  include PunditResources
+
   before_action :authenticate_user!
-  before_action :set_category, only: [:update, :destroy]
-  
+  before_action :set_category, only: [:update, :destroy, :edit]
+
+  # ✅ Liste toutes les catégories de l'utilisateur pour un type donné
   def index
     @category_type = category_type_param
-    @categories = current_user.categories.where(category_type: @category_type)
+    @categories = policy_scope(current_user.categories.where(category_type: @category_type))
     @category = current_user.categories.new(category_type: @category_type)
   end
 
-  # POST /categories
+  # ✅ Création d'une catégorie
   def create
     @category_type = params[:category_type] || "expense"
     @category = current_user.categories.new(category_params.merge(category_type: @category_type))
+    authorize @category
 
     if @category.save
       respond_to do |format|
         format.turbo_stream do
           render turbo_stream: [
-            # 👇 Ajoute la nouvelle ligne à la fin du <tbody id="categories">
             turbo_stream.append(
               "categories",
               partial: "categories/category_row",
               locals: { category: @category }
             ),
-
-            # 👇 Remplace le formulaire par un nouveau vide
             turbo_stream.replace(
               "category_form",
               partial: "categories/form",
@@ -56,11 +57,27 @@ class CategoriesController < ApplicationController
     end
   end
 
+  # ✅ Édition
+  def edit
+    authorize @category
+    @category_type = @category.category_type
 
+    respond_to do |format|
+      format.turbo_stream do
+        render turbo_stream: turbo_stream.replace(
+          "category_form",
+          partial: "categories/form",
+          locals: { category: @category, category_type: @category_type }
+        )
+      end
+      format.html
+    end
+  end
 
-
-  # PATCH/PUT /categories/:id
+  # ✅ Mise à jour
   def update
+    authorize @category
+
     if @category.update(category_params)
       respond_to do |format|
         format.turbo_stream do
@@ -79,20 +96,10 @@ class CategoriesController < ApplicationController
     end
   end
 
-
-
-  # GET /categories/:id/edit
-  def edit
-    @category = current_user.categories.find(params[:id])
-    @category_type = @category.category_type
-
-    respond_to do |format|
-      format.turbo_stream { render turbo_stream: turbo_stream.replace("category_form", partial: "categories/form", locals: { category: @category, category_type: @category_type }) }
-      format.html # fallback classique si Turbo non utilisé
-    end
-  end
-
+  # ✅ Suppression
   def destroy
+    authorize @category
+
     default_category = current_user.categories.find_or_create_by(
       name: "Default", category_type: @category.category_type
     ) { |c| c.color = "#E0E0E0" }
