@@ -3,7 +3,7 @@
 
   <div class="form-field">
     <%= f.label :category_id, "Catégorie" %>
-    <%= f.collection_select :category_id, categories, :id, :name, prompt: "Sélectionnez une catégorie" %>
+    <%= f.collection_select :category_id, categories, :id, :name, { prompt: "Sélectionnez une catégorie" }, { required: true } %>
   </div>
 
   <div class="form-field">

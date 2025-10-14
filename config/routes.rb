@@ -36,8 +36,10 @@ Rails.application.routes.draw do
   resources :goals do
     post 'add_money', on: :member
   end
-  
-  resources :predictions
+
+  resources :predictions 
+
+
   # Health check
   get "up" => "rails/health#show", as: :rails_health_check
 end

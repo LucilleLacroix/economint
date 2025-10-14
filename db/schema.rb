@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_10_03_195627) do
+ActiveRecord::Schema[7.1].define(version: 2025_10_14_124807) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -45,7 +45,6 @@ ActiveRecord::Schema[7.1].define(version: 2025_10_03_195627) do
   create_table "expenses", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.decimal "amount"
-    t.string "category"
     t.text "description"
     t.date "date"
     t.string "receipt_image"
@@ -64,6 +63,14 @@ ActiveRecord::Schema[7.1].define(version: 2025_10_03_195627) do
     t.date "deadline"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "goal_type"
+    t.bigint "category_id"
+    t.string "period"
+    t.string "reduction_type"
+    t.decimal "reduction_value"
+    t.date "start_date"
+    t.date "end_date"
+    t.index ["category_id"], name: "index_goals_on_category_id"
     t.index ["user_id"], name: "index_goals_on_user_id"
   end
 
@@ -73,6 +80,10 @@ ActiveRecord::Schema[7.1].define(version: 2025_10_03_195627) do
     t.jsonb "forecast_data"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.date "base_start_date"
+    t.date "base_end_date"
+    t.date "forecast_start_date"
+    t.date "forecast_end_date"
     t.index ["user_id"], name: "index_predictions_on_user_id"
   end
 
@@ -131,6 +142,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_10_03_195627) do
   add_foreign_key "checklists", "users"
   add_foreign_key "expenses", "categories"
   add_foreign_key "expenses", "users"
+  add_foreign_key "goals", "categories"
   add_foreign_key "goals", "users"
   add_foreign_key "predictions", "users"
   add_foreign_key "reconciliations", "users"

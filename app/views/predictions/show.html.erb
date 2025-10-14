@@ -1,6 +1,17 @@
 <h1><%= @prediction.scenario_name %></h1>
 
-<p>Forecast Data :</p>
-<pre><%= JSON.pretty_generate(@prediction.forecast_data || {}) %></pre>
 
-<%= link_to "Retour", predictions_path %>
+<% if @prediction.forecast_data.present? %>
+  <% base = @prediction.forecast_data["base"] || {} %>
+  <% forecast = @prediction.forecast_data["forecast"] || {} %>
+
+  <% if base.present? %>
+    <h2>Période de base : <%= base["start_date"] %> → <%= base["end_date"] %></h2>
+  <% end %>
+
+  <% if forecast.present? %>
+    <%= render "forecast_table", forecast: forecast %>
+  <% end %>
+<% else %>
+  <p>Aucune prévision disponible pour cette prédiction.</p>
+<% end %>

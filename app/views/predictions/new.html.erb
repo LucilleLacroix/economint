@@ -1,19 +1,40 @@
-<h1><%= action_name.capitalize %> Prediction</h1>
+<h1>Nouvelle Prédiction Custom</h1>
 
 <%= form_with model: @prediction, local: true do |f| %>
   <div>
-    <%= f.label :scenario_name %><br>
+    <%= f.label :scenario_name, "Nom du scénario" %><br>
     <%= f.text_field :scenario_name %>
   </div>
 
-  <div>
-    <%= f.label :forecast_data %><br>
-    <%= f.text_area :forecast_data %>
-  </div>
+  <hr>
+
+  <fieldset>
+    <legend>Période de base :</legend>
+    <div>
+      <%= f.label :base_start_date, "Date de début" %>
+      <%= f.date_field :base_start_date %>
+    </div>
+    <div>
+      <%= f.label :base_end_date, "Date de fin" %>
+      <%= f.date_field :base_end_date %>
+    </div>
+  </fieldset>
+
+  <fieldset>
+    <legend>Période prévisionnelle :</legend>
+    <div>
+      <%= f.label :forecast_start_date, "Date de début" %>
+      <%= f.date_field :forecast_start_date %>
+    </div>
+    <div>
+      <%= f.label :forecast_end_date, "Date de fin" %>
+      <%= f.date_field :forecast_end_date %>
+    </div>
+  </fieldset>
 
   <div>
-    <%= f.submit %>
+    <%= f.submit "Générer la prédiction" %>
   </div>
 <% end %>
 
-<%= link_to "Retour", predictions_path %>
+<%= link_to "Retour à la liste", predictions_path %>

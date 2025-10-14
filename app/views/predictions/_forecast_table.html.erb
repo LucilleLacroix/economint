@@ -1,0 +1,39 @@
+<% if @prediction.forecast_data.present? && @prediction.forecast_data["forecast"].present? %>
+  <div id="goals_table">
+    <h2>
+      Période prévisionnelle :
+      <%= @prediction.forecast_data["forecast"]["start_date"] %> →
+      <%= @prediction.forecast_data["forecast"]["end_date"] %>
+    </h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Catégorie</th>
+          <th>Pessimiste</th>
+          <th>Réaliste</th>
+          <th>Optimiste</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @prediction.forecast_data["forecast"]["categories"].each do |name, data| %>
+          <tr>
+            <td data-label="Catégorie"><%= name %></td>
+            <td data-label="Pessimiste"><%= data["pessimiste"] %></td>
+            <td data-label="Réaliste"><%= data["realiste"] %></td>
+            <td data-label="Optimiste"><%= data["optimiste"] %></td>
+          </tr>
+        <% end %>
+        <% if @prediction.forecast_data["forecast"]["totals"].present? %>
+          <tr>
+            <th data-label="Solde total">Solde total</th>
+            <td data-label="Pessimiste"><%= @prediction.forecast_data["forecast"]["totals"]["pessimiste"] %></td>
+            <td data-label="Réaliste"><%= @prediction.forecast_data["forecast"]["totals"]["realiste"] %></td>
+            <td data-label="Optimiste"><%= @prediction.forecast_data["forecast"]["totals"]["optimiste"] %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+<% else %>
+  <p>Aucune prévision disponible pour cette prédiction.</p>
+<% end %>
