@@ -81,7 +81,8 @@ class PredictionsController < ApplicationController
     params.require(:prediction).permit(
       :scenario_name,
       :base_start_date, :base_end_date,
-      :forecast_start_date, :forecast_end_date
+      :forecast_start_date, :forecast_end_date,
+      selected_category_ids: [] 
     )
   end
 end

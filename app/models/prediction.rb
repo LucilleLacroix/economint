@@ -3,63 +3,63 @@ class Prediction < ApplicationRecord
 
   validates :scenario_name, presence: true
 
-  # Génère la prévision sur une période donnée
+  attr_accessor :selected_category_ids
+
+  # Generate forecast for a period
   def generate_forecast(start_date, end_date)
     forecast = { "categories" => {}, "totals" => {} }
 
-    expense_categories = user.categories.where(category_type: "expense")
-    income_categories  = user.categories.where(category_type: "income")
+    expense_categories  = user.categories.for_expenses
+    revenue_categories  = user.categories.for_revenues
 
-    total_expenses = { pessimiste: 0, realiste: 0, optimiste: 0 }
-    total_incomes  = { pessimiste: 0, realiste: 0, optimiste: 0 }
+    # Filter by selected categories if any
+    if selected_category_ids.present? && selected_category_ids.any?
+      expense_categories = expense_categories.where(id: selected_category_ids)
+      revenue_categories = revenue_categories.where(id: selected_category_ids)
+    end
 
-    # Dépenses
+    total_expenses  = { "pessimiste" => 0, "realiste" => 0, "optimiste" => 0 }
+    total_revenues  = { "pessimiste" => 0, "realiste" => 0, "optimiste" => 0 }
+
+    # Expenses
     expense_categories.each do |category|
       total_expense = user.expenses.where(category_id: category.id, date: start_date..end_date).sum(:amount)
       total_expense = historical_average(user.expenses.where(category_id: category.id), start_date, end_date) if total_expense.zero?
 
-      pessimiste = (total_expense * 1.2).round(2)
-      realiste   = total_expense.round(2)
-      optimiste  = (total_expense * 0.8).round(2)
-
       forecast["categories"][category.name] = {
-        "type" => "expense",
-        "pessimiste" => pessimiste,
-        "realiste"   => realiste,
-        "optimiste"  => optimiste
+        "type"       => "expense",
+        "pessimiste" => (total_expense * 1.2).round(2),
+        "realiste"   => total_expense.round(2),
+        "optimiste"  => (total_expense * 0.8).round(2)
       }
 
-      total_expenses[:pessimiste] += pessimiste
-      total_expenses[:realiste]   += realiste
-      total_expenses[:optimiste]  += optimiste
+      total_expenses["pessimiste"] += (total_expense * 1.2).round(2)
+      total_expenses["realiste"]   += total_expense.round(2)
+      total_expenses["optimiste"]  += (total_expense * 0.8).round(2)
     end
 
-    # Revenus
-    income_categories.each do |category|
-      total_income = user.revenues.where(category_id: category.id, date: start_date..end_date).sum(:amount)
-      total_income = historical_average(user.revenues.where(category_id: category.id), start_date, end_date) if total_income.zero?
-
-      pessimiste = (total_income * 0.9).round(2)
-      realiste   = total_income.round(2)
-      optimiste  = (total_income * 1.1).round(2)
+    # Revenues
+    revenue_categories.each do |category|
+      total_revenue = user.revenues.where(category_id: category.id, date: start_date..end_date).sum(:amount)
+      total_revenue = historical_average(user.revenues.where(category_id: category.id), start_date, end_date) if total_revenue.zero?
 
       forecast["categories"][category.name] = {
-        "type" => "income",
-        "pessimiste" => pessimiste,
-        "realiste"   => realiste,
-        "optimiste"  => optimiste
+        "type"       => "revenue",
+        "pessimiste" => (total_revenue * 0.9).round(2),
+        "realiste"   => total_revenue.round(2),
+        "optimiste"  => (total_revenue * 1.1).round(2)
       }
 
-      total_incomes[:pessimiste] += pessimiste
-      total_incomes[:realiste]   += realiste
-      total_incomes[:optimiste]  += optimiste
+      total_revenues["pessimiste"] += (total_revenue * 0.9).round(2)
+      total_revenues["realiste"]   += total_revenue.round(2)
+      total_revenues["optimiste"]  += (total_revenue * 1.1).round(2)
     end
 
-    # Totaux
+    # Totals
     forecast["totals"] = {
-      "pessimiste" => (total_incomes[:pessimiste] - total_expenses[:pessimiste]).round(2),
-      "realiste"   => (total_incomes[:realiste] - total_expenses[:realiste]).round(2),
-      "optimiste"  => (total_incomes[:optimiste] - total_expenses[:optimiste]).round(2)
+      "pessimiste" => (total_revenues["pessimiste"] - total_expenses["pessimiste"]).round(2),
+      "realiste"   => (total_revenues["realiste"]   - total_expenses["realiste"]).round(2),
+      "optimiste"  => (total_revenues["optimiste"]  - total_expenses["optimiste"]).round(2)
     }
 
     forecast.merge!("start_date" => start_date, "end_date" => end_date)
@@ -69,9 +69,9 @@ class Prediction < ApplicationRecord
 
   # Moyenne historique si pas de données sur la période
   def historical_average(scope, start_date, end_date)
-    total = scope.sum(:amount)
-    min_date = scope.minimum(:date)
-    max_date = scope.maximum(:date)
+    total     = scope.sum(:amount)
+    min_date  = scope.minimum(:date)
+    max_date  = scope.maximum(:date)
     months_count = [(max_date && min_date) ? ((max_date - min_date).to_i / 30.0).round : 1, 1].max
     (total / months_count * ((end_date - start_date).to_i / 30.0)).round(2)
   end

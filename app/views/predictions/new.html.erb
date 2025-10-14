@@ -9,6 +9,17 @@
   <hr>
 
   <fieldset>
+    <legend>Choisir les catégories</legend>
+
+    <%= f.collection_check_boxes :selected_category_ids, current_user.categories, :id, :name do |cb| %>
+      <div>
+        <%= cb.check_box %>
+        <%= cb.label %>
+      </div>
+    <% end %>
+  </fieldset>
+
+  <fieldset>
     <legend>Période de base :</legend>
     <div>
       <%= f.label :base_start_date, "Date de début" %>
