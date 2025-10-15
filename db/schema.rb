@@ -10,9 +10,24 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_10_14_124807) do
+ActiveRecord::Schema[7.1].define(version: 2025_10_15_084242) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "budgets", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "category_id", null: false
+    t.date "start_date"
+    t.date "end_date"
+    t.decimal "pessimistic_amount"
+    t.decimal "realistic_amount"
+    t.decimal "optimistic_amount"
+    t.decimal "actual_amount"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["category_id"], name: "index_budgets_on_category_id"
+    t.index ["user_id"], name: "index_budgets_on_user_id"
+  end
 
   create_table "categories", force: :cascade do |t|
     t.bigint "user_id", null: false
@@ -72,6 +87,15 @@ ActiveRecord::Schema[7.1].define(version: 2025_10_14_124807) do
     t.date "end_date"
     t.index ["category_id"], name: "index_goals_on_category_id"
     t.index ["user_id"], name: "index_goals_on_user_id"
+  end
+
+  create_table "prediction_categories", force: :cascade do |t|
+    t.bigint "prediction_id", null: false
+    t.bigint "category_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["category_id"], name: "index_prediction_categories_on_category_id"
+    t.index ["prediction_id"], name: "index_prediction_categories_on_prediction_id"
   end
 
   create_table "predictions", force: :cascade do |t|
@@ -137,6 +161,8 @@ ActiveRecord::Schema[7.1].define(version: 2025_10_14_124807) do
     t.index ["username"], name: "index_users_on_username", unique: true
   end
 
+  add_foreign_key "budgets", "categories"
+  add_foreign_key "budgets", "users"
   add_foreign_key "categories", "users"
   add_foreign_key "checklist_items", "checklists"
   add_foreign_key "checklists", "users"
@@ -144,6 +170,8 @@ ActiveRecord::Schema[7.1].define(version: 2025_10_14_124807) do
   add_foreign_key "expenses", "users"
   add_foreign_key "goals", "categories"
   add_foreign_key "goals", "users"
+  add_foreign_key "prediction_categories", "categories"
+  add_foreign_key "prediction_categories", "predictions"
   add_foreign_key "predictions", "users"
   add_foreign_key "reconciliations", "users"
   add_foreign_key "revenues", "categories"

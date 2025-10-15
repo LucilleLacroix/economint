@@ -1,4 +1,7 @@
 Rails.application.routes.draw do
+  get 'budgets/index'
+  get 'budgets/new'
+  get 'budgets/create'
   get 'predictions/index'
   get 'predictions/show'
   get 'predictions/new'
@@ -37,7 +40,11 @@ Rails.application.routes.draw do
     post 'add_money', on: :member
   end
 
-  resources :predictions 
+  resources :predictions
+
+  resources :budgets, only: [:index, :new, :create, :edit, :update, :destroy]
+
+
 
 
   # Health check

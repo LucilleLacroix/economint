@@ -11,7 +11,10 @@ class PredictionsController < ApplicationController
   # GET /predictions/:id
   def show
     authorize @prediction
+    @categories_by_name = current_user.categories.index_by(&:name)
   end
+
+
 
   # GET /predictions/new
   def new
@@ -63,7 +66,6 @@ class PredictionsController < ApplicationController
       render :edit, status: :unprocessable_entity
     end
   end
-
   # DELETE /predictions/:id
   def destroy
     authorize @prediction
@@ -82,7 +84,7 @@ class PredictionsController < ApplicationController
       :scenario_name,
       :base_start_date, :base_end_date,
       :forecast_start_date, :forecast_end_date,
-      selected_category_ids: [] 
+      selected_category_ids: []
     )
   end
 end
