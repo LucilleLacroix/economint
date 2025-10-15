@@ -5,9 +5,15 @@
   <div id="forecast_table">
     <h2>
       Période prévisionnelle :
-      <%= forecast["start_date"] || "?" %> →
-      <%= forecast["end_date"] || "?" %>
+      <% if forecast["start_date"].present? && forecast["end_date"].present? %>
+        <%= l(Date.parse(forecast["start_date"]), format: :long) %>
+        au
+        <%= l(Date.parse(forecast["end_date"]), format: :long) %>
+      <% else %>
+        ?
+      <% end %>
     </h2>
+
 
     <table>
       <thead>
@@ -41,7 +47,7 @@
                       realistic_amount: data["realiste"],
                       optimistic_amount: data["optimiste"]
                     ),
-                    class: "btn btn-sm btn-primary" %>
+                    class: "btn btn-info" %>
               <% else %>
                 <span class="text-muted">Catégorie introuvable</span>
               <% end %>

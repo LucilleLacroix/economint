@@ -1,17 +1,16 @@
-<h1><%= @prediction.scenario_name %></h1>
+<div id="prediction_show">
+  <h1 class="prediction-title"><%= @prediction.scenario_name %></h1>
 
+  <% if @prediction.forecast_data.present? %>
 
-<% if @prediction.forecast_data.present? %>
-  <% base = @prediction.forecast_data["base"] || {} %>
-  <% forecast = @prediction.forecast_data["forecast"] || {} %>
+    <% forecast = @prediction.forecast_data["forecast"] || {} %>
 
-  <% if base.present? %>
-    <h2>Période de base : <%= base["start_date"] %> → <%= base["end_date"] %></h2>
+    <% if forecast.present? %>
+      <div id="goals_table">
+        <%= render "forecast_table", forecast: forecast %>
+      </div>
+    <% end %>
+  <% else %>
+    <p class="no-forecast">Aucune prévision disponible pour cette prédiction.</p>
   <% end %>
-
-  <% if forecast.present? %>
-    <%= render "forecast_table", forecast: forecast %>
-  <% end %>
-<% else %>
-  <p>Aucune prévision disponible pour cette prédiction.</p>
-<% end %>
+</div>

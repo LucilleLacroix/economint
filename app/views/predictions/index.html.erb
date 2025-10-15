@@ -1,16 +1,28 @@
-<h1>Mes Prédictions</h1>
+<div id="predictions_index">
+  <h1>Mes Prédictions</h1>
 
-<%= link_to "Nouvelle Prédiction", new_prediction_path %>
+  <%= link_to "Nouvelle Prédiction", new_prediction_path, class: "btn btn-info", title: "Nouvelle Prédiction" %>
 
-<ul>
-  <% @predictions.each do |prediction| %>
-    <li>
-      <%= link_to prediction.scenario_name, prediction_path(prediction) %>
-      - <%= link_to "Editer", edit_prediction_path(prediction) %>
-      - <%= link_to "Supprimer", prediction_path(prediction),
-            data: { turbo_method: :delete, turbo_confirm: "Êtes-vous sûr ?" },
-            class: "btn btn-danger" %>
+  <ul>
+    <% @predictions.each do |prediction| %>
+      <li>
+        <div class="prediction-name">
+          <%= link_to prediction.scenario_name, prediction_path(prediction) %>
+        </div>
 
-    </li>
-  <% end %>
-</ul>
+        <div class="actions-cell">
+          <%= link_to edit_prediction_path(prediction), class: "btn-action edit", title: "Éditer" do %>
+            <i class="fas fa-pencil-alt"></i>
+          <% end %>
+
+          <%= button_to prediction_path(prediction),
+              method: :delete,
+              data: { turbo_confirm: "Supprimer cette prédiction ?" },
+              class: "btn-action delete" do %>
+            <i class="fas fa-trash"></i>
+          <% end %>
+        </div>
+      </li>
+    <% end %>
+  </ul>
+</div>

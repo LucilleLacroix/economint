@@ -32,6 +32,7 @@
     text-shadow: 0 2px 4px $shadow-soft;
     @include link-style;
 
+
     &:hover {
       color: $secondary-color;
     }
@@ -98,14 +99,22 @@
   position: fixed;
   top: 0;
   left: -250px;
-  width: 250px;
+  width: 150px;
   height: 100%;
-  background: $gradient-main;
+  background: rgba(255, 255, 255, 0.295);
   padding: 2rem 1rem;
   transition: left 0.3s ease;
   z-index: 200;
   display: flex;
   flex-direction: column;
+  clip-path: polygon(
+    0 0,
+    75% 0,
+    90% 15%,
+    100% 85%,
+    85% 100%,
+    0 100%
+  );
 
   .sidebar-links {
     list-style: none;

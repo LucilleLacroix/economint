@@ -18,6 +18,10 @@
 @import "pages/goals";
 @import "components/periode_selector";
 @import "pages/budget";
+@import "pages/index_predictions";
+@import "pages/_form_prevision";
+
+
 
 body {
   background-image: url('https://res.cloudinary.com/dw3eqi1tf/image/upload/v1760090648/pexels-merlin-11280357_fu23wt.jpg');
@@ -36,7 +40,7 @@ h1, h2, h3 {
   color: $text-color;
   font-family: $font-script;
 }
-p, label {
+p, label, li, a{
   font-size: 0.95rem;
 }
 
