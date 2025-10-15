@@ -1,0 +1,42 @@
+<%= form_with(model: budget, local: true, html: { class: "soft-form" }) do |f| %>
+  <h2><%= budget.new_record? ? "Nouveau budget" : "Éditer le budget" %></h2>
+
+  <div class="form-field">
+    <%= f.label :category_id, "Catégorie" %>
+    <%= f.collection_select :category_id,
+          current_user.categories.where(category_type: "expense"),
+          :id,
+          :name,
+          { prompt: "Sélectionner une catégorie" } %>
+  </div>
+
+  <div class="form-field">
+    <%= f.label :start_date, "Début" %>
+    <%= f.date_field :start_date %>
+  </div>
+
+  <div class="form-field">
+    <%= f.label :end_date, "Fin" %>
+    <%= f.date_field :end_date %>
+  </div>
+
+  <div class="form-field">
+    <%= f.label :pessimistic_amount, "Montant pessimiste" %>
+    <%= f.number_field :pessimistic_amount, step: 0.01 %>
+  </div>
+
+  <div class="form-field">
+    <%= f.label :realistic_amount, "Montant réaliste" %>
+    <%= f.number_field :realistic_amount, step: 0.01 %>
+  </div>
+
+  <div class="form-field">
+    <%= f.label :optimistic_amount, "Montant optimiste" %>
+    <%= f.number_field :optimistic_amount, step: 0.01 %>
+  </div>
+
+  <div class="form-actions">
+      <%= f.submit "Enregistrer", class: "btn btn-success" %>
+      <%= link_to "Annuler", budgets_path, class: "btn btn-secondary" %>
+  </div>
+<% end %>

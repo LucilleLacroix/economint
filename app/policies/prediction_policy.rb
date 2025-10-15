@@ -1,5 +1,5 @@
-class GoalPolicy < ApplicationPolicy
- def show?
+class PredictionPolicy < ApplicationPolicy
+  def show?
     user == record.user
   end
 
@@ -15,10 +15,6 @@ class GoalPolicy < ApplicationPolicy
     user == record.user
   end
 
-  def add_money?
-    record.user == user
-  end
-  
   class Scope < Scope
     def resolve
       scope.where(user: user)

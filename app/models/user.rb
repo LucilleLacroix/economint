@@ -6,7 +6,7 @@ class User < ApplicationRecord
   has_many :predictions
   has_many :reconciliations
   has_many :revenues
-
+  has_many :budgets, dependent: :destroy
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
 

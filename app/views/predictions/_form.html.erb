@@ -1,0 +1,74 @@
+<div class="soft-form">
+  <%= form_with model: @prediction, local: true do |f| %>
+    <h2><%= @prediction.new_record? ? "Nouvelle Prédiction" : "Modifier la Prédiction" %></h2>
+
+    <!-- Nom du scénario -->
+    <div class="form-field">
+      <%= f.label :scenario_name, "Nom du scénario" %>
+      <%= f.text_field :scenario_name, placeholder: "Ex : Prévision dépenses vacances" %>
+    </div>
+
+    <hr>
+
+    <!-- Catégories -->
+    <fieldset class="form-field" data-controller="category">
+      <legend>Catégories à inclure</legend>
+
+      <div class="category-buttons" style="margin-bottom: 0.5rem;">
+        <button type="button" data-action="click->category#selectAll" class="btn btn-info">Tout sélectionner</button>
+        <button type="button" data-action="click->category#deselectAll" class="btn btn-info" >Tout désélectionner</button>
+      </div>
+
+      <div class="category-list scrollable">
+        <% current_user.categories.each do |category| %>
+          <div class="category-item">
+            <input type="checkbox" data-category-target="checkbox"
+               name="prediction[selected_category_ids][]"
+               value="<%= category.id %>"
+               id="category_<%= category.id %>">
+            <label for="category_<%= category.id %>"><%= category.name %></label>
+          </div>
+        <% end %>
+      </div>
+    </fieldset>
+
+    <!-- Période de base -->
+    <fieldset class="form-field">
+      <legend>Période de base</legend>
+      <div class="date-fields">
+        <div class="form-field">
+          <%= f.label :base_start_date, "Date de début" %>
+          <%= f.date_field :base_start_date, value: @prediction.base_start_date || 1.year.ago.to_date %>
+        </div>
+        <div class="form-field">
+          <%= f.label :base_end_date, "Date de fin" %>
+          <%= f.date_field :base_end_date, value: @prediction.base_end_date || Date.today %>
+        </div>
+      </div>
+    </fieldset>
+
+    <!-- Période prévisionnelle -->
+    <fieldset class="form-field">
+      <legend>Période prévisionnelle</legend>
+      <div class="date-fields">
+        <div class="form-field">
+          <%= f.label :forecast_start_date, "Date de début" %>
+          <%= f.date_field :forecast_start_date, value: @prediction.forecast_start_date || Date.today.next_month.beginning_of_month %>
+        </div>
+        <div class="form-field">
+          <%= f.label :forecast_end_date, "Date de fin" %>
+          <%= f.date_field :forecast_end_date, value: @prediction.forecast_end_date || Date.today.next_month.end_of_month %>
+        </div>
+      </div>
+    </fieldset>
+
+
+    <div class="form-actions">
+      <%= f.submit "Générer la prédiction", class: "btn btn-success" %>
+    </div>
+  <% end %>
+
+  <div class="form-actions" style="margin-top: 1rem;">
+    <%= link_to "Retour à la liste", predictions_path, class: "btn btn-info" %>
+  </div>
+</div>

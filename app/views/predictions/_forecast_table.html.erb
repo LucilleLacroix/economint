@@ -1,0 +1,73 @@
+<% forecast = @prediction.forecast_data&.dig("forecast") || {} %>
+<% categories = forecast["categories"] || {} %>
+
+<% if forecast.present? && categories.any? %>
+  <div id="forecast_table">
+    <h2>
+      Période prévisionnelle :
+      <% if forecast["start_date"].present? && forecast["end_date"].present? %>
+        <%= l(Date.parse(forecast["start_date"]), format: :long) %>
+        au
+        <%= l(Date.parse(forecast["end_date"]), format: :long) %>
+      <% else %>
+        ?
+      <% end %>
+    </h2>
+
+
+    <table>
+      <thead>
+        <tr>
+          <th>Catégorie</th>
+          <th>Pessimiste</th>
+          <th>Réaliste</th>
+          <th>Optimiste</th>
+          <th></th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <% categories.each do |name, data| %>
+          <% data ||= {} %>
+          <% category = @categories_by_name[name] %>
+
+          <tr>
+            <td data-label="Catégorie"><%= name %></td>
+            <td data-label="Pessimiste"><%= number_to_currency(data["pessimiste"]) if data["pessimiste"].present? %></td>
+            <td data-label="Réaliste"><%= number_to_currency(data["realiste"]) if data["realiste"].present? %></td>
+            <td data-label="Optimiste"><%= number_to_currency(data["optimiste"]) if data["optimiste"].present? %></td>
+            <td>
+              <% if category.present? %>
+                <%= link_to "Créer budget",
+                    new_budget_path(
+                      category_id: category.id,
+                      start_date: forecast["start_date"],
+                      end_date: forecast["end_date"],
+                      pessimistic_amount: data["pessimiste"],
+                      realistic_amount: data["realiste"],
+                      optimistic_amount: data["optimiste"]
+                    ),
+                    class: "btn btn-info" %>
+              <% else %>
+                <span class="text-muted">Catégorie introuvable</span>
+              <% end %>
+            </td>
+          </tr>
+        <% end %>
+
+        <% if forecast["totals"].present? %>
+          <% totals = forecast["totals"] %>
+          <tr class="font-bold border-t">
+            <th>Solde total</th>
+            <td><%= number_to_currency(totals["pessimiste"]) if totals["pessimiste"] %></td>
+            <td><%= number_to_currency(totals["realiste"]) if totals["realiste"] %></td>
+            <td><%= number_to_currency(totals["optimiste"]) if totals["optimiste"] %></td>
+            <td></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+<% else %>
+  <p class="text-muted">Aucune donnée de prévision disponible pour cette prédiction.</p>
+<% end %>

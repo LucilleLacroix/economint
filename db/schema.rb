@@ -10,9 +10,24 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_10_03_195627) do
+ActiveRecord::Schema[7.1].define(version: 2025_10_15_084242) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "budgets", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "category_id", null: false
+    t.date "start_date"
+    t.date "end_date"
+    t.decimal "pessimistic_amount"
+    t.decimal "realistic_amount"
+    t.decimal "optimistic_amount"
+    t.decimal "actual_amount"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["category_id"], name: "index_budgets_on_category_id"
+    t.index ["user_id"], name: "index_budgets_on_user_id"
+  end
 
   create_table "categories", force: :cascade do |t|
     t.bigint "user_id", null: false
@@ -45,7 +60,6 @@ ActiveRecord::Schema[7.1].define(version: 2025_10_03_195627) do
   create_table "expenses", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.decimal "amount"
-    t.string "category"
     t.text "description"
     t.date "date"
     t.string "receipt_image"
@@ -64,7 +78,24 @@ ActiveRecord::Schema[7.1].define(version: 2025_10_03_195627) do
     t.date "deadline"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "goal_type"
+    t.bigint "category_id"
+    t.string "period"
+    t.string "reduction_type"
+    t.decimal "reduction_value"
+    t.date "start_date"
+    t.date "end_date"
+    t.index ["category_id"], name: "index_goals_on_category_id"
     t.index ["user_id"], name: "index_goals_on_user_id"
+  end
+
+  create_table "prediction_categories", force: :cascade do |t|
+    t.bigint "prediction_id", null: false
+    t.bigint "category_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["category_id"], name: "index_prediction_categories_on_category_id"
+    t.index ["prediction_id"], name: "index_prediction_categories_on_prediction_id"
   end
 
   create_table "predictions", force: :cascade do |t|
@@ -73,6 +104,10 @@ ActiveRecord::Schema[7.1].define(version: 2025_10_03_195627) do
     t.jsonb "forecast_data"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.date "base_start_date"
+    t.date "base_end_date"
+    t.date "forecast_start_date"
+    t.date "forecast_end_date"
     t.index ["user_id"], name: "index_predictions_on_user_id"
   end
 
@@ -126,12 +161,17 @@ ActiveRecord::Schema[7.1].define(version: 2025_10_03_195627) do
     t.index ["username"], name: "index_users_on_username", unique: true
   end
 
+  add_foreign_key "budgets", "categories"
+  add_foreign_key "budgets", "users"
   add_foreign_key "categories", "users"
   add_foreign_key "checklist_items", "checklists"
   add_foreign_key "checklists", "users"
   add_foreign_key "expenses", "categories"
   add_foreign_key "expenses", "users"
+  add_foreign_key "goals", "categories"
   add_foreign_key "goals", "users"
+  add_foreign_key "prediction_categories", "categories"
+  add_foreign_key "prediction_categories", "predictions"
   add_foreign_key "predictions", "users"
   add_foreign_key "reconciliations", "users"
   add_foreign_key "revenues", "categories"

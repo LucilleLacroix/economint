@@ -1,4 +1,14 @@
 Rails.application.routes.draw do
+  get 'budgets/index'
+  get 'budgets/new'
+  get 'budgets/create'
+  get 'predictions/index'
+  get 'predictions/show'
+  get 'predictions/new'
+  get 'predictions/edit'
+  get 'predictions/create'
+  get 'predictions/update'
+  get 'predictions/destroy'
   get 'goals/index'
   get 'goals/new'
   get 'goals/create'
@@ -29,6 +39,14 @@ Rails.application.routes.draw do
   resources :goals do
     post 'add_money', on: :member
   end
+
+  resources :predictions
+
+  resources :budgets, only: [:index, :new, :create, :edit, :update, :destroy]
+
+
+
+
   # Health check
   get "up" => "rails/health#show", as: :rails_health_check
 end

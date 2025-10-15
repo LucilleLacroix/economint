@@ -2,6 +2,7 @@ class ExpensesController < ApplicationController
   include PunditResources
   before_action :authenticate_user!
   before_action :set_expense, only: %i[edit update destroy]
+  
 
   def index
     start_date = params[:start_date].presence || 1.month.ago.to_date
