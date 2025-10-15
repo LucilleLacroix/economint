@@ -15,6 +15,10 @@ class GoalPolicy < ApplicationPolicy
     user == record.user
   end
 
+  def add_money?
+    record.user == user
+  end
+  
   class Scope < Scope
     def resolve
       scope.where(user: user)
