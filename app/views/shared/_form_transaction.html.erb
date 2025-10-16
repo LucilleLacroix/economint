@@ -23,5 +23,11 @@
 
   <div class="form-actions">
     <%= f.submit "Enregistrer", class: "btn btn-info" %>
+    <% if request.path.include?("revenues") %>
+      <%= link_to "Annuler", revenues_path, class: "btn btn-info", role: "button" %>
+    <% else %>
+      <%= link_to "Annuler", expenses_path, class: "btn btn-info", role: "button" %>
+    <% end %>
+
   </div>
 <% end %>
