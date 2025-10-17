@@ -1,0 +1,12 @@
+<div class="chart-container" style="text-align:center;">
+  <canvas
+    id="<%= chart_id %>"
+    data-controller="transactions-chart"
+    data-transactions-chart-resource-value="<%= resource %>"
+    data-transactions-chart-chart-id-value="<%= chart_id %>"
+    data-transactions-chart-categories-value="<%= categories.to_json(only: [:name, :color]) %>"
+    data-transactions-chart-data-by-category-value="<%= data_by_category.to_json %>">
+  </canvas>
+
+  <div id="<%= chart_id %>Legend"></div>
+</div>

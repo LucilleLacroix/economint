@@ -1,0 +1,65 @@
+.filter-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  margin: 2rem auto;
+  flex-wrap: wrap;
+
+  label {
+    font-weight: 700;
+    color: $text-color;
+    margin-right: 0.5rem;
+  }
+
+  .input-field {
+    background-color: transparent;
+    padding: 0.5rem 0.8rem;
+    border-radius: 0.5rem;
+    border: 2px solid $border-color;
+    font-size: 1rem;
+    outline: none;
+    color: $white;
+
+    &:focus {
+      border-color: $primary-color;
+      box-shadow: 0 0 0 3px rgba($primary-color, 0.3);
+    }
+  }
+
+  // Styles communs aux deux boutons
+  .btn-success {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    height: 40px;
+    padding: 0;
+    font-size: 1.2rem;
+    text-decoration: none;
+    box-sizing: border-box;
+    border: none;           // s'assure que le button n'a pas de border par défaut
+    background-color: $success-color; // si nécessaire
+    cursor: pointer;
+  }
+
+  // Forcer le button submit à avoir le même style
+  button.btn-success {
+    all: unset;              // supprime tous les styles par défaut du bouton
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    height: 40px;
+    font-size: 1.2rem;
+    background-color: $success-color;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    margin-left: 1rem;
+
+    &:hover {
+      box-shadow: $shadow-hover;
+      transform: translateY(-1px);
+    }
+  }
+}

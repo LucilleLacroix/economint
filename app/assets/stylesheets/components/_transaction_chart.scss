@@ -1,0 +1,62 @@
+@import "../config/colors";
+
+.chart-container {
+  width: 100%;
+  max-width: 500px;
+  height: 500px;
+  margin: 2rem auto;
+  padding: 1rem;
+  background: transparent;
+  border-radius: 1.2rem;
+
+
+  canvas {
+    width: 100% !important;
+    height: 100% !important;
+  }
+}
+.chart-legend {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin: 1rem auto;
+  text-align: center;
+  max-width: 600px;
+  position: relative;
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+
+    &:hover {
+      transform: scale(1.05);
+    }
+
+    .legend-color {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      border: 2px solid white;
+      display: inline-block;
+    }
+
+    .legend-label {
+      color: white;
+      font-size: 0.95rem;
+      user-select: none;
+    }
+  }
+
+
+
+}
+ button {
+    margin-top: 10px;
+    padding: 0.4rem 0.8rem;
+    border-radius: 8px;
+    min-width: 80px;
+  }

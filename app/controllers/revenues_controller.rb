@@ -59,15 +59,39 @@ class RevenuesController < ApplicationController
 
   def destroy
     revenue = current_user.revenues.find(params[:id])
-    authorize @revenue
+    authorize revenue
     category_name = revenue.category&.name || "Default"
     amount = revenue.amount
+
     if revenue.destroy
-      render json: { success: true, category_name: category_name, amount: amount }
+      respond_to do |format|
+        format.turbo_stream do
+          flash.now[:notice] = "Revenu supprimé !"
+          render turbo_stream: [
+            turbo_stream.remove("revenue_#{revenue.id}"),  # supprime la ligne du tableau
+            turbo_stream.replace("flash", partial: "shared/flash") # met à jour le flash
+          ]
+        end
+
+        format.html do
+          redirect_to revenues_path, notice: "Revenu supprimé !"
+        end
+      end
     else
-      render json: { success: false }
+      respond_to do |format|
+        format.turbo_stream do
+          flash.now[:alert] = "Impossible de supprimer le revenu."
+          render turbo_stream: turbo_stream.replace("flash", partial: "shared/flash")
+        end
+
+        format.html do
+          redirect_to revenues_path, alert: "Impossible de supprimer le revenu."
+        end
+      end
     end
   end
+
+
 
 
   private

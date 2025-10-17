@@ -26,27 +26,13 @@ class GoalsController < ApplicationController
     authorize @goal
 
     if @goal.save
-      respond_to do |format|
-        format.turbo_stream do
-          flash.now[:notice] = "Objectif créé avec succès !"
-          render turbo_stream: [
-            turbo_stream.append("goals", partial: "goals/goal_row", locals: { goal: @goal }),
-            turbo_stream.replace("goal_form", partial: "goals/form", locals: { goal: current_user.goals.new })
-          ]
-        end
-        format.html { redirect_to goals_path, notice: "Objectif créé avec succès !" }
-      end
+      redirect_to goals_path, notice: "Objectif créé avec succès !"
     else
-      respond_to do |format|
-        format.turbo_stream do
-          render turbo_stream: turbo_stream.replace("goal_form", partial: "goals/form", locals: { goal: @goal })
-        end
-        format.html { render :new, status: :unprocessable_entity }
-      end
+      render :new, status: :unprocessable_entity
     end
   end
 
-  
+
 
   # ✅ Édition
   def edit
@@ -62,25 +48,10 @@ class GoalsController < ApplicationController
   # ✅ Mise à jour
   def update
     authorize @goal
-
     if @goal.update(goal_params)
-      respond_to do |format|
-        format.turbo_stream do
-          flash.now[:notice] = "Objectif mis à jour."
-          render turbo_stream: [
-            turbo_stream.replace("goal_#{@goal.id}", partial: "goals/goal_row", locals: { goal: @goal }),
-            turbo_stream.replace("goal_form", partial: "goals/form", locals: { goal: current_user.goals.new })
-          ]
-        end
-        format.html { redirect_to goals_path, notice: "Objectif mis à jour." }
-      end
+      redirect_to goals_path, notice: "Objectif mis à jour."
     else
-      respond_to do |format|
-        format.turbo_stream do
-          render turbo_stream: turbo_stream.replace("goal_form", partial: "goals/form", locals: { goal: @goal })
-        end
-        format.html { render :edit, status: :unprocessable_entity }
-      end
+      render :edit, status: :unprocessable_entity
     end
   end
 
@@ -89,41 +60,63 @@ class GoalsController < ApplicationController
     authorize @goal
     @goal.destroy
 
-    respond_to do |format|
-      format.turbo_stream
-      format.html { redirect_to goals_path, notice: "Objectif supprimé." }
-    end
-  end
-
-  # ✅ Ajout d’argent à un objectif
-  def add_money
-    authorize @goal
-    amount = params[:amount].to_f
-
+    # Recalcul du solde après suppression
     total_revenues = current_user.revenues.sum(:amount)
     total_expenses = current_user.expenses.sum(:amount)
     total_saved = current_user.goals.sum(:current_amount)
     @available_balance = total_revenues - total_expenses - total_saved
 
-    if amount.positive? && amount <= @available_balance
-      @goal.update(current_amount: @goal.current_amount.to_f + amount)
-      flash.now[:notice] = "Épargne ajoutée avec succès !"
-    elsif !amount.positive?
-      flash.now[:alert] = "Le montant doit être supérieur à 0."
-    else
-      flash.now[:alert] = "Solde insuffisant pour ajouter ce montant."
-    end
-
-    # Recharge des données après mise à jour
-    @goals = policy_scope(current_user.goals.order(deadline: :asc))
-    total_saved_after = current_user.goals.sum(:current_amount)
-    @available_balance = total_revenues - total_expenses - total_saved_after
-
     respond_to do |format|
-      format.turbo_stream
-      format.html { redirect_to goals_path }
+      format.turbo_stream do
+        render turbo_stream: [
+          turbo_stream.remove("goal_#{@goal.id}"), # supprime la ligne
+          turbo_stream.replace("available_balance", partial: "goals/available_balance", locals: { available_balance: @available_balance }),
+          turbo_stream.prepend("flash_messages", partial: "shared/flash", locals: { notice: "Objectif supprimé !" })
+        ]
+      end
+      format.html { redirect_to goals_path, notice: "Objectif supprimé !" }
     end
   end
+
+
+
+
+  # ✅ Ajout d’argent à un objectif
+ def add_money
+  authorize @goal
+  amount = params[:amount].to_f
+
+  total_revenues = current_user.revenues.sum(:amount)
+  total_expenses = current_user.expenses.sum(:amount)
+  total_saved = current_user.goals.sum(:current_amount)
+  @available_balance = total_revenues - total_expenses - total_saved
+
+  if amount.positive? && amount <= @available_balance
+    @goal.update(current_amount: @goal.current_amount.to_f + amount)
+    flash.now[:notice] = "Épargne ajoutée avec succès !"
+  elsif !amount.positive?
+    flash.now[:alert] = "Le montant doit être supérieur à 0."
+  else
+    flash.now[:alert] = "Solde insuffisant pour ajouter ce montant."
+  end
+
+  # Recharge les données après mise à jour
+  @goals = policy_scope(current_user.goals.order(deadline: :asc))
+  total_saved_after = current_user.goals.sum(:current_amount)
+  @available_balance = total_revenues - total_expenses - total_saved_after
+
+  respond_to do |format|
+    format.turbo_stream do
+      render turbo_stream: [
+        turbo_stream.replace("goals_table", partial: "goals/goals_table", locals: { goals: @goals }),
+        turbo_stream.replace("available_balance", partial: "goals/available_balance", locals: { available_balance: @available_balance }),
+        turbo_stream.prepend("flash_messages", partial: "shared/flash")
+      ]
+    end
+    format.html { redirect_to goals_path }
+  end
+end
+
 
   private
 

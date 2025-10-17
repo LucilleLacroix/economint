@@ -1,0 +1,32 @@
+<div class="table-container" data-controller="table-container">
+  <table class="styled-table">
+    <thead>
+      <tr>
+        <th data-sort="string">Catégorie</th>
+        <th data-sort="string">Description</th>
+        <th data-sort="number">Montant</th>
+        <th data-sort="date">Date</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% transactions.each do |t| %>
+        <tr id="<%= dom_id(t) %>" class="category-row" style="--row-color: <%= t.category&.color || '#000000' %>;">
+          <td><%= t.category&.name || "Default" %></td>
+          <td><%= t.description %></td>
+          <td><%= number_to_currency(t.amount) %></td>
+          <td><%= t.date %></td>
+          <td class="actions-cell">
+            <%= link_to url_for([:edit, t]), class: "btn btn-supp", title: "Éditer" do %>
+              <i class="fas fa-pencil-alt"></i>
+            <% end %>
+
+            <%= button_to url_for(t), method: :delete, form: { data: { turbo_confirm: "Voulez-vous vraiment supprimer ?" } }, class: "btn btn-danger", title: "Supprimer" do %>
+              <i class="fas fa-trash-alt"></i>
+            <% end %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

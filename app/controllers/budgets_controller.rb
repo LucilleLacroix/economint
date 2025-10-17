@@ -62,7 +62,11 @@ class BudgetsController < ApplicationController
 
     respond_to do |format|
       format.turbo_stream do
-        render turbo_stream: turbo_stream.remove("budget_#{@budget.id}")
+        flash.now[:notice] = "Budget supprimé !"
+        render turbo_stream: [
+          turbo_stream.remove("budget_#{@budget.id}"),
+          turbo_stream.replace("flash", partial: "shared/flash")
+        ]
       end
       format.html { redirect_to budgets_path, notice: "Budget supprimé !" }
     end

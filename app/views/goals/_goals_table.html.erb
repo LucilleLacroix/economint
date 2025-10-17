@@ -1,8 +1,4 @@
 
-<p class="balance-text">
-  Solde disponible :
-  <strong><%= number_to_currency(@available_balance) %></strong>
-</p>
 <div id="goals_table">
   <table>
     <thead>
@@ -20,7 +16,7 @@
     <tbody>
       <% @goals.each do |goal| %>
         <% progress = (goal.target_amount.to_f > 0) ? ((goal.current_amount.to_f / goal.target_amount.to_f) * 100).round(1) : 0 %>
-        <tr>
+        <tr id="goal_<%= goal.id %>">
           <td><%= goal.title %></td>
           <td><%= number_to_currency(goal.target_amount) %></td>
           <td><%= number_to_currency(goal.current_amount) %></td>

@@ -2,7 +2,7 @@ class ExpensesController < ApplicationController
   include PunditResources
   before_action :authenticate_user!
   before_action :set_expense, only: %i[edit update destroy]
-  
+
 
   def index
     start_date = params[:start_date].presence || 1.month.ago.to_date
@@ -60,13 +60,22 @@ class ExpensesController < ApplicationController
   def destroy
     authorize @expense
     @expense.destroy
-    expenses = current_user.expenses.includes(:category)
-    expenses_by_category = expenses.group(:category_id).sum(:amount).map do |cat_id, amount|
-      category = current_user.categories.find_by(id: cat_id)
-      [category&.name || "Default", amount]
-    end.to_h
-    render json: { success: true, expenses_by_category: expenses_by_category, expenses: expenses.as_json(include: :category) }
+
+    respond_to do |format|
+      format.turbo_stream do
+        flash.now[:notice] = "Dépense supprimée !"
+        render turbo_stream: [
+          turbo_stream.remove("expense_#{@expense.id}"), # supprime la ligne du tableau
+          turbo_stream.replace("flash", partial: "shared/flash") # met à jour le flash
+        ]
+      end
+
+      format.html do
+        redirect_to expenses_path, notice: "Dépense supprimée !"
+      end
+    end
   end
+
 
   private
 

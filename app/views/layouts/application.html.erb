@@ -20,7 +20,10 @@
 
   <body>
     <%= render "layouts/navbar" %>
-    <%= render "shared/flash" %>
+    <div id="flash">
+      <%= render "shared/flash" %>
+    </div>
+
     <main>
       <%= yield %>
     </main>

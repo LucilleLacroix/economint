@@ -55,7 +55,7 @@
       </thead>
       <tbody>
         <% @revenues.each do |revenue| %>
-          <tr class="category-row" style="--row-color: <%= revenue.category&.color || '#000000' %>;" data-revenue-id="<%= revenue.id %>">
+          <tr id="revenue_<%= revenue.id %>" class="category-row" style="--row-color: <%= revenue.category&.color || '#000000' %>;" data-revenue-id="<%= revenue.id %>">
             <td><%= revenue.category&.name || "Default" %></td>
             <td><%= revenue.description %></td>
             <td><%= number_to_currency(revenue.amount, unit: "€") %></td>
@@ -64,7 +64,7 @@
               <%= link_to edit_revenue_path(revenue), class: "btn btn-supp", title: "Éditer" do %>
                 <i class="fas fa-pencil-alt"></i>
               <% end %>
-              <%= button_tag type: "button", class: "btn btn-danger delete-revenue", data: { id: revenue.id }, title: "Supprimer" do %>
+              <%= button_to revenue_path(revenue), method: :delete, form: { data: { turbo_confirm: "Voulez-vous vraiment supprimer ce revenu ?" } }, class: "btn btn-danger", title: "Supprimer" do %>
                 <i class="fas fa-trash-alt"></i>
               <% end %>
             </td>

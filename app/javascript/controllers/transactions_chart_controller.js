@@ -150,7 +150,7 @@ export default class extends Controller {
     chart.data.labels.forEach((label, index) => {
       const colorBox = document.createElement('span')
       colorBox.style.display = 'inline-block'
-      colorBox.style.width = '12px'
+      colorBox.style.width = '14px'
       colorBox.style.height = '12px'
       colorBox.style.backgroundColor = chart.data.datasets[0].backgroundColor[index]
       colorBox.style.margin = '0 6px'

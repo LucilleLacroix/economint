@@ -14,7 +14,6 @@
       <% end %>
     </h2>
 
-
     <table>
       <thead>
         <tr>
@@ -37,7 +36,8 @@
             <td data-label="Réaliste"><%= number_to_currency(data["realiste"]) if data["realiste"].present? %></td>
             <td data-label="Optimiste"><%= number_to_currency(data["optimiste"]) if data["optimiste"].present? %></td>
             <td>
-              <% if category.present? %>
+              <%# Affiche le bouton uniquement si la catégorie existe ET est de type expense %>
+              <% if category.present? && category.category_type == "expense" %>
                 <%= link_to "Créer budget",
                     new_budget_path(
                       category_id: category.id,
@@ -49,7 +49,7 @@
                     ),
                     class: "btn btn-info" %>
               <% else %>
-                <span class="text-muted">Catégorie introuvable</span>
+                <%# Rien pour les revenues ou catégories introuvables %>
               <% end %>
             </td>
           </tr>
