@@ -1,5 +1,7 @@
 <turbo-frame id="flash">
   <% flash.each do |type, message| %>
+    <% next if message.blank? %>
+
     <% css_class = case type.to_sym
       when :notice then "flash flash-notice"
       when :alert  then "flash flash-alert"
@@ -7,7 +9,7 @@
       else "flash"
     end %>
 
-    <div class="<%= css_class %>">
+    <div class="<%= css_class %>" data-controller="flash">
       <%= message %>
     </div>
   <% end %>

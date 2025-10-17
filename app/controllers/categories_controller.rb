@@ -18,6 +18,7 @@ class CategoriesController < ApplicationController
     authorize @category
 
     if @category.save
+      flash.now[:notice] = "Catégorie créée !"
       respond_to do |format|
         format.turbo_stream do
           render turbo_stream: [
@@ -33,6 +34,10 @@ class CategoriesController < ApplicationController
                 category: current_user.categories.new(category_type: @category_type),
                 category_type: @category_type
               }
+            ),
+            turbo_stream.replace(
+              "flash",
+              partial: "shared/flash"
             )
           ]
         end
@@ -41,6 +46,7 @@ class CategoriesController < ApplicationController
           redirect_to categories_path(category_type: @category_type),
                       notice: "Catégorie créée !"
         end
+
       end
     else
       respond_to do |format|
@@ -79,11 +85,14 @@ class CategoriesController < ApplicationController
     authorize @category
 
     if @category.update(category_params)
+      flash.now[:notice] = "Catégorie Mise à Jour !"
       respond_to do |format|
         format.turbo_stream do
           render turbo_stream: [
             turbo_stream.replace("category_#{@category.id}", partial: "categories/category_row", locals: { category: @category }),
-            turbo_stream.replace("category_form", partial: "categories/form", locals: { category: current_user.categories.new(category_type: @category.category_type), category_type: @category.category_type })
+            turbo_stream.replace("category_form", partial: "categories/form", locals: { category: current_user.categories.new(category_type: @category.category_type), category_type: @category.category_type }),
+            turbo_stream.replace("flash", partial: "shared/flash")
+
           ]
         end
         format.html { redirect_to categories_path(category_type: @category.category_type), notice: "Catégorie mise à jour !" }
@@ -110,8 +119,17 @@ class CategoriesController < ApplicationController
     @category.destroy
 
     respond_to do |format|
-      format.turbo_stream
-      format.html { redirect_to categories_path(category_type: @category.category_type), notice: "Catégorie supprimée !" }
+      # Turbo Stream pour mise à jour instantanée sans rechargement
+      format.turbo_stream do
+        flash.now[:notice] = "Catégorie supprimée ! les éléments associés ont été déplacés vers la catégorie 'Default'."
+        render turbo_stream: [
+          turbo_stream.remove("category_#{@category.id}"),       # Supprime la ligne du tableau
+          turbo_stream.replace("flash", partial: "shared/flash")  # Met à jour le flash
+        ]
+      end
+      format.html do
+        redirect_to categories_path(category_type: @category.category_type), notice: message
+      end
     end
   end
 
