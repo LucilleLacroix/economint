@@ -57,7 +57,7 @@
       </thead>
       <tbody>
         <% @expenses.each do |expense| %>
-          <tr class="category-row"
+          <tr id="expense_<%= expense.id %>" class="category-row"
             style="--row-color: <%= expense.category&.color || '#000000' %>;"
             data-expense-id="<%= expense.id %>">
             <td><%= expense.category&.name || "Default" %></td>
@@ -68,9 +68,14 @@
               <%= link_to edit_expense_path(expense), class: "btn btn-supp", title: "Éditer" do %>
                 <i class="fas fa-pencil-alt"></i>
               <% end %>
-              <%= button_tag type: "button", class: "btn btn-danger delete-expense", data: { id: expense.id }, title: "Supprimer" do %>
+               <%= button_to expense_path(expense),
+                    method: :delete,
+                    data: { turbo_confirm: "Supprimer cette dépense ?" },
+                    class: "btn btn-danger",
+                    form: { "data-turbo-frame": "expenses" } do %>
                 <i class="fas fa-trash-alt"></i>
               <% end %>
+
             </td>
           </tr>
         <% end %>
