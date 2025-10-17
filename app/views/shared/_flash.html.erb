@@ -1,16 +1,29 @@
-<turbo-frame id="flash">
+<%# Turbo Frame pour les flashs, utile pour Turbo Streams %>
+<turbo-frame id="flash_messages">
+  <%# Affiche les messages venant du hash flash %>
   <% flash.each do |type, message| %>
     <% next if message.blank? %>
-
     <% css_class = case type.to_sym
       when :notice then "flash flash-notice"
       when :alert  then "flash flash-alert"
       when :error  then "flash flash-error"
       else "flash"
     end %>
-
     <div class="<%= css_class %>" data-controller="flash">
       <%= message %>
     </div>
+  <% end %>
+
+  <%# Affiche les messages passés en locals (Turbo Streams) %>
+  <% if local_assigns[:notice].present? %>
+    <div class="flash flash-notice" data-controller="flash"><%= notice %></div>
+  <% end %>
+
+  <% if local_assigns[:alert].present? %>
+    <div class="flash flash-alert" data-controller="flash"><%= alert %></div>
+  <% end %>
+
+  <% if local_assigns[:error].present? %>
+    <div class="flash flash-error" data-controller="flash"><%= error %></div>
   <% end %>
 </turbo-frame>

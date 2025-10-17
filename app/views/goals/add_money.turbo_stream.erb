@@ -2,14 +2,3 @@
   <%= render partial: "goals_table", locals: { goals: @goals } %>
 <% end %>
 
-<%= turbo_stream.replace "flash_messages" do %>
-  <% if flash.now[:notice] %>
-    <div class="alert alert-success" style="text-align:center;">
-      <%= flash.now[:notice] %>
-    </div>
-  <% elsif flash.now[:alert] %>
-    <div class="alert alert-danger" style="text-align:center;">
-      <%= flash.now[:alert] %>
-    </div>
-  <% end %>
-<% end %>

@@ -1,7 +1,10 @@
 <h2 style="text-align:center;">Mes Objectifs d'Épargne</h2>
-
-<!-- ✅ Flash messages -->
 <div id="flash_messages"></div>
+
+<div id="available_balance">
+  <%= render partial: "available_balance", locals: { available_balance: @available_balance } %>
+</div>
+
 
 <!-- ✅ Bouton pour créer un nouvel objectif -->
 <div style="text-align:center; margin-bottom:20px;">

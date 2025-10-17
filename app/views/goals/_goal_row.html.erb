@@ -19,7 +19,7 @@
     <%= link_to edit_goal_path(goal), class: "btn-action edit" do %>
       <i class="fas fa-pencil-alt"></i>
     <% end %>
-    <%= button_to goal_path(goal), method: :delete, data: { turbo_confirm: "Supprimer cet objectif ?" }, form: { data: { turbo_frame: "_top" } }, class: "btn-action delete" do %>
+    <%= button_to goal_path(goal), method: :delete, data: { turbo_confirm: "Supprimer cet objectif ?" }, class: "btn-action delete" do %>
       <i class="fas fa-trash"></i>
     <% end %>
   </td>
