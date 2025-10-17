@@ -1,0 +1,17 @@
+<div class="filter-container">
+  <%= link_to path, class: "btn btn-success" do %>
+    <i class="fas fa-rotate-right"></i>
+  <% end %>
+
+  <%= form_with url: path, method: :get, local: true, class: "d-flex align-items-center gap-2" do %>
+    <label>Du :</label>
+    <%= date_field_tag :start_date, params[:start_date] || 1.month.ago.to_date, class: "input-field" %>
+
+    <label>Au :</label>
+    <%= date_field_tag :end_date, params[:end_date] || Date.today, class: "input-field" %>
+
+    <%= button_tag type: 'submit', class: "btn btn-success" do %>
+      <i class="fas fa-search"></i>
+    <% end %>
+  <% end %>
+</div>
