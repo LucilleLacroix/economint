@@ -26,27 +26,13 @@ class GoalsController < ApplicationController
     authorize @goal
 
     if @goal.save
-      respond_to do |format|
-        format.turbo_stream do
-          flash.now[:notice] = "Objectif créé avec succès !"
-          render turbo_stream: [
-            turbo_stream.append("goals", partial: "goals/goal_row", locals: { goal: @goal }),
-            turbo_stream.replace("goal_form", partial: "goals/form", locals: { goal: current_user.goals.new })
-          ]
-        end
-        format.html { redirect_to goals_path, notice: "Objectif créé avec succès !" }
-      end
+      redirect_to goals_path, notice: "Objectif créé avec succès !"
     else
-      respond_to do |format|
-        format.turbo_stream do
-          render turbo_stream: turbo_stream.replace("goal_form", partial: "goals/form", locals: { goal: @goal })
-        end
-        format.html { render :new, status: :unprocessable_entity }
-      end
+      render :new, status: :unprocessable_entity
     end
   end
 
-  
+
 
   # ✅ Édition
   def edit
@@ -62,38 +48,32 @@ class GoalsController < ApplicationController
   # ✅ Mise à jour
   def update
     authorize @goal
-
     if @goal.update(goal_params)
-      respond_to do |format|
-        format.turbo_stream do
-          flash.now[:notice] = "Objectif mis à jour."
-          render turbo_stream: [
-            turbo_stream.replace("goal_#{@goal.id}", partial: "goals/goal_row", locals: { goal: @goal }),
-            turbo_stream.replace("goal_form", partial: "goals/form", locals: { goal: current_user.goals.new })
-          ]
-        end
-        format.html { redirect_to goals_path, notice: "Objectif mis à jour." }
-      end
+      redirect_to goals_path, notice: "Objectif mis à jour."
     else
-      respond_to do |format|
-        format.turbo_stream do
-          render turbo_stream: turbo_stream.replace("goal_form", partial: "goals/form", locals: { goal: @goal })
-        end
-        format.html { render :edit, status: :unprocessable_entity }
-      end
+      render :edit, status: :unprocessable_entity
     end
   end
 
   # ✅ Suppression
   def destroy
+    @goal = current_user.goals.find(params[:id])
     authorize @goal
     @goal.destroy
 
+    flash.now[:notice] = "Objectif supprimé !"
+
     respond_to do |format|
-      format.turbo_stream
-      format.html { redirect_to goals_path, notice: "Objectif supprimé." }
+      format.turbo_stream do
+        render turbo_stream: [
+          turbo_stream.remove("goal_#{@goal.id}"),
+          turbo_stream.replace("flash_messages", partial: "shared/flash") # ou directement le code HTML du flash
+        ]
+      end
+      format.html { redirect_to goals_path, notice: "Objectif supprimé !" }
     end
   end
+
 
   # ✅ Ajout d’argent à un objectif
   def add_money

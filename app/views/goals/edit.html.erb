@@ -1,38 +1,4 @@
-<!-- Message flash -->
-<% if flash[:notice] %>
-  <div class="flash-message success"><%= flash[:notice] %></div>
-<% elsif flash[:alert] %>
-  <div class="flash-message error"><%= flash[:alert] %></div>
-<% end %>
+<div class="soft-form">
+  <h2>Éditer l'objectif</h2>
 
-<!-- Formulaire -->
-<div class="goal-edit-container soft-form">
-  <%= form_with model: @goal, local: true do |f| %>
-
-    <div class="form-field">
-      <%= f.label :title, "Titre de l’objectif" %>
-      <%= f.text_field :title, required: true, placeholder: "Ex: Vacances à Rome" %>
-    </div>
-
-    <div class="form-field">
-      <%= f.label :target_amount, "Montant à atteindre (€)" %>
-      <%= f.number_field :target_amount, step: "0.01", min: "0", required: true %>
-    </div>
-
-    <div class="form-field">
-      <%= f.label :current_amount, "Montant déjà épargné (€)" %>
-      <%= f.number_field :current_amount, step: "0.01", min: "0" %>
-    </div>
-
-    <div class="form-field">
-      <%= f.label :deadline, "Date limite" %>
-      <%= f.date_field :deadline %>
-    </div>
-
-    <div class="form-actions">
-      <%= f.submit "Mettre à jour", class: "btn btn-info" %>
-      <%= link_to "Annuler", goals_path, class: "btn btn-danger" %>
-    </div>
-
-  <% end %>
-</div>
+  <%= render "form", goal: @goal %>

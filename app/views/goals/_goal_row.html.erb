@@ -1,0 +1,26 @@
+<tr id="goal_<%= goal.id %>">
+  <td><%= goal.title %></td>
+  <td><%= number_to_currency(goal.target_amount) %></td>
+  <td><%= number_to_currency(goal.current_amount) %></td>
+  <td class="progress-cell">
+    <div class="progress-bar">
+      <div class="progress-fill" style="width:<%= [((goal.current_amount.to_f / goal.target_amount.to_f) * 100).round(1), 100].min %>%"></div>
+    </div>
+    <small><%= ((goal.current_amount.to_f / goal.target_amount.to_f) * 100).round(1) %>%</small>
+  </td>
+  <td><%= goal.deadline %></td>
+  <td>
+    <%= form_with url: add_money_goal_path(goal), method: :post, local: true do %>
+      <%= number_field_tag :amount, nil, placeholder: "€", step: "0.01", min: "0" %>
+      <button type="submit" class="btn-action add"><i class="fas fa-plus"></i></button>
+    <% end %>
+  </td>
+  <td class="actions-cell">
+    <%= link_to edit_goal_path(goal), class: "btn-action edit" do %>
+      <i class="fas fa-pencil-alt"></i>
+    <% end %>
+    <%= button_to goal_path(goal), method: :delete, data: { turbo_confirm: "Supprimer cet objectif ?" }, form: { data: { turbo_frame: "_top" } }, class: "btn-action delete" do %>
+      <i class="fas fa-trash"></i>
+    <% end %>
+  </td>
+</tr>
