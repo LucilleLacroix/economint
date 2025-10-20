@@ -1,9 +1,9 @@
-<div class="filter-container">
+<div class="period-selector">
   <%= link_to path, class: "btn btn-success" do %>
     <i class="fas fa-rotate-right"></i>
   <% end %>
 
-  <%= form_with url: path, method: :get, local: true, class: "d-flex align-items-center gap-2" do %>
+  <%= form_with url: path, method: :get, local: true do %>
     <label>Du :</label>
     <%= date_field_tag :start_date, params[:start_date] || 1.month.ago.to_date, class: "input-field" %>
 

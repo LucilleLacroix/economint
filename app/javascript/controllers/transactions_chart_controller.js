@@ -155,6 +155,8 @@ export default class extends Controller {
       colorBox.style.backgroundColor = chart.data.datasets[0].backgroundColor[index]
       colorBox.style.margin = '0 6px'
       colorBox.style.borderRadius = '50%'
+      colorBox.style.border = '1px solid white'
+      colorBox.style.boxSizing = 'border-box'
 
       const labelText = document.createElement('span')
       labelText.textContent = label

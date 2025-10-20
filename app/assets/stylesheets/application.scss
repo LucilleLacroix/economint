@@ -10,19 +10,21 @@
 // Your CSS partials
 @import "components/index";
 @import "components/flash";
-@import "pages/index";
+@import "components/periode_selector";
 @import "components/navbar";
+@import "components/transaction_table";
+@import "components/transaction_chart";
+@import "components/_form_prevision";
+
 @import "config/boutons";
 @import "devise";
-@import "pages/depense";
-@import "pages/categories";
+
 @import "pages/goals";
-@import "components/periode_selector";
+@import "pages/categories";
 @import "pages/budget";
 @import "pages/index_predictions";
-@import "pages/_form_prevision";
 
-
+@import "pages/index";
 
 body {
   background-image: url('https://res.cloudinary.com/dw3eqi1tf/image/upload/v1760090648/pexels-merlin-11280357_fu23wt.jpg');

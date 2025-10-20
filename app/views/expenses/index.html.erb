@@ -1,85 +1,17 @@
 <h1 style="text-align:center;">Résumé des dépenses</h1>
+<%= render "shared/filter_form", path: expenses_path %>
 
-<div style="display:flex; flex-direction:column; align-items:center; gap:20px; margin-bottom:20px;">
-  <!-- Formulaire de filtre -->
-  <div class="filter-container">
-    <%= form_with url: expenses_path, method: :get, local: true, class: "filter-form" do %>
-      <!-- Bouton Réinitialiser avec icône -->
-      <%= link_to expenses_path, class: "btn btn-success" do %>
-        <i class="fas fa-rotate-right"></i>
-      <% end %>
 
-      <label>Du :</label>
-      <%= date_field_tag :start_date, params[:start_date] || 1.month.ago.to_date, class: "input-field" %>
+<%= render "shared/chart",
+           chart_id: "expensesChart",
+           resource: "expenses",
+           categories: current_user.categories.for_expenses,
+           data_by_category: @expenses_by_category %>
 
-      <label>Au :</label>
-      <%= date_field_tag :end_date, params[:end_date] || Date.today, class: "input-field" %>
 
-      <!-- Bouton Filtrer -->
-      <%= button_tag type: 'submit', class: "btn btn-success" do %>
-        <i class="fas fa-search"></i>
-      <% end %>
-
-    <% end %>
-
-  </div>
-
-  <!-- Pie chart avec Stimulus -->
-  <div class="chart-container">
-    <canvas
-      id="expensesChart"
-      data-controller="transactions-chart"
-      data-transactions-chart-resource-value="expenses"
-      data-transactions-chart-chart-id-value="expensesChart"
-      data-transactions-chart-categories-value="<%= current_user.categories.for_expenses.to_json(only: [:name, :color]) %>"
-      data-transactions-chart-data-by-category-value="<%= @expenses_by_category.to_json %>">
-    </canvas>
-
-    <div id="expensesChartLegend" style="text-align:center; margin-top:10px;"></div>
-  </div>
-  <!-- Boutons -->
-  <div class="actions-container">
-    <%= link_to "Ajouter une dépense", new_expense_path, class: "btn btn-info" %>
-    <%= link_to "Gérer les catégories", categories_path(category_type: "expense"), class: "btn btn-info" %>
-  </div>
-
-  <!-- Tableau des dépenses -->
-  <div class="table-container" data-controller="table-container">
-    <table class="styled-table">
-      <thead>
-        <tr>
-          <th data-sort="string">Catégorie</th>
-          <th data-sort="string">Description</th>
-          <th data-sort="number">Montant</th>
-          <th data-sort="date">Date</th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody>
-        <% @expenses.each do |expense| %>
-          <tr id="expense_<%= expense.id %>" class="category-row"
-            style="--row-color: <%= expense.category&.color || '#000000' %>;"
-            data-expense-id="<%= expense.id %>">
-            <td><%= expense.category&.name || "Default" %></td>
-            <td><%= expense.description %></td>
-            <td><%= number_to_currency(expense.amount) %></td>
-            <td><%= expense.date %></td>
-            <td class="actions-cell">
-              <%= link_to edit_expense_path(expense), class: "btn btn-supp", title: "Éditer" do %>
-                <i class="fas fa-pencil-alt"></i>
-              <% end %>
-               <%= button_to expense_path(expense),
-                    method: :delete,
-                    data: { turbo_confirm: "Supprimer cette dépense ?" },
-                    class: "btn btn-danger",
-                    form: { "data-turbo-frame": "expenses" } do %>
-                <i class="fas fa-trash-alt"></i>
-              <% end %>
-
-            </td>
-          </tr>
-        <% end %>
-      </tbody>
-    </table>
-  </div>
+<div class="actions-container">
+  <%= link_to "Ajouter une dépense", new_expense_path, class: "btn btn-info" %>
+  <%= link_to "Gérer les catégories", categories_path(category_type: "expense"), class: "btn btn-info" %>
 </div>
+
+<%= render "shared/transactions_table", transactions: @expenses %>
