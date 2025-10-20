@@ -4,19 +4,7 @@
     <div class="welcome">
       <h1>Bienvenue <%= current_user.username %></h1>
     </div>
-
-    <!-- 🗓️ Sélecteur de période -->
-    <div class="period-selector">
-      <%= form_with url: root_path, method: :get, local: true do %>
-        <label for="start_date">Début :</label>
-        <%= date_field_tag :start_date, @start_date %>
-
-        <label for="end_date">Fin :</label>
-        <%= date_field_tag :end_date, @end_date %>
-
-        <%= submit_tag "Filtrer", class: "btn treasury-btn" %>
-      <% end %>
-    </div>
+    <%= render "shared/filter_form", path: root_path %>
 
     <!-- 📊 Graphique -->
 

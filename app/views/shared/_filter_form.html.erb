@@ -5,10 +5,10 @@
 
   <%= form_with url: path, method: :get, local: true do %>
     <label>Du :</label>
-    <%= date_field_tag :start_date, params[:start_date] || 1.month.ago.to_date, class: "input-field" %>
+    <%= date_field_tag :start_date, @start_date %>
 
     <label>Au :</label>
-    <%= date_field_tag :end_date, params[:end_date] || Date.today, class: "input-field" %>
+    <%= date_field_tag :end_date, @end_date %>
 
     <%= button_tag type: 'submit', class: "btn btn-success" do %>
       <i class="fas fa-search"></i>

@@ -4,16 +4,19 @@ class RevenuesController < ApplicationController
   before_action :set_revenue, only: %i[show edit update destroy]
 
   def index
-    start_date = params[:start_date].present? ? Date.parse(params[:start_date]) : 1.month.ago.to_date
-    end_date   = params[:end_date].present? ? Date.parse(params[:end_date]) : Date.today
+    @start_date = params[:start_date]&.to_date || Date.today.beginning_of_month
+    @end_date   = params[:end_date]&.to_date || Date.today.end_of_month
 
-    @revenues = policy_scope(current_user.revenues.includes(:category)
-                           .where(date: start_date..end_date))
+    @revenues = policy_scope(
+      current_user.revenues
+                  .includes(:category)
+                  .where(date: @start_date..@end_date)
+    )
 
     @revenues_by_category = @revenues.group_by { |r| r.category&.name || "Default" }
                                      .transform_values { |arr| arr.sum(&:amount) }
 
-    @category_type = "revenue"                       # Pour le form partagé
+    @category_type = "revenue"
     @categories = current_user.categories.where(category_type: @category_type)
   end
 
@@ -68,8 +71,8 @@ class RevenuesController < ApplicationController
         format.turbo_stream do
           flash.now[:notice] = "Revenu supprimé !"
           render turbo_stream: [
-            turbo_stream.remove("revenue_#{revenue.id}"),  # supprime la ligne du tableau
-            turbo_stream.replace("flash", partial: "shared/flash") # met à jour le flash
+            turbo_stream.remove("revenue_#{revenue.id}"),
+            turbo_stream.replace("flash", partial: "shared/flash")
           ]
         end
 
@@ -90,9 +93,6 @@ class RevenuesController < ApplicationController
       end
     end
   end
-
-
-
 
   private
 
