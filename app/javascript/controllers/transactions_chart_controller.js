@@ -34,7 +34,7 @@ export default class extends Controller {
       window[this.chartIdValue].destroy()
     }
 
-    const chart = new Chart(ctx, {
+    this.chart = new Chart(ctx, {
       type: "pie",
       data: {
         labels,
@@ -52,66 +52,54 @@ export default class extends Controller {
         responsive: true,
         layout: { padding: { top: 35, bottom: 30, left: 0, right: 0 } },
         plugins: {
-          legend: { display: false }, // on masque la légende native
+          legend: { display: false },
           tooltip: {
             callbacks: {
               label: (context) => {
                 const value = context.raw
-                const total = data.reduce((a,b)=>a+b,0)
-                const percent = ((value/total)*100).toFixed(1)
                 return `${value}`
               }
             }
           }
         },
-        animation: {
-          animateRotate: true,
-          animateScale: true,
-          duration: 1000,
-          easing: "easeOutElastic"
-        },
+        animation: { animateRotate: true, animateScale: true, duration: 1000, easing: "easeOutElastic" },
         onClick: (evt, elements) => {
           if (!elements.length) return
           const index = elements[0].index
-          const category = chart.data.labels[index]
-          this.toggleCategorySelection(chart, index)
-          this.renderLegend(chart)
+          this.toggleCategorySelection(this.chart, index)
+          this.renderLegend(this.chart)
         }
       },
       plugins: [{
         id: 'customLegend',
-        afterUpdate: (chart) => this.renderLegend(chart),
+        afterUpdate: (chart) => this.renderLegend(chart)
       }]
     })
 
-    window[this.chartIdValue] = chart
-    this.renderLegend(chart)
+    window[this.chartIdValue] = this.chart
+    this.renderLegend(this.chart)
   }
 
-  // Toggle la sélection d'une catégorie
+  updateChartData(newData) {
+    if (!this.chart) return
+    // Détruire le chart existant pour éviter de mélanger les labels/data
+    this.chart.destroy()
+    this.renderChart(newData)
+  }
+
+  // Toggle sélection
   toggleCategorySelection(chart, index) {
-    if (this.selectedIndexes.has(index)) {
-      this.selectedIndexes.delete(index)
-    } else {
-      this.selectedIndexes.add(index)
-    }
+    if (this.selectedIndexes.has(index)) this.selectedIndexes.delete(index)
+    else this.selectedIndexes.add(index)
     this.updateChartHighlight(chart)
     this.filterBySelectedCategories(chart)
   }
 
   updateChartHighlight(chart) {
     const dataset = chart.data.datasets[0]
-
-    dataset.borderColor = dataset.data.map((_, i) =>
-      this.selectedIndexes.has(i) ? "rgba(7, 170, 235, 0.7)" : "#fff"
-    )
-    dataset.borderWidth = dataset.data.map((_, i) =>
-      this.selectedIndexes.has(i) ? 4 : 2
-    )
-    dataset.offset = dataset.data.map((_, i) =>
-      this.selectedIndexes.has(i) ? 55 : 0
-    )
-
+    dataset.borderColor = dataset.data.map((_, i) => this.selectedIndexes.has(i) ? "rgba(7, 170, 235, 0.7)" : "#fff")
+    dataset.borderWidth = dataset.data.map((_, i) => this.selectedIndexes.has(i) ? 4 : 2)
+    dataset.offset = dataset.data.map((_, i) => this.selectedIndexes.has(i) ? 55 : 0)
     chart.update()
   }
 
@@ -119,7 +107,6 @@ export default class extends Controller {
     if (!this.table) return
     const rows = this.table.querySelectorAll("tr")
     const selectedLabels = Array.from(this.selectedIndexes).map(i => chart.data.labels[i])
-
     rows.forEach(row => {
       const catCell = row.children[0]?.textContent.trim()
       row.style.display = selectedLabels.length === 0 || selectedLabels.includes(catCell) ? "" : "none"
@@ -132,12 +119,11 @@ export default class extends Controller {
   }
 
   resetFilter() {
-    const chart = window[this.chartIdValue]
-    if (!chart) return
+    if (!this.chart) return
     this.selectedIndexes.clear()
-    this.updateChartHighlight(chart)
+    this.updateChartHighlight(this.chart)
     this.showAllRows()
-    this.renderLegend(chart)
+    this.renderLegend(this.chart)
   }
 
   renderLegend(chart) {
@@ -146,34 +132,19 @@ export default class extends Controller {
     this.legendContainer.style.textAlign = 'center'
     this.legendContainer.style.marginBottom = '20px'
 
-    // Légende des catégories
     chart.data.labels.forEach((label, index) => {
       const colorBox = document.createElement('span')
-      colorBox.style.display = 'inline-block'
-      colorBox.style.width = '14px'
-      colorBox.style.height = '12px'
-      colorBox.style.backgroundColor = chart.data.datasets[0].backgroundColor[index]
-      colorBox.style.margin = '0 6px'
-      colorBox.style.borderRadius = '50%'
-      colorBox.style.border = '1px solid white'
-      colorBox.style.boxSizing = 'border-box'
+      colorBox.style.cssText = 'display:inline-block;width:14px;height:12px;margin:0 6px;border-radius:50%;border:1px solid white;box-sizing:border-box;background-color:' + chart.data.datasets[0].backgroundColor[index]
 
       const labelText = document.createElement('span')
       labelText.textContent = label
-      labelText.style.color = 'white'
-      labelText.style.marginRight = '10px'
-      labelText.style.cursor = 'pointer'
-
-      labelText.addEventListener('click', () => {
-        this.toggleCategorySelection(chart, index)
-        this.renderLegend(chart)
-      })
+      labelText.style.cssText = 'color:white;margin-right:10px;cursor:pointer'
+      labelText.addEventListener('click', () => { this.toggleCategorySelection(chart, index); this.renderLegend(chart) })
 
       this.legendContainer.appendChild(colorBox)
       this.legendContainer.appendChild(labelText)
     })
 
-    // Bouton Reset sous les labels
     const resetBtn = document.createElement('button')
     resetBtn.innerHTML = '<i class="fas fa-undo-alt"></i>'
     resetBtn.className = 'btn btn-success'
@@ -189,7 +160,9 @@ export default class extends Controller {
 
     document.querySelectorAll(`.delete-${singularResource}`).forEach(btn => {
       btn.addEventListener("click", (event) => {
+        event.preventDefault()
         if (!confirm("Voulez-vous vraiment supprimer ?")) return
+
         const id = event.currentTarget.dataset.id
         fetch(`/${this.resourceValue}/${id}`, {
           method: "DELETE",
@@ -200,8 +173,16 @@ export default class extends Controller {
         })
         .then(res => res.json())
         .then(data => {
-          if (data.success) window.location.reload()
-          else alert("Erreur lors de la suppression !")
+          if (data.success) {
+            // Supprime la ligne du tableau
+            const row = document.getElementById(`${singularResource}_${id}`)
+            if (row) row.remove()
+
+            // Met à jour le chart
+            this.updateChartData(data.data_by_category)
+          } else {
+            alert("Erreur lors de la suppression !")
+          }
         })
       })
     })

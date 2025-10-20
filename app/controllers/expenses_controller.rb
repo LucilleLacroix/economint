@@ -63,7 +63,17 @@ class ExpensesController < ApplicationController
     authorize @expense
     @expense.destroy
 
+    # Recalculer les données pour le chart
+    expenses = policy_scope(current_user.expenses.includes(:category))
+    data_by_category = expenses.group(:category_id).sum(:amount).map do |cat_id, amount|
+      next if amount <= 0
+      category = current_user.categories.find_by(id: cat_id)
+      [category.name, amount] if category
+    end.compact.to_h
+
     respond_to do |format|
+      format.json { render json: { success: true, data_by_category: data_by_category } }
+      format.html { redirect_to expenses_path, notice: "Dépense supprimée !" }
       format.turbo_stream do
         flash.now[:notice] = "Dépense supprimée !"
         render turbo_stream: [
@@ -71,12 +81,11 @@ class ExpensesController < ApplicationController
           turbo_stream.replace("flash", partial: "shared/flash")
         ]
       end
-
-      format.html do
-        redirect_to expenses_path, notice: "Dépense supprimée !"
-      end
     end
   end
+
+
+
 
   private
 
