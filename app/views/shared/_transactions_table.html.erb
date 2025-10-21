@@ -21,9 +21,14 @@
               <i class="fas fa-pencil-alt"></i>
             <% end %>
 
-            <%= button_to url_for(t), method: :delete, form: { data: { turbo_confirm: "Voulez-vous vraiment supprimer ?" } }, class: "btn btn-danger", title: "Supprimer" do %>
+            <%= link_to polymorphic_path(t),
+                        method: :delete,
+                        data: { id: t.id, turbo: false },
+                        class: "btn btn-danger delete-#{t.model_name.singular}",
+                        title: "Supprimer" do %>
               <i class="fas fa-trash-alt"></i>
             <% end %>
+
           </td>
         </tr>
       <% end %>

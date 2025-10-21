@@ -3,13 +3,15 @@ class ExpensesController < ApplicationController
   before_action :authenticate_user!
   before_action :set_expense, only: %i[edit update destroy]
 
-
   def index
-    start_date = params[:start_date].presence || 1.month.ago.to_date
-    end_date   = params[:end_date].presence || Date.today
+    @start_date = params[:start_date]&.to_date || Date.today.beginning_of_month
+    @end_date   = params[:end_date]&.to_date || Date.today.end_of_month
 
-    @expenses = policy_scope(current_user.expenses.includes(:category)
-                            .where(date: start_date..end_date))
+    @expenses = policy_scope(
+      current_user.expenses
+                  .includes(:category)
+                  .where(date: @start_date..@end_date)
+    )
 
     @expenses_by_category = @expenses.group(:category_id).sum(:amount).map do |cat_id, amount|
       category = current_user.categories.find_by(id: cat_id)
@@ -17,7 +19,7 @@ class ExpensesController < ApplicationController
     end.to_h
 
     @total_expenses = @expenses.sum(:amount)
-    @category_type = "expense"                     # Indique le type pour le form partagé
+    @category_type = "expense"
     @categories = current_user.categories.where(category_type: @category_type)
   end
 
@@ -61,20 +63,28 @@ class ExpensesController < ApplicationController
     authorize @expense
     @expense.destroy
 
+    # Recalculer les données pour le chart
+    expenses = policy_scope(current_user.expenses.includes(:category))
+    data_by_category = expenses.group(:category_id).sum(:amount).map do |cat_id, amount|
+      next if amount <= 0
+      category = current_user.categories.find_by(id: cat_id)
+      [category.name, amount] if category
+    end.compact.to_h
+
     respond_to do |format|
+      format.json { render json: { success: true, data_by_category: data_by_category } }
+      format.html { redirect_to expenses_path, notice: "Dépense supprimée !" }
       format.turbo_stream do
         flash.now[:notice] = "Dépense supprimée !"
         render turbo_stream: [
-          turbo_stream.remove("expense_#{@expense.id}"), # supprime la ligne du tableau
-          turbo_stream.replace("flash", partial: "shared/flash") # met à jour le flash
+          turbo_stream.remove("expense_#{@expense.id}"),
+          turbo_stream.replace("flash", partial: "shared/flash")
         ]
-      end
-
-      format.html do
-        redirect_to expenses_path, notice: "Dépense supprimée !"
       end
     end
   end
+
+
 
 
   private

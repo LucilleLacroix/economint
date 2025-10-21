@@ -1,24 +1,26 @@
 class RevenuesController < ApplicationController
   include PunditResources
   before_action :authenticate_user!
-  before_action :set_revenue, only: %i[show edit update destroy]
+  before_action :set_revenue, only: %i[edit update destroy]
 
   def index
-    start_date = params[:start_date].present? ? Date.parse(params[:start_date]) : 1.month.ago.to_date
-    end_date   = params[:end_date].present? ? Date.parse(params[:end_date]) : Date.today
+    @start_date = params[:start_date]&.to_date || Date.today.beginning_of_month
+    @end_date   = params[:end_date]&.to_date || Date.today.end_of_month
 
-    @revenues = policy_scope(current_user.revenues.includes(:category)
-                           .where(date: start_date..end_date))
+    @revenues = policy_scope(
+      current_user.revenues
+                  .includes(:category)
+                  .where(date: @start_date..@end_date)
+    )
 
-    @revenues_by_category = @revenues.group_by { |r| r.category&.name || "Default" }
-                                     .transform_values { |arr| arr.sum(&:amount) }
+    @revenues_by_category = @revenues.group(:category_id).sum(:amount).map do |cat_id, amount|
+      category = current_user.categories.find_by(id: cat_id)
+      [category&.name || "Default", amount]
+    end.to_h
 
-    @category_type = "revenue"                       # Pour le form partagé
+    @total_expenses = @revenues.sum(:amount)
+    @category_type = "revenue"
     @categories = current_user.categories.where(category_type: @category_type)
-  end
-
-  def show
-    authorize @revenue
   end
 
   def new
@@ -58,41 +60,27 @@ class RevenuesController < ApplicationController
   end
 
   def destroy
-    revenue = current_user.revenues.find(params[:id])
-    authorize revenue
-    category_name = revenue.category&.name || "Default"
-    amount = revenue.amount
+    authorize @revenue
+    @revenue.destroy
+    revenues = policy_scope(current_user.revenues.includes(:category))
+    data_by_category =revenues.group(:category_id).sum(:amount).map do |cat_id, amount|
+      next if amount <= 0
+      category = current_user.categories.find_by(id: cat_id)
+      [category&.name || "Default", amount ]  if category
+    end.compact.to_h
 
-    if revenue.destroy
-      respond_to do |format|
-        format.turbo_stream do
-          flash.now[:notice] = "Revenu supprimé !"
-          render turbo_stream: [
-            turbo_stream.remove("revenue_#{revenue.id}"),  # supprime la ligne du tableau
-            turbo_stream.replace("flash", partial: "shared/flash") # met à jour le flash
-          ]
-        end
-
-        format.html do
-          redirect_to revenues_path, notice: "Revenu supprimé !"
-        end
-      end
-    else
-      respond_to do |format|
-        format.turbo_stream do
-          flash.now[:alert] = "Impossible de supprimer le revenu."
-          render turbo_stream: turbo_stream.replace("flash", partial: "shared/flash")
-        end
-
-        format.html do
-          redirect_to revenues_path, alert: "Impossible de supprimer le revenu."
-        end
+    respond_to do |format|
+      format.json {render json: {success: true, data_by_category: data_by_category }}
+      format.html {redirect_to revenues_path, notice: "Revenu supprimé." }
+      format.turbo_stream do
+        flash.now[:notice] = "Revenu supprimé !"
+        render turbo_stream: [
+          turbo_stream.remove("revenue_#{@revenue.id}"),
+          turbo_stream.replace("flash", partial: "shared/flash")
+        ]
       end
     end
   end
-
-
-
 
   private
 

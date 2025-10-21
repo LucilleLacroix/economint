@@ -1,25 +1,5 @@
 Rails.application.routes.draw do
-  get 'budgets/index'
-  get 'budgets/new'
-  get 'budgets/create'
-  get 'predictions/index'
-  get 'predictions/show'
-  get 'predictions/new'
-  get 'predictions/edit'
-  get 'predictions/create'
-  get 'predictions/update'
-  get 'predictions/destroy'
-  get 'goals/index'
-  get 'goals/new'
-  get 'goals/create'
-  get 'goals/edit'
-  get 'goals/update'
-  get 'goals/destroy'
-  get 'goals/add_money'
-  get 'revenues/index'
-  get 'revenues/show'
-  get 'revenues/new'
-  get 'revenues/edit'
+
   devise_for :users
 
 
@@ -30,7 +10,7 @@ Rails.application.routes.draw do
     resources :categories, only: [:new, :create], defaults: { category_type: 'revenue' }
   end
 
-  resources :expenses do
+  resources :expenses, except: [:show]do
     resources :categories, only: [:new, :create], defaults: { category_type: 'expense' }
   end
 
