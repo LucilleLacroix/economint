@@ -21,10 +21,10 @@
               <i class="fas fa-pencil-alt"></i>
             <% end %>
 
-            <%= link_to t,
+            <%= link_to polymorphic_path(t),
                         method: :delete,
-                        data: { id: t.id },
-                        class: "btn btn-danger delete-expense",
+                        data: { id: t.id, turbo: false },
+                        class: "btn btn-danger delete-#{t.model_name.singular}",
                         title: "Supprimer" do %>
               <i class="fas fa-trash-alt"></i>
             <% end %>

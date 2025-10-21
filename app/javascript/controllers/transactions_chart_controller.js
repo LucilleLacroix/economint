@@ -81,11 +81,19 @@ export default class extends Controller {
   }
 
   updateChartData(newData) {
-    if (!this.chart) return
-    // Détruire le chart existant pour éviter de mélanger les labels/data
-    this.chart.destroy()
-    this.renderChart(newData)
+  // Détruire le chart existant s’il existe
+  if (window[this.chartIdValue] instanceof Chart) {
+    window[this.chartIdValue].destroy()
   }
+
+  // 🔥 Important : forcer un rafraîchissement du canvas context
+  this.canvas = document.getElementById(this.chartIdValue)
+  if (!this.canvas) return
+
+  // Re-rendre le graphique avec les nouvelles données
+  this.renderChart(newData)
+}
+
 
   // Toggle sélection
   toggleCategorySelection(chart, index) {
