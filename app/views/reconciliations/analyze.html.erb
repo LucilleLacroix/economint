@@ -1,0 +1,13 @@
+<h2>Résultat de l'analyse du PDF</h2>
+
+<% if @lines.present? %>
+  <ul>
+    <% @lines.each do |line| %>
+      <li><%= line %></li>
+    <% end %>
+  </ul>
+<% else %>
+  <p>Aucune donnée détectée.</p>
+<% end %>
+
+<%= link_to "Analyser un autre PDF", new_reconciliation_path, class: "btn btn-primary" %>

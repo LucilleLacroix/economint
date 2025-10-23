@@ -24,7 +24,11 @@ Rails.application.routes.draw do
 
   resources :budgets, only: [:index, :new, :create, :edit, :update, :destroy]
 
-
+  resources :reconciliations, only: [:new] do
+    collection do
+      post :analyze
+    end
+  end
 
 
   # Health check
