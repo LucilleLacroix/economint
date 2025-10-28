@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_10_15_084242) do
+ActiveRecord::Schema[7.1].define(version: 2025_10_28_152358) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -118,6 +118,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_10_15_084242) do
     t.jsonb "summary"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "name"
     t.index ["user_id"], name: "index_reconciliations_on_user_id"
   end
 
@@ -139,11 +140,12 @@ ActiveRecord::Schema[7.1].define(version: 2025_10_15_084242) do
     t.date "date"
     t.string "description"
     t.decimal "amount"
-    t.bigint "matched_expense_id", null: false
     t.decimal "match_score"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["matched_expense_id"], name: "index_transactions_on_matched_expense_id"
+    t.string "matchable_type"
+    t.bigint "matchable_id"
+    t.index ["matchable_type", "matchable_id"], name: "index_transactions_on_matchable"
     t.index ["reconciliation_id"], name: "index_transactions_on_reconciliation_id"
   end
 
@@ -176,6 +178,5 @@ ActiveRecord::Schema[7.1].define(version: 2025_10_15_084242) do
   add_foreign_key "reconciliations", "users"
   add_foreign_key "revenues", "categories"
   add_foreign_key "revenues", "users"
-  add_foreign_key "transactions", "expenses", column: "matched_expense_id"
   add_foreign_key "transactions", "reconciliations"
 end

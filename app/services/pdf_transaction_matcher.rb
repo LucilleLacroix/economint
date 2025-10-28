@@ -1,4 +1,3 @@
-# app/services/pdf_transaction_matcher.rb
 require 'text'
 
 class PdfTransactionMatcher
@@ -30,7 +29,7 @@ class PdfTransactionMatcher
       best_match, best_score = find_best_match(tx, used_entry_ids)
 
       if best_match
-        used_entry_ids << best_match.id
+        used_entry_ids << [best_match.class.name, best_match.id] # évite doublons même entre Expense/Revenue
       end
 
       {
@@ -38,7 +37,9 @@ class PdfTransactionMatcher
         date: tx[:date],
         description: tx[:description],
         amount: tx[:amount],
-        matched_expense: best_match,
+        matchable: best_match,       # ✅ correspond au polymorphisme
+        matchable_type: best_match&.class&.name,
+        matchable_id: best_match&.id,
         match_score: best_score
       }
     end
@@ -51,8 +52,10 @@ class PdfTransactionMatcher
     best_score = 0.0
     best_entry = nil
 
-    # On combine expenses et revenues
-    entries = (user.expenses + user.revenues).reject { |e| used_entry_ids.include?(e.id) }
+    # Combine les dépenses et les revenus de l’utilisateur
+    entries = (user.expenses + user.revenues).reject do |e|
+      used_entry_ids.include?([e.class.name, e.id])
+    end
 
     entries.each do |entry|
       # Score date avec tolérance

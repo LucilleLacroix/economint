@@ -1,0 +1,31 @@
+<h2>Mes relevés bancaires</h2>
+
+<% if @reconciliations.any? %>
+  <table style="width:100%; border-collapse: collapse;">
+    <thead>
+      <tr style="background-color: #333; color: #fff;">
+        <th>Nom</th>
+        <th>Créé le</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @reconciliations.each do |rec| %>
+        <tr>
+          <td><%= rec.name %></td>
+          <td><%= rec.created_at.strftime("%d/%m/%Y") %></td>
+          <td>
+            <%= link_to "Voir", reconciliation_path(rec), class: "btn btn-sm btn-primary" %> |
+            <%= button_to "Supprimer",
+              reconciliation_path(rec),
+              method: :delete,
+              data: { confirm: "Êtes-vous sûr ?" },
+              class: "btn btn-sm btn-danger" %>
+
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% else %>
+  <p>Aucun relevé trouvé.</p>
+<% end %>

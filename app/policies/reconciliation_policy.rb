@@ -1,17 +1,23 @@
 class ReconciliationPolicy < ApplicationPolicy
-  # Ces méthodes contrôlent les actions du contrôleur
   def new?
     user.present?
   end
 
-  def analyze?
+  def create?
     user.present?
   end
 
-  # 👇 La classe Scope sert uniquement à définir les règles pour les listes (index)
+  def show?
+    user.present? && record.user == user
+  end
+
+  def destroy?
+    user.present? && record.user == user
+  end
+
   class Scope < Scope
     def resolve
-      scope.where(user:)
+      scope.where(user: user)
     end
   end
 end
