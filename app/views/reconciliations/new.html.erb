@@ -1,6 +1,7 @@
 <h2>Analyser un relevé bancaire (PDF)</h2>
 
-<%= form_with url: analyze_reconciliations_path, local: true, multipart: true do |f| %>
+<%= form_with url: analyze_reconciliations_path, local: true, multipart: true, data: { turbo: false } do |f| %>
+
   <div class="field">
     <%= f.label :bank_file, "Sélectionner un fichier PDF" %><br>
     <%= f.file_field :bank_file, accept: "application/pdf" %>
