@@ -78,5 +78,4 @@ gem 'chartkick'
 gem 'groupdate'
 gem 'pundit'
 gem 'pdf-reader'
-
-gem "openai", "~> 1.0"
+gem 'text'

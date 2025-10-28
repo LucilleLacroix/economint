@@ -1,22 +1,33 @@
 <h2>Transactions détectées dans le relevé</h2>
 
 <% if @transactions.any? %>
-  <table id="goals_table">
+  <table style="width:100%; border-collapse: collapse;">
     <thead>
-      <tr>
+      <tr style="background-color: #333; color: #fff;">
         <th>Date</th>
         <th>Description</th>
         <th>Montant</th>
+        <th>Match Score</th>
       </tr>
     </thead>
     <tbody>
-      <% @transactions.each do |t| %>
-        <tr>
-          <td><%= t[:date]&.strftime("%d/%m") %></td>
-          <td><%= t[:description] %></td>
-          <td style="color: <%= t[:amount] < 0 ? 'red' : 'green' %>;">
-            <%= number_to_currency(t[:amount], unit: "€") %>
+      <% @transactions.each do |tx| %>
+        <% score = tx[:match_score] || 0 %>
+        <% row_color =
+            if score >= 0.8
+              "#c8e6c9" # vert
+            elsif score >= 0.5
+              "#fff9c4" # jaune
+            else
+              "#ffcdd2" # rouge
+            end %>
+        <tr style="background-color: <%= row_color %>;">
+          <td><%= tx[:date]&.strftime("%d/%m/%Y") %></td>
+          <td><%= tx[:description] %></td>
+          <td style="color: <%= tx[:amount] < 0 ? 'red' : 'green' %>;">
+            <%= number_to_currency(tx[:amount], unit: "€") %>
           </td>
+          <td><%= (score * 100).round %> %</td>
         </tr>
       <% end %>
     </tbody>
@@ -24,5 +35,3 @@
 <% else %>
   <p>Aucune transaction détectée. 😕</p>
 <% end %>
-
-<%= link_to "Analyser un autre PDF", new_reconciliation_path, class: "btn btn-primary" %>

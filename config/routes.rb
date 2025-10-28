@@ -27,6 +27,7 @@ Rails.application.routes.draw do
   resources :reconciliations, only: [:new] do
     collection do
       post :analyze
+      post :update_transaction
     end
   end
 
