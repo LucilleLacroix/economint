@@ -29,7 +29,7 @@ class PdfTransactionMatcher
       best_match, best_score = find_best_match(tx, used_entry_ids)
 
       if best_match
-        used_entry_ids << [best_match.class.name, best_match.id] # évite doublons même entre Expense/Revenue
+        used_entry_ids << [best_match.class.name, best_match.id] # évite doublons
       end
 
       {
@@ -37,7 +37,8 @@ class PdfTransactionMatcher
         date: tx[:date],
         description: tx[:description],
         amount: tx[:amount],
-        matchable: best_match,       # ✅ correspond au polymorphisme
+        type: tx[:type],
+        matchable: best_match,
         matchable_type: best_match&.class&.name,
         matchable_id: best_match&.id,
         match_score: best_score
@@ -47,32 +48,40 @@ class PdfTransactionMatcher
 
   private
 
-  # Trouve la meilleure correspondance pour une transaction, en excluant celles déjà utilisées
+  # 🔍 Trouve la meilleure correspondance pour une transaction
   def find_best_match(tx, used_entry_ids)
     best_score = 0.0
     best_entry = nil
 
-    # Combine les dépenses et les revenus de l’utilisateur
-    entries = (user.expenses + user.revenues).reject do |e|
-      used_entry_ids.include?([e.class.name, e.id])
-    end
+    # ✅ Filtrer selon le type de transaction PDF
+    entries = case tx[:type]&.downcase
+              when 'expense'
+                user.expenses
+              when 'revenue'
+                user.revenues
+              else
+                user.expenses + user.revenues
+              end
+
+    # Exclure ceux déjà utilisés
+    entries = entries.reject { |e| used_entry_ids.include?([e.class.name, e.id]) }
 
     entries.each do |entry|
-      # Score date avec tolérance
+      # Score date (tolérance ±1 jour)
       date_score = if tx[:date] && entry.date
                      (tx[:date] - entry.date).abs <= DATE_TOLERANCE_DAYS ? 1.0 : 0.0
                    else
                      0.0
                    end
 
-      # Score montant avec tolérance
+      # Score montant (tolérance ±1.0)
       amount_score = if tx[:amount] && entry.amount
                        (tx[:amount].to_f - entry.amount.to_f).abs <= AMOUNT_TOLERANCE ? 1.0 : 0.0
                      else
                        0.0
                      end
 
-      # Score description ultra inclusif
+      # Score description
       tx_desc = normalize(tx[:description])
       entry_desc = normalize(entry.description)
 
@@ -85,12 +94,12 @@ class PdfTransactionMatcher
       contains_score = (tx_desc.include?(entry_desc) || entry_desc.include?(tx_desc)) ? 1.0 : 0.0
       desc_score = [lev_score, contains_score].max
 
-      # Score pondéré
+      # Score pondéré global
       total_score = (date_score * MATCH_WEIGHT_DATE) +
                     (amount_score * MATCH_WEIGHT_AMOUNT) +
                     (desc_score * MATCH_WEIGHT_DESC)
 
-      # Boost si date et montant proches
+      # Bonus si date + montant parfaits
       total_score = [total_score, BOOST_IF_CLOSE].max if date_score == 1.0 && amount_score == 1.0
 
       if total_score > best_score
