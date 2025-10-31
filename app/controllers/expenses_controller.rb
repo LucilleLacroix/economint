@@ -24,7 +24,11 @@ class ExpensesController < ApplicationController
   end
 
   def new
-    @expense = current_user.expenses.new(date: Date.today)
+    @expense = current_user.expenses.new(
+      amount: params[:amount],
+      date: params[:date] || Date.today,
+      description: params[:description]
+    )
     authorize @expense
     @category_type = "expense"
     @categories = current_user.categories.where(category_type: @category_type)

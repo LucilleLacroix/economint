@@ -15,11 +15,11 @@
           <th>Actions</th>
         </tr>
       </thead>
+
       <tbody>
         <% @transactions.each do |tx| %>
           <% score = tx.match_score || 0 %>
           <% type = tx.amount < 0 ? "Débit" : "Crédit" %>
-          <% is_partial = score.between?(0.3, 0.79) %>
           <% has_match = tx.matchable.present? %>
 
           <tr data-tx-id="<%= tx[:id] %>">
@@ -37,7 +37,7 @@
             <td data-label="Type"><%= type %></td>
 
             <td class="actions-cell" data-label="Actions">
-              <% if has_match && is_partial %>
+              <% if has_match %>
                 <button
                   class="btn btn-outline"
                   data-action="click->match-toggle#toggle"
@@ -46,29 +46,26 @@
                 </button>
 
                 <%= link_to "✏️ Modifier",
-                  edit_polymorphic_path(tx.matchable),
-                  class: "btn btn-edit" %>
-
-              <% elsif !has_match %>
+                            edit_polymorphic_path(tx.matchable),
+                            class: "btn btn-edit" %>
+              <% else %>
                 <% if type == "Débit" %>
                   <%= link_to "➕ Créer dépense",
-                    new_expense_path(
-                      amount: tx.amount.abs,
-                      date: tx.date,
-                      description: tx.description
-                    ),
-                    class: "btn btn-create" %>
+                              new_expense_path(
+                                amount: tx.amount.abs,
+                                date: tx.date,
+                                description: tx.description
+                              ),
+                              class: "btn btn-create" %>
                 <% else %>
                   <%= link_to "➕ Créer revenu",
-                    new_revenue_path(
-                      amount: tx.amount.abs,
-                      date: tx.date,
-                      description: tx.description
-                    ),
-                    class: "btn btn-create" %>
+                              new_revenue_path(
+                                amount: tx.amount.abs,
+                                date: tx.date,
+                                description: tx.description
+                              ),
+                              class: "btn btn-create" %>
                 <% end %>
-              <% else %>
-                <span class="text-muted">✅ Match parfait</span>
               <% end %>
             </td>
           </tr>
