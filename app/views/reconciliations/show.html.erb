@@ -2,7 +2,7 @@
   Transactions du relevé <strong><%= @reconciliation.name %></strong>
 </h2>
 
-<div id="goals_table">
+<div id="goals_table" data-controller="match-toggle">
   <% if @transactions.any? %>
     <table>
       <thead>
@@ -12,12 +12,17 @@
           <th>Montant</th>
           <th>Match Score</th>
           <th>Type</th>
+          <th>Actions</th>
         </tr>
       </thead>
       <tbody>
         <% @transactions.each do |tx| %>
           <% score = tx.match_score || 0 %>
-          <tr>
+          <% type = tx.amount < 0 ? "Débit" : "Crédit" %>
+          <% is_partial = score.between?(0.3, 0.79) %>
+          <% has_match = tx.matchable.present? %>
+
+          <tr data-tx-id="<%= tx[:id] %>">
             <td data-label="Date"><%= tx.date&.strftime("%d/%m/%Y") %></td>
             <td data-label="Description"><%= tx.description %></td>
             <td data-label="Montant" style="color: <%= tx.amount < 0 ? 'red' : 'green' %>;">
@@ -29,10 +34,57 @@
               </div>
               <small><%= (score * 100).round %> %</small>
             </td>
-            <td data-label="Type">
-              <%= tx.amount < 0 ? "Débit" : "Crédit" %>
+            <td data-label="Type"><%= type %></td>
+
+            <td class="actions-cell" data-label="Actions">
+              <% if has_match && is_partial %>
+                <button
+                  class="btn btn-outline"
+                  data-action="click->match-toggle#toggle"
+                  data-tx-id="<%= tx[:id] %>">
+                  👀 Voir correspondance
+                </button>
+
+                <%= link_to "✏️ Modifier",
+                  edit_polymorphic_path(tx.matchable),
+                  class: "btn btn-edit" %>
+
+              <% elsif !has_match %>
+                <% if type == "Débit" %>
+                  <%= link_to "➕ Créer dépense",
+                    new_expense_path(
+                      amount: tx.amount.abs,
+                      date: tx.date,
+                      description: tx.description
+                    ),
+                    class: "btn btn-create" %>
+                <% else %>
+                  <%= link_to "➕ Créer revenu",
+                    new_revenue_path(
+                      amount: tx.amount.abs,
+                      date: tx.date,
+                      description: tx.description
+                    ),
+                    class: "btn btn-create" %>
+                <% end %>
+              <% else %>
+                <span class="text-muted">✅ Match parfait</span>
+              <% end %>
             </td>
           </tr>
+
+          <% if has_match %>
+            <tr class="match-details hidden" id="match-details-<%= tx[:id] %>">
+              <td colspan="6">
+                <div class="match-card">
+                  <strong><%= tx.matchable_type %> correspondant :</strong><br>
+                  <em><%= tx.matchable.description %></em><br>
+                  Montant : <%= number_to_currency(tx.matchable.amount, unit: "€") %><br>
+                  Date : <%= tx.matchable.date&.strftime("%d/%m/%Y") %>
+                </div>
+              </td>
+            </tr>
+          <% end %>
         <% end %>
       </tbody>
     </table>
