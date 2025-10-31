@@ -1,39 +1,42 @@
-<h2>Transactions du relevé <%= @reconciliation.name %></h2>
+<h2 class="balance-text">
+  Transactions du relevé <strong><%= @reconciliation.name %></strong>
+</h2>
 
-<% if @transactions.any? %>
-  <table style="width:100%; border-collapse: collapse;">
-    <thead>
-      <tr style="background-color: #333; color: #fff;">
-        <th>Date</th>
-        <th>Description</th>
-        <th>Montant</th>
-        <th>Match Score</th>
-        <th>Type</th> <!-- Colonne basée sur le montant -->
-      </tr>
-    </thead>
-    <tbody>
-      <% @transactions.each do |tx| %>
-        <% score = tx.match_score || 0 %>
-        <% row_color =
-            if score >= 0.8
-              "#c8e6c9"
-            elsif score >= 0.5
-              "#fff9c4"
-            else
-              "#ffcdd2"
-            end %>
-        <tr style="background-color: <%= row_color %>;">
-          <td><%= tx.date&.strftime("%d/%m/%Y") %></td>
-          <td><%= tx.description %></td>
-          <td style="color: <%= tx.amount < 0 ? 'red' : 'green' %>;">
-            <%= number_to_currency(tx.amount, unit: "€") %>
-          </td>
-          <td><%= (score * 100).round %> %</td>
-          <td><%= tx.amount < 0 ? "Débit" : "Crédit" %></td> <!-- Nouveau type basé sur le montant -->
+<div id="goals_table">
+  <% if @transactions.any? %>
+    <table>
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Description</th>
+          <th>Montant</th>
+          <th>Match Score</th>
+          <th>Type</th>
         </tr>
-      <% end %>
-    </tbody>
-  </table>
-<% else %>
-  <p>Aucune transaction trouvée. 😕</p>
-<% end %>
+      </thead>
+      <tbody>
+        <% @transactions.each do |tx| %>
+          <% score = tx.match_score || 0 %>
+          <tr>
+            <td data-label="Date"><%= tx.date&.strftime("%d/%m/%Y") %></td>
+            <td data-label="Description"><%= tx.description %></td>
+            <td data-label="Montant" style="color: <%= tx.amount < 0 ? 'red' : 'green' %>;">
+              <%= number_to_currency(tx.amount, unit: "€") %>
+            </td>
+            <td data-label="Match Score">
+              <div class="progress-bar">
+                <div class="progress-fill" style="width: <%= (score * 100).round %>%"></div>
+              </div>
+              <small><%= (score * 100).round %> %</small>
+            </td>
+            <td data-label="Type">
+              <%= tx.amount < 0 ? "Débit" : "Crédit" %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% else %>
+    <p>Aucune transaction trouvée. 😕</p>
+  <% end %>
+</div>
