@@ -31,8 +31,18 @@ class ReconciliationsController < ApplicationController
     raw_transactions = PdfReaderService.extract_transactions(temp_path)
     File.delete(temp_path) if File.exist?(temp_path)
 
+    # Déterminer la période du relevé pour filtrer les dépenses/revenus
+    dates = raw_transactions.map { |t| t[:date] }.compact
+    start_date = dates.min
+    end_date   = dates.max
+
     # Étape 2️⃣ : Analyser et matcher avec les dépenses/revenus
-    matched_transactions = PdfTransactionMatcher.new(raw_transactions, current_user).match_all
+    matched_transactions = PdfTransactionMatcher.new(
+      raw_transactions,
+      current_user,
+      start_date: start_date,
+      end_date: end_date
+    ).match_all
 
     if @reconciliation.save
       # Étape 3️⃣ : Sauvegarder les transactions appariées
@@ -60,7 +70,8 @@ class ReconciliationsController < ApplicationController
 
   # PATCH /reconciliations/:id/validate_match
   def validate_match
-    authorize @reconciliation
+    authorize @reconciliation, :validate_match?
+
     tx = @reconciliation.transactions.find(params[:tx_id])
     tx.update(match_validated: true)
 
@@ -72,11 +83,9 @@ class ReconciliationsController < ApplicationController
           locals: { tx: tx }
         )
       end
-      format.html { redirect_to reconciliation_path(@reconciliation), notice: "Match validé ✅" }
+      format.html { redirect_to @reconciliation, notice: "Match validé ✅" }
     end
   end
-
-
 
   # DELETE /reconciliations/:id
   def destroy

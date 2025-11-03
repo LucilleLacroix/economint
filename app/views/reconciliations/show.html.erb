@@ -16,76 +16,8 @@
           <th>Statut</th>
         </tr>
       </thead>
-
       <tbody>
-        <% @transactions.each do |tx| %>
-          <% score = tx.match_score || 0 %>
-          <% type = tx.amount < 0 ? "Débit" : "Crédit" %>
-          <% has_match = tx.matchable.present? %>
-
-          <tr data-tx-id="<%= tx.id %>">
-            <td data-label="Date"><%= tx.date&.strftime("%d/%m/%Y") %></td>
-            <td data-label="Description"><%= tx.description %></td>
-            <td data-label="Montant" style="color: <%= tx.amount < 0 ? 'red' : 'green' %>;">
-              <%= number_to_currency(tx.amount, unit: "€") %>
-            </td>
-            <td data-label="Match Score">
-              <div class="progress-bar">
-                <div class="progress-fill" style="width: <%= (score * 100).round %>%"></div>
-              </div>
-              <small><%= (score * 100).round %> %</small>
-            </td>
-            <td data-label="Type"><%= type %></td>
-
-            <td class="actions-cell" data-label="Actions">
-              <button
-                class="btn btn-outline"
-                data-action="click->match-toggle#toggle"
-                data-tx-id="<%= tx.id %>">
-                👀 Voir / Modifier
-              </button>
-            </td>
-
-            <td data-label="Statut" id="tx_<%= tx.id %>_status">
-              <%= render partial: "reconciliations/validated_badge", locals: { tx: tx } %>
-            </td>
-          </tr>
-
-          <%# Toggle content row %>
-          <tr class="match-details hidden" id="match-details-<%= tx.id %>">
-            <td colspan="7">
-              <div class="match-card">
-                <% if has_match %>
-                  <strong><%= tx.matchable_type %> correspondant :</strong><br>
-                  <em><%= tx.matchable.description %></em><br>
-                  Montant : <%= number_to_currency(tx.matchable.amount, unit: "€") %><br>
-                  Date : <%= tx.matchable.date&.strftime("%d/%m/%Y") %><br><br>
-
-                  <%= link_to "✏️ Modifier",
-                              edit_polymorphic_path(tx.matchable),
-                              class: "btn btn-edit" %>
-
-                  <%= form_with url: validate_match_reconciliation_path(@reconciliation),
-                                method: :post,
-                                local: true do %>
-                    <%= hidden_field_tag :tx_id, tx.id %>
-                    <%= submit_tag "✅ Valider", class: "btn btn-success" %>
-                  <% end %>
-                <% else %>
-                  <% if type == "Débit" %>
-                    <%= link_to "➕ Créer dépense",
-                                new_expense_path(amount: tx.amount.abs, date: tx.date, description: tx.description),
-                                class: "btn btn-create" %>
-                  <% else %>
-                    <%= link_to "➕ Créer revenu",
-                                new_revenue_path(amount: tx.amount.abs, date: tx.date, description: tx.description),
-                                class: "btn btn-create" %>
-                  <% end %>
-                <% end %>
-              </div>
-            </td>
-          </tr>
-        <% end %>
+        <%= render partial: "reconciliations/transaction_row", collection: @transactions, as: :tx %>
       </tbody>
     </table>
   <% else %>
