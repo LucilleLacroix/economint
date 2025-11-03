@@ -72,20 +72,63 @@ class ReconciliationsController < ApplicationController
   def validate_match
     authorize @reconciliation, :validate_match?
 
+    # 1️⃣ Valider la transaction sélectionnée
     tx = @reconciliation.transactions.find(params[:tx_id])
     tx.update(match_validated: true)
 
+    # 2️⃣ Construire la liste des entrées déjà validées
+    exclude_entries = @reconciliation.transactions
+                                      .where(match_validated: true)
+                                      .map { |t| [t.matchable_type, t.matchable_id] }
+                                      .compact
+
+    # 3️⃣ Recalculer les scores des autres transactions non validées
+    remaining_transactions = @reconciliation.transactions.where(match_validated: false)
+    matcher = PdfTransactionMatcher.new(
+      remaining_transactions.map { |t|
+        {
+          id: t.id,
+          date: t.date,
+          description: t.description,
+          amount: t.amount,
+          type: t.amount < 0 ? 'expense' : 'revenue'
+        }
+      },
+      current_user,
+      start_date: @reconciliation.transactions.minimum(:date),
+      end_date: @reconciliation.transactions.maximum(:date),
+      exclude_entries: exclude_entries
+    )
+
+    new_matches = matcher.match_all
+
+    # 4️⃣ Mettre à jour les transactions restantes avec leurs nouveaux scores et correspondances
+    new_matches.each do |m|
+      tx_to_update = @reconciliation.transactions.find(m[:id])
+      tx_to_update.update(
+        matchable_id: m[:matchable_id],
+        matchable_type: m[:matchable_type],
+        match_score: m[:match_score]
+      )
+    end
+
+    # 5️⃣ Répondre via Turbo pour mettre à jour le tableau
     respond_to do |format|
       format.turbo_stream do
-        render turbo_stream: turbo_stream.replace(
-          "tx_#{tx.id}_status",
-          partial: "reconciliations/validated_badge",
-          locals: { tx: tx }
-        )
+        render turbo_stream: [
+          turbo_stream.replace("tx_#{tx.id}_status", partial: "reconciliations/validated_badge", locals: { tx: tx }),
+          turbo_stream.replace(
+              "reconciliation_transactions",
+              partial: "reconciliations/transactions_table",
+              locals: { reconciliation: @reconciliation }
+            )
+
+      ]
       end
-      format.html { redirect_to @reconciliation, notice: "Match validé ✅" }
+      format.html { redirect_to @reconciliation, notice: "Match validé et recalculé ✅" }
     end
   end
+
 
   # DELETE /reconciliations/:id
   def destroy

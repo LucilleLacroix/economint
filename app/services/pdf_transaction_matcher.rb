@@ -6,13 +6,14 @@ class PdfTransactionMatcher
   DATE_TOLERANCE_DAYS = 1
   AMOUNT_TOLERANCE = 1.0
 
-  attr_reader :transactions, :user, :start_date, :end_date
+  attr_reader :transactions, :user, :start_date, :end_date, :exclude_entries
 
-  def initialize(transactions, user, start_date: nil, end_date: nil)
+  def initialize(transactions, user, start_date: nil, end_date: nil, exclude_entries: [])
     @transactions = transactions
     @user = user
     @start_date = start_date
     @end_date = end_date
+    @exclude_entries = exclude_entries.to_a
   end
 
   def normalize(str)
@@ -53,14 +54,17 @@ class PdfTransactionMatcher
     # Filtrer selon la période si start_date/end_date fournis
     entries = entries.where(date: start_date..end_date) if start_date && end_date
 
+    # Exclure les entrées déjà validées
+    entries = entries.reject do |e|
+      exclude_entries.include?([e.class.name, e.id])
+    end
+
     entries.each do |entry|
       # Score date
       date_score = (tx[:date] && entry.date && (tx[:date] - entry.date).abs <= DATE_TOLERANCE_DAYS) ? 1.0 : 0.0
 
-      # Score montant (en valeur absolue pour ignorer le signe)
-      pdf_amount   = tx[:amount].to_f.abs
-      entry_amount = entry.amount.to_f.abs
-      amount_score = (pdf_amount - entry_amount).abs <= AMOUNT_TOLERANCE ? 1.0 : 0.0
+      # Score montant
+      amount_score = (tx[:amount] && entry.amount && (tx[:amount].to_f - entry.amount.to_f).abs <= AMOUNT_TOLERANCE) ? 1.0 : 0.0
 
       # Score description
       tx_desc = normalize(tx[:description])
@@ -78,7 +82,7 @@ class PdfTransactionMatcher
                     (date_score   * MATCH_WEIGHT_DATE) +
                     (desc_score   * MATCH_WEIGHT_DESC)
 
-      # ⚡ Si montant et date exacts => minimum 90%
+      # Si montant et date exacts => minimum 90%
       if date_score == 1.0 && amount_score == 1.0
         total_score = [total_score, 0.9].max
       end
