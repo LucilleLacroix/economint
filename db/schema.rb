@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_10_28_152358) do
+ActiveRecord::Schema[7.1].define(version: 2025_11_03_112844) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -145,6 +145,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_10_28_152358) do
     t.datetime "updated_at", null: false
     t.string "matchable_type"
     t.bigint "matchable_id"
+    t.boolean "match_validated", default: false
     t.index ["matchable_type", "matchable_id"], name: "index_transactions_on_matchable"
     t.index ["reconciliation_id"], name: "index_transactions_on_reconciliation_id"
   end

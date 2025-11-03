@@ -14,6 +14,10 @@ class ReconciliationPolicy < ApplicationPolicy
   def destroy?
     user.present? && record.user == user
   end
+  
+  def validate_match?
+    user.present? && record.user == user
+  end
 
   class Scope < Scope
     def resolve
