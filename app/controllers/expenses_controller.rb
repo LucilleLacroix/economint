@@ -45,6 +45,7 @@ class ExpensesController < ApplicationController
     @expense = current_user.expenses.new(expense_params)
     authorize @expense
     if @expense.save
+      ReconciliationMatcherService.recalculate_for_user(current_user)
       # Si création depuis le tableau de rapprochement, rediriger vers le relevé
       if params[:reconciliation_id].present?
         redirect_to reconciliation_path(params[:reconciliation_id]), notice: "Dépense créée avec succès"
@@ -58,7 +59,9 @@ class ExpensesController < ApplicationController
 
   def update
     authorize @expense
+
     if @expense.update(expense_params)
+      ReconciliationMatcherService.recalculate_for_user(current_user)
       if params[:reconciliation_id].present?
         redirect_to reconciliation_path(params[:reconciliation_id]), notice: "Dépense mise à jour !"
       else

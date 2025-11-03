@@ -47,6 +47,7 @@ class RevenuesController < ApplicationController
     authorize @revenue
 
     if @revenue.save
+      ReconciliationMatcherService.recalculate_for_user(current_user)
       # Redirection conditionnelle vers la réconciliation si paramètre présent
       if params[:reconciliation_id].present?
         redirect_to reconciliation_path(params[:reconciliation_id]), notice: "Revenu créé avec succès !"
@@ -66,6 +67,7 @@ class RevenuesController < ApplicationController
     if @revenue.update(revenue_params)
       # Redirection conditionnelle vers la réconciliation si paramètre présent
       if params[:reconciliation_id].present?
+        ReconciliationMatcherService.recalculate_for_user(current_user)
         redirect_to reconciliation_path(params[:reconciliation_id]), notice: "Revenu mis à jour !"
       else
         redirect_to revenues_path, notice: "Revenu mis à jour !"
