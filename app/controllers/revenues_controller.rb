@@ -47,6 +47,7 @@ class RevenuesController < ApplicationController
     authorize @revenue
 
     if @revenue.save
+      # Redirection conditionnelle vers la réconciliation si paramètre présent
       if params[:reconciliation_id].present?
         redirect_to reconciliation_path(params[:reconciliation_id]), notice: "Revenu créé avec succès !"
       else
@@ -63,6 +64,7 @@ class RevenuesController < ApplicationController
     authorize @revenue
 
     if @revenue.update(revenue_params)
+      # Redirection conditionnelle vers la réconciliation si paramètre présent
       if params[:reconciliation_id].present?
         redirect_to reconciliation_path(params[:reconciliation_id]), notice: "Revenu mis à jour !"
       else
@@ -106,6 +108,7 @@ class RevenuesController < ApplicationController
   end
 
   def revenue_params
+    # Note : on ne touche pas à la table, on ne stocke pas reconciliation_id
     params.require(:revenue).permit(:amount, :description, :date, :category_id)
   end
 end
