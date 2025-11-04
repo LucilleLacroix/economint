@@ -1,0 +1,19 @@
+<h2>Analyser un relevé bancaire (PDF)</h2>
+
+<div class="soft-form">
+  <%= form_with model: @reconciliation, local: true, multipart: true do |f| %>
+    <div class="form-field">
+      <%= f.label :name, "Nom du relevé" %>
+      <%= f.text_field :name, required: true %>
+    </div>
+
+    <div class="form-field">
+      <%= f.label :bank_file, "Sélectionner un fichier PDF" %>
+      <%= f.file_field :bank_file, accept: "application/pdf", required: true %>
+    </div>
+
+    <div class="form-actions">
+      <%= f.submit "Analyser et sauvegarder" %>
+    </div>
+  <% end %>
+</div>

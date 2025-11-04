@@ -24,6 +24,9 @@ Rails.application.routes.draw do
 
   resources :budgets, only: [:index, :new, :create, :edit, :update, :destroy]
 
+  resources :reconciliations, only: [:index, :new, :create, :show, :destroy] do
+    post :validate_match, on: :member
+  end
 
 
 

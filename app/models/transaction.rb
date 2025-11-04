@@ -1,4 +1,4 @@
 class Transaction < ApplicationRecord
   belongs_to :reconciliation
-  belongs_to :matched_expense
+  belongs_to :matchable, polymorphic: true, optional: true
 end

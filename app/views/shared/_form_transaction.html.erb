@@ -1,5 +1,8 @@
 <%= form_with(model: transaction, local: true, html: { class: "soft-form" }) do |f| %>
   <%= hidden_field_tag :category_type, category_type %>
+  <%= hidden_field_tag :reconciliation_id, @reconciliation_id %>
+
+
 
   <div class="form-field">
     <%= f.label :category_id, "Catégorie" %>

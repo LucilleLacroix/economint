@@ -1,0 +1,37 @@
+<h2>Mes relevés bancaires</h2>
+<div class="text-center my-4">
+  <%= link_to "📄 Nouveau rapprochement", new_reconciliation_path, class: "btn btn-primary btn-lg" %>
+</div>
+
+<div id="goals_table">
+  <% if @reconciliations.any? %>
+    <table>
+      <thead>
+        <tr>
+          <th>Nom</th>
+          <th>Créé le</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <% @reconciliations.each do |rec| %>
+          <tr>
+            <td data-label="Nom"><%= rec.name %></td>
+            <td data-label="Créé le"><%= rec.created_at.strftime("%d/%m/%Y") %></td>
+            <td data-label="Actions" class="actions-cell">
+              <%= link_to "Voir", reconciliation_path(rec), class: "btn btn-sm btn-primary" %>
+              <%= button_to "Supprimer",
+                    reconciliation_path(rec),
+                    method: :delete,
+                    data: { confirm: "Êtes-vous sûr ?" },
+                    class: "btn btn-sm btn-danger" %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% else %>
+    <p>Aucun relevé trouvé.</p>
+  <% end %>
+</div>

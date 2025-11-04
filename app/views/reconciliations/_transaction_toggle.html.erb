@@ -1,0 +1,47 @@
+<tr class="match-details hidden" id="match-details-<%= tx.id %>">
+  <td colspan="7">
+    <div class="match-card">
+      <% if tx.matchable.present? %>
+        <strong><%= tx.matchable_type %> correspondant :</strong><br>
+        <em><%= tx.matchable.description %></em><br>
+        Montant : <%= number_to_currency(tx.matchable.amount, unit: "€") %><br>
+        Date : <%= tx.matchable.date&.strftime("%d/%m/%Y") %><br><br>
+
+        <div class="action-buttons">
+          <%= link_to "✏️ Modifier",
+                      edit_polymorphic_path(tx.matchable, reconciliation_id: @reconciliation.id),
+                      class: "btn btn-edit" %>
+
+          <%= form_with url: validate_match_reconciliation_path(@reconciliation),
+                        method: :post,
+                        local: true do %>
+            <%= hidden_field_tag :tx_id, tx.id %>
+            <%= submit_tag "✅ Valider", class: "btn btn-success" %>
+          <% end %>
+        </div>
+      <% else %>
+        <div class="action-buttons">
+          <% if tx.amount < 0 %>
+            <%= link_to "➕ Créer dépense",
+                        new_expense_path(
+                          amount: tx.amount.abs,
+                          date: tx.date,
+                          description: tx.description,
+                          reconciliation_id: @reconciliation.id
+                        ),
+                        class: "btn btn-create" %>
+          <% else %>
+            <%= link_to "➕ Créer revenu",
+                        new_revenue_path(
+                          amount: tx.amount.abs,
+                          date: tx.date,
+                          description: tx.description,
+                          reconciliation_id: @reconciliation.id
+                        ),
+                        class: "btn btn-create" %>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+  </td>
+</tr>

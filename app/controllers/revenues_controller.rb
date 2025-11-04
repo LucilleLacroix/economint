@@ -18,20 +18,26 @@ class RevenuesController < ApplicationController
       [category&.name || "Default", amount]
     end.to_h
 
-    @total_expenses = @revenues.sum(:amount)
+    @total_revenues = @revenues.sum(:amount)
     @category_type = "revenue"
     @categories = current_user.categories.where(category_type: @category_type)
   end
 
   def new
-    @revenue = current_user.revenues.new
+    @revenue = current_user.revenues.new(
+      amount: params[:amount],
+      date: params[:date] || Date.today,
+      description: params[:description]
+    )
     authorize @revenue
+    @reconciliation_id = params[:reconciliation_id] # pour redirection après création
     @category_type = "revenue"
     @categories = current_user.categories.where(category_type: @category_type)
   end
 
   def edit
     authorize @revenue
+    @reconciliation_id = params[:reconciliation_id] # pour redirection après modification
     @category_type = "revenue"
     @categories = current_user.categories.where(category_type: @category_type)
   end
@@ -39,8 +45,15 @@ class RevenuesController < ApplicationController
   def create
     @revenue = current_user.revenues.new(revenue_params)
     authorize @revenue
+
     if @revenue.save
-      redirect_to revenues_path, notice: "Revenu créé avec succès."
+      ReconciliationMatcherService.recalculate_for_user(current_user)
+      # Redirection conditionnelle vers la réconciliation si paramètre présent
+      if params[:reconciliation_id].present?
+        redirect_to reconciliation_path(params[:reconciliation_id]), notice: "Revenu créé avec succès !"
+      else
+        redirect_to revenues_path, notice: "Revenu créé avec succès !"
+      end
     else
       @category_type = "revenue"
       @categories = current_user.categories.where(category_type: @category_type)
@@ -50,8 +63,15 @@ class RevenuesController < ApplicationController
 
   def update
     authorize @revenue
+
     if @revenue.update(revenue_params)
-      redirect_to revenues_path, notice: "Revenu mis à jour."
+      # Redirection conditionnelle vers la réconciliation si paramètre présent
+      if params[:reconciliation_id].present?
+        ReconciliationMatcherService.recalculate_for_user(current_user)
+        redirect_to reconciliation_path(params[:reconciliation_id]), notice: "Revenu mis à jour !"
+      else
+        redirect_to revenues_path, notice: "Revenu mis à jour !"
+      end
     else
       @category_type = "revenue"
       @categories = current_user.categories.where(category_type: @category_type)
@@ -62,16 +82,17 @@ class RevenuesController < ApplicationController
   def destroy
     authorize @revenue
     @revenue.destroy
+
     revenues = policy_scope(current_user.revenues.includes(:category))
-    data_by_category =revenues.group(:category_id).sum(:amount).map do |cat_id, amount|
+    data_by_category = revenues.group(:category_id).sum(:amount).map do |cat_id, amount|
       next if amount <= 0
       category = current_user.categories.find_by(id: cat_id)
-      [category&.name || "Default", amount ]  if category
+      [category&.name || "Default", amount] if category
     end.compact.to_h
 
     respond_to do |format|
-      format.json {render json: {success: true, data_by_category: data_by_category }}
-      format.html {redirect_to revenues_path, notice: "Revenu supprimé." }
+      format.json { render json: { success: true, data_by_category: data_by_category } }
+      format.html { redirect_to revenues_path, notice: "Revenu supprimé." }
       format.turbo_stream do
         flash.now[:notice] = "Revenu supprimé !"
         render turbo_stream: [
@@ -89,6 +110,7 @@ class RevenuesController < ApplicationController
   end
 
   def revenue_params
+    # Note : on ne touche pas à la table, on ne stocke pas reconciliation_id
     params.require(:revenue).permit(:amount, :description, :date, :category_id)
   end
 end

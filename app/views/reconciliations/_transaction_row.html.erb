@@ -1,0 +1,30 @@
+<tr data-tx-id="<%= tx.id %>">
+  <td data-label="Date"><%= tx.date&.strftime("%d/%m/%Y") %></td>
+  <td data-label="Description"><%= tx.description %></td>
+  <td data-label="Montant" style="color: <%= tx.amount < 0 ? 'red' : 'green' %>;">
+    <%= number_to_currency(tx.amount, unit: "€") %>
+  </td>
+  <td data-label="Match Score">
+    <% progress = tx.match_validated? ? 1.0 : tx.match_score.to_f %>
+    <div class="progress-bar">
+      <div class="progress-fill" style="width: <%= (progress * 100).round %>%"></div>
+    </div>
+    <small><%= (progress * 100).round %> %</small>
+  </td>
+  <td data-label="Type"><%= tx.amount < 0 ? "Débit" : "Crédit" %></td>
+
+  <td class="actions-cell" data-label="Actions">
+    <button
+      class="btn btn-outline"
+      data-action="click->match-toggle#toggle"
+      data-tx-id="<%= tx.id %>">
+      👀 Voir / Modifier
+    </button>
+  </td>
+
+  <td data-label="Statut" id="tx_<%= tx.id %>_status">
+    <%= render partial: "reconciliations/validated_badge", locals: { tx: tx } %>
+  </td>
+</tr>
+
+<%= render partial: "reconciliations/transaction_toggle", locals: { tx: tx } %>

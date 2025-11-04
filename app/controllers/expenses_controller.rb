@@ -24,7 +24,12 @@ class ExpensesController < ApplicationController
   end
 
   def new
-    @expense = current_user.expenses.new(date: Date.today)
+    @expense = current_user.expenses.new(
+      amount: params[:amount],
+      date: params[:date] || Date.today,
+      description: params[:description]
+    )
+    @reconciliation_id = params[:reconciliation_id]
     authorize @expense
     @category_type = "expense"
     @categories = current_user.categories.where(category_type: @category_type)
@@ -32,6 +37,7 @@ class ExpensesController < ApplicationController
 
   def edit
     authorize @expense
+    @reconciliation_id = params[:reconciliation_id]
     @category_type = "expense"
     @categories = current_user.categories.where(category_type: @category_type)
   end
@@ -40,18 +46,28 @@ class ExpensesController < ApplicationController
     @expense = current_user.expenses.new(expense_params)
     authorize @expense
     if @expense.save
-      redirect_to expenses_path, notice: "Dépense créée avec succès !"
+      ReconciliationMatcherService.recalculate_for_user(current_user)
+      # Si création depuis le tableau de rapprochement, rediriger vers le relevé
+      if params[:reconciliation_id].present?
+        redirect_to reconciliation_path(params[:reconciliation_id]), notice: "Dépense créée avec succès"
+      else
+        redirect_to expenses_path, notice: "Dépense créée avec succès !"
+      end
     else
-      @category_type = "expense"
-      @categories = current_user.categories.where(category_type: @category_type)
       render :new
     end
   end
 
   def update
     authorize @expense
+
     if @expense.update(expense_params)
-      redirect_to expenses_path, notice: "Dépense mise à jour !"
+      ReconciliationMatcherService.recalculate_for_user(current_user)
+      if params[:reconciliation_id].present?
+        redirect_to reconciliation_path(params[:reconciliation_id]), notice: "Dépense mise à jour !"
+      else
+        redirect_to expenses_path, notice: "Dépense mise à jour !"
+      end
     else
       @category_type = "expense"
       @categories = current_user.categories.where(category_type: @category_type)
@@ -63,7 +79,6 @@ class ExpensesController < ApplicationController
     authorize @expense
     @expense.destroy
 
-    # Recalculer les données pour le chart
     expenses = policy_scope(current_user.expenses.includes(:category))
     data_by_category = expenses.group(:category_id).sum(:amount).map do |cat_id, amount|
       next if amount <= 0
@@ -83,9 +98,6 @@ class ExpensesController < ApplicationController
       end
     end
   end
-
-
-
 
   private
 
