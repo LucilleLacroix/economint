@@ -1,4 +1,7 @@
 <h2>Mes relevés bancaires</h2>
+<div class="text-center my-4">
+  <%= link_to "📄 Nouveau rapprochement", new_reconciliation_path, class: "btn btn-primary btn-lg" %>
+</div>
 
 <div id="goals_table">
   <% if @reconciliations.any? %>

@@ -63,8 +63,10 @@ class PdfTransactionMatcher
       # Score date
       date_score = (tx[:date] && entry.date && (tx[:date] - entry.date).abs <= DATE_TOLERANCE_DAYS) ? 1.0 : 0.0
 
-      # Score montant
-      amount_score = (tx[:amount] && entry.amount && (tx[:amount].to_f - entry.amount.to_f).abs <= AMOUNT_TOLERANCE) ? 1.0 : 0.0
+      # Score montant (en ignorant les signes)
+      tx_amount = tx[:amount].to_f.abs
+      entry_amount = entry.amount.to_f.abs
+      amount_score = (tx_amount - entry_amount).abs <= AMOUNT_TOLERANCE ? 1.0 : 0.0
 
       # Score description
       tx_desc = normalize(tx[:description])
@@ -95,4 +97,5 @@ class PdfTransactionMatcher
 
     [best_entry, best_score]
   end
-end
+
+  end

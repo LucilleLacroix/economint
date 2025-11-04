@@ -37,6 +37,7 @@ class ExpensesController < ApplicationController
 
   def edit
     authorize @expense
+    @reconciliation_id = params[:reconciliation_id]
     @category_type = "expense"
     @categories = current_user.categories.where(category_type: @category_type)
   end
