@@ -9,9 +9,8 @@ class GoalsController < ApplicationController
 
     total_revenues = current_user.revenues.sum(:amount)
     total_expenses = current_user.expenses.sum(:amount)
-    total_saved = current_user.goals.sum(:current_amount)
 
-    @available_balance = total_revenues - total_expenses - total_saved
+    @available_balance = total_revenues - total_expenses - @goals.sum(:current_amount)
   end
 
   # ✅ Nouveau
