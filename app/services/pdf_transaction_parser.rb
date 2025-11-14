@@ -1,45 +1,22 @@
+# app/services/pdf_transaction_parser.rb
 class PdfTransactionParser
-  DATE_REGEX = /\d{2}\.\d{2}/
-  AMOUNT_REGEX = /-?\d+(?:[.,]\d{2})?/
-
-  def self.parse(text)
+  def self.parse_table(table_rows)
     transactions = []
-    lines = text.split("\n").map(&:strip)
 
-    lines.each_with_index do |line, idx|
-      next if line.blank?
+    table_rows.each do |row|
+      # Adapter selon l'ordre des colonnes de ton PDF
+      date_str    = row[0]&.strip
+      description = row[1]&.strip
+      amount_str  = row[2]&.strip
 
-      # Repérer les deux dates dans la ligne
-      dates = line.scan(DATE_REGEX)
-      next unless dates.size >= 2
+      next unless date_str && amount_str
 
-      date_valeur = parse_date(dates[1])
-
-      # Nettoyer la description
-      description = line.sub(/^#{dates[0]}\s+#{dates[1]}/, "").strip
-
-      # Extraire le dernier montant
-      amount_match = line.scan(AMOUNT_REGEX).last
-      next unless amount_match
-
-      amount = amount_match.gsub(",", ".").to_f
-
-      # Déterminer la colonne via mots-clés
-      is_credit = line =~ /\bCrédit\b/i
-      is_debit = line =~ /\bDébit\b/i
-
-      if description =~ /Virement|Avoir|Ristourne/i || is_credit
-        # Crédit ou virement → revenu
-        amount = amount.abs
-        type = "revenue"
-      else
-        # Par défaut → dépense
-        amount = -amount.abs
-        type = "expense"
-      end
+      date   = PdfReaderService.parse_date(date_str)
+      amount = PdfReaderService.parse_amount(amount_str)
+      type   = amount >= 0 ? 'revenue' : 'expense'
 
       transactions << {
-        date: date_valeur,
+        date: date,
         description: description,
         amount: amount,
         type: type
@@ -47,10 +24,5 @@ class PdfTransactionParser
     end
 
     transactions
-  end
-
-  def self.parse_date(str)
-    day, month = str.split(".").map(&:to_i)
-    Date.new(Date.today.year, month, day) rescue nil
   end
 end

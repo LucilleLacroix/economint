@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  get 'bankin/connect'
+  get 'bankin/callback'
 
   devise_for :users
 
@@ -27,6 +29,8 @@ Rails.application.routes.draw do
   resources :reconciliations, only: [:index, :new, :create, :show, :destroy] do
     post :validate_match, on: :member
   end
+  get "bankin/connect", to: "bankin#connect"
+  get "bankin/callback", to: "bankin#callback"
 
 
 

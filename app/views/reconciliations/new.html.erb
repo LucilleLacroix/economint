@@ -1,19 +1,39 @@
-<h2>Analyser un relevé bancaire (PDF)</h2>
+<h2>Analyser un relevé bancaire</h2>
 
-<div class="soft-form">
-  <%= form_with model: @reconciliation, local: true, multipart: true do |f| %>
-    <div class="form-field">
-      <%= f.label :name, "Nom du relevé" %>
-      <%= f.text_field :name, required: true %>
-    </div>
+<%= form_with model: @reconciliation, local: true do |f| %>
+  <div class="form-field">
+    <%= f.label :bank_name, "Choisissez votre banque" %>
+    <%= f.select :bank_name, options_for_select(["BNP", "Société Générale", "Crédit Agricole"]), prompt: "Sélectionnez une banque" %>
+  </div>
 
-    <div class="form-field">
-      <%= f.label :bank_file, "Sélectionner un fichier PDF" %>
-      <%= f.file_field :bank_file, accept: "application/pdf", required: true %>
-    </div>
+  <div class="form-field">
+    <%= f.label :start_date, "Date de début" %>
+    <%= f.date_field :start_date, value: @reconciliation.start_date || Date.today.beginning_of_month %>
+  </div>
 
-    <div class="form-actions">
-      <%= f.submit "Analyser et sauvegarder" %>
-    </div>
-  <% end %>
-</div>
+  <div class="form-field">
+    <%= f.label :end_date, "Date de fin" %>
+    <%= f.date_field :end_date, value: @reconciliation.end_date || Date.today %>
+  </div>
+
+  <div class="form-actions">
+    <% if session[:bank_token].present? %>
+      <p>Vous êtes connecté à votre banque ✅</p>
+    <% else %>
+      <%# On passe la banque sélectionnée via le paramètre bank %>
+      <%= link_to "Se connecter à ma banque", bankin_connect_path(bank: ''), class: "btn btn-primary", id: "bankin-connect-btn" %>
+    <% end %>
+  </div>
+<% end %>
+
+<script>
+  // On récupère la banque sélectionnée et on met à jour le lien
+  const selectBank = document.querySelector('select[name="reconciliation[bank_name]"]');
+  const connectBtn = document.getElementById('bankin-connect-btn');
+
+  if (selectBank && connectBtn) {
+    selectBank.addEventListener('change', () => {
+      connectBtn.href = `/bankin/connect?bank=${encodeURIComponent(selectBank.value)}`;
+    });
+  }
+</script>

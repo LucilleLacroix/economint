@@ -79,3 +79,5 @@ gem 'groupdate'
 gem 'pundit'
 gem 'pdf-reader'
 gem 'text'
+
+gem 'httparty'

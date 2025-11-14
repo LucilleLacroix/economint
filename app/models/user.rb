@@ -11,6 +11,7 @@ class User < ApplicationRecord
          :recoverable, :rememberable, :validatable
 
   after_create :create_default_categories
+  has_many :bank_accounts, dependent: :destroy
 
   def create_default_categories
     expense_names = ["Transport", "Loisir", "Logement", "Alimentaire"]

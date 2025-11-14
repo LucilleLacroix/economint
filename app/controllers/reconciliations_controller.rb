@@ -21,22 +21,32 @@ class ReconciliationsController < ApplicationController
 
     uploaded_file = params[:reconciliation][:bank_file]
     unless uploaded_file
-      return redirect_to new_reconciliation_path, alert: "Veuillez sélectionner un fichier PDF"
+      return redirect_to new_reconciliation_path, alert: "Veuillez fournir un fichier bancaire à analyser"
     end
 
-    temp_path = Rails.root.join("tmp", uploaded_file.original_filename)
-    File.open(temp_path, "wb") { |f| f.write(uploaded_file.read) }
+    # --- Étape 1 : lire le CSV et créer les transactions brutes ---
+    raw_transactions = []
+    CSV.foreach(uploaded_file.path, headers: true) do |row|
+      begin
+        raw_transactions << {
+          date: Date.parse(row['date']),
+          description: row['description'],
+          amount: row['amount'].to_f
+        }
+      rescue ArgumentError
+        next # Ignorer les lignes mal formées
+      end
+    end
 
-    # Étape 1️⃣ : Extraire les transactions depuis le PDF
-    raw_transactions = PdfReaderService.extract_transactions(temp_path)
-    File.delete(temp_path) if File.exist?(temp_path)
+    if raw_transactions.empty?
+      return redirect_to new_reconciliation_path, alert: "Aucune transaction valide trouvée dans le fichier"
+    end
 
-    # Déterminer la période du relevé pour filtrer les dépenses/revenus
-    dates = raw_transactions.map { |t| t[:date] }.compact
-    start_date = dates.min
-    end_date   = dates.max
+    # --- Étape 2 : déterminer la période du relevé ---
+    start_date = params[:reconciliation][:start_date].presence || raw_transactions.map { |t| t[:date] }.min
+    end_date   = params[:reconciliation][:end_date].presence   || raw_transactions.map { |t| t[:date] }.max
 
-    # Étape 2️⃣ : Analyser et matcher avec les dépenses/revenus
+    # --- Étape 3 : rapprocher les transactions ---
     matched_transactions = PdfTransactionMatcher.new(
       raw_transactions,
       current_user,
@@ -44,8 +54,8 @@ class ReconciliationsController < ApplicationController
       end_date: end_date
     ).match_all
 
+    # --- Étape 4 : sauvegarder la réconciliation et les transactions ---
     if @reconciliation.save
-      # Étape 3️⃣ : Sauvegarder les transactions appariées
       matched_transactions.each do |tx|
         @reconciliation.transactions.create(
           date: tx[:date],
@@ -55,8 +65,7 @@ class ReconciliationsController < ApplicationController
           match_score: tx[:match_score]
         )
       end
-
-      redirect_to @reconciliation, notice: "Relevé analysé, rapproché et sauvegardé avec succès ✅"
+      redirect_to @reconciliation, notice: "Transactions importées et rapprochées avec succès ✅"
     else
       render :new
     end
@@ -72,17 +81,15 @@ class ReconciliationsController < ApplicationController
   def validate_match
     authorize @reconciliation, :validate_match?
 
-    # 1️⃣ Valider la transaction sélectionnée
     tx = @reconciliation.transactions.find(params[:tx_id])
     tx.update(match_validated: true)
 
-    # 2️⃣ Construire la liste des entrées déjà validées
+    # Recalculer les nouveaux rapprochements en excluant les validés
     exclude_entries = @reconciliation.transactions
                                       .where(match_validated: true)
                                       .map { |t| [t.matchable_type, t.matchable_id] }
                                       .compact
 
-    # 3️⃣ Recalculer les scores des autres transactions non validées
     remaining_transactions = @reconciliation.transactions.where(match_validated: false)
     matcher = PdfTransactionMatcher.new(
       remaining_transactions.map { |t|
@@ -102,7 +109,6 @@ class ReconciliationsController < ApplicationController
 
     new_matches = matcher.match_all
 
-    # 4️⃣ Mettre à jour les transactions restantes avec leurs nouveaux scores et correspondances
     new_matches.each do |m|
       tx_to_update = @reconciliation.transactions.find(m[:id])
       tx_to_update.update(
@@ -112,23 +118,20 @@ class ReconciliationsController < ApplicationController
       )
     end
 
-    # 5️⃣ Répondre via Turbo pour mettre à jour le tableau
     respond_to do |format|
       format.turbo_stream do
         render turbo_stream: [
           turbo_stream.replace("tx_#{tx.id}_status", partial: "reconciliations/validated_badge", locals: { tx: tx }),
           turbo_stream.replace(
-              "reconciliation_transactions",
-              partial: "reconciliations/transactions_table",
-              locals: { reconciliation: @reconciliation }
-            )
-
-      ]
+            "reconciliation_transactions",
+            partial: "reconciliations/transactions_table",
+            locals: { reconciliation: @reconciliation }
+          )
+        ]
       end
       format.html { redirect_to @reconciliation, notice: "Match validé et recalculé ✅" }
     end
   end
-
 
   # DELETE /reconciliations/:id
   def destroy
@@ -140,7 +143,7 @@ class ReconciliationsController < ApplicationController
   private
 
   def reconciliation_params
-    params.require(:reconciliation).permit(:name)
+    params.require(:reconciliation).permit(:name, :bank_file, :start_date, :end_date)
   end
 
   def set_reconciliation
