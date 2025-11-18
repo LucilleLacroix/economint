@@ -1,45 +1,45 @@
 <tr class="match-details hidden" id="match-details-<%= tx.id %>">
   <td colspan="7">
     <div class="match-card">
-        <strong><%= tx.matchable_type %> correspondant :</strong><br>
-        <em><%= tx.matchable.description %></em><br>
-        Montant : <%= number_to_currency(tx.matchable.amount, unit: "€") %><br>
-        Date : <%= tx.matchable.date&.strftime("%d/%m/%Y") %><br><br>
 
-        <div class="action-buttons">
-          <%= link_to "Modifier",
-                      edit_polymorphic_path(tx.matchable, reconciliation_id: @reconciliation.id),
-                      class: "btn btn-edit" %>
+      <strong><%= tx.matchable_type %> correspondant :</strong><br>
+      <em><%= tx.matchable.description %></em><br>
+      Montant : <%= number_to_currency(tx.matchable.amount, unit: "€") %><br>
+      Date : <%= tx.matchable.date&.strftime("%d/%m/%Y") %><br><br>
 
-          <%= form_with url: validate_match_reconciliation_path(@reconciliation),
-                        method: :post,
-                        local: true do %>
-            <%= hidden_field_tag :tx_id, tx.id %>
-            <%= submit_tag "Valider", class: "btn btn-success" %>
-          <% end %>
-        </div>
-        <div class="action-buttons">
+      <div class="action-buttons">
+        <%= link_to "Modifier",
+                    edit_polymorphic_path(tx.matchable, reconciliation_id: @reconciliation.id),
+                    class: "btn btn-edit" %>
 
-            <%= link_to " Créer dépense",
-                        new_expense_path(
-                          amount: tx.amount.abs,
-                          date: tx.date,
-                          description: tx.description,
-                          reconciliation_id: @reconciliation.id
-                        ),
-                        class: "btn btn-create" %>
+        <%= form_with url: validate_match_reconciliation_path(@reconciliation),
+                      method: :post,
+                      local: true do %>
+          <%= hidden_field_tag :tx_id, tx.id %>
+          <%= submit_tag "Valider", class: "btn btn-success" %>
+        <% end %>
+      </div>
 
-            <%= link_to " Créer revenu",
-                        new_revenue_path(
-                          amount: tx.amount.abs,
-                          date: tx.date,
-                          description: tx.description,
-                          reconciliation_id: @reconciliation.id
-                        ),
-                        class: "btn btn-create" %>
+      <div class="action-buttons">
+        <%= link_to "Créer dépense",
+                    new_expense_path(
+                      amount: tx.amount.abs,
+                      date: tx.date,
+                      description: tx.description,
+                      reconciliation_id: @reconciliation.id
+                    ),
+                    class: "btn btn-create" %>
 
-        </div>
-      <% end %>
+        <%= link_to "Créer revenu",
+                    new_revenue_path(
+                      amount: tx.amount.abs,
+                      date: tx.date,
+                      description: tx.description,
+                      reconciliation_id: @reconciliation.id
+                    ),
+                    class: "btn btn-create" %>
+      </div>
+
     </div>
   </td>
 </tr>
