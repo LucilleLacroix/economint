@@ -15,11 +15,13 @@
 
   <td class="actions-cell" data-label="Actions">
     <button
-      class="btn btn-outline"
-      data-action="click->match-toggle#toggle"
-      data-tx-id="<%= tx.id %>">
-      👀 Voir / Modifier
+        class="btn btn-outline"
+        data-action="click->match-toggle#toggle"
+        data-tx-id="<%= tx.id %>"
+        <%= "disabled" if tx.match_validated? %>>
+        Voir / Modifier
     </button>
+
   </td>
 
   <td data-label="Statut" id="tx_<%= tx.id %>_status">

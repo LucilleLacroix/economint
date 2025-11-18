@@ -8,7 +8,7 @@
         Date : <%= tx.matchable.date&.strftime("%d/%m/%Y") %><br><br>
 
         <div class="action-buttons">
-          <%= link_to "✏️ Modifier",
+          <%= link_to "Modifier",
                       edit_polymorphic_path(tx.matchable, reconciliation_id: @reconciliation.id),
                       class: "btn btn-edit" %>
 
@@ -16,13 +16,12 @@
                         method: :post,
                         local: true do %>
             <%= hidden_field_tag :tx_id, tx.id %>
-            <%= submit_tag "✅ Valider", class: "btn btn-success" %>
+            <%= submit_tag "Valider", class: "btn btn-success" %>
           <% end %>
         </div>
-      <% else %>
         <div class="action-buttons">
-          <% if tx.amount < 0 %>
-            <%= link_to "➕ Créer dépense",
+
+            <%= link_to " Créer dépense",
                         new_expense_path(
                           amount: tx.amount.abs,
                           date: tx.date,
@@ -30,8 +29,8 @@
                           reconciliation_id: @reconciliation.id
                         ),
                         class: "btn btn-create" %>
-          <% else %>
-            <%= link_to "➕ Créer revenu",
+
+            <%= link_to " Créer revenu",
                         new_revenue_path(
                           amount: tx.amount.abs,
                           date: tx.date,
@@ -39,7 +38,7 @@
                           reconciliation_id: @reconciliation.id
                         ),
                         class: "btn btn-create" %>
-          <% end %>
+
         </div>
       <% end %>
     </div>
