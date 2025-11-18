@@ -17,7 +17,7 @@ export default class extends Controller {
 
     // Texte du bouton
     button.innerHTML = isNowHidden
-      ? "👁️ Voir / Modifier"
+      ? "Voir / Modifier"
       : "🔽 Masquer"
   }
 }
