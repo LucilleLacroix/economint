@@ -2,52 +2,90 @@
   <td colspan="7">
     <div class="match-card">
 
-      <% if tx.matchable.present? %>
+      <% if tx.match_validated? && tx.matchable.present? %>
+        <!-- ✅ CAS : MATCH VALIDÉ -->
+        <h2>Rapprochement validé</h2>
 
-        <strong><%= tx.matchable_type %> correspondant :</strong><br>
-        <em><%= tx.matchable.description %></em><br>
-        Montant : <%= number_to_currency(tx.matchable.amount, unit: "€") %><br>
-        Date : <%= tx.matchable.date&.strftime("%d/%m/%Y") %><br><br>
+        <% translated_type =
+             case tx.matchable_type
+             when "Expense" then "Dépense"
+             when "Revenue" then "Revenu"
+             else tx.matchable_type
+             end %>
+
+        <p>
+          Cette transaction du relevé est liée à la
+          <strong><%= translated_type %></strong> suivante :
+        </p>
+
+        <p>
+          <strong>Description :</strong> <%= tx.matchable.description %><br>
+          <strong>Montant :</strong> <%= number_to_currency(tx.matchable.amount, unit: "€") %><br>
+          <strong>Date :</strong> <%= tx.matchable.date&.strftime("%d/%m/%Y") %>
+        </p>
 
         <div class="action-buttons">
-          <%= link_to "Modifier",
+          <%= link_to "Modifier cette #{translated_type.downcase}",
                       edit_polymorphic_path(tx.matchable, reconciliation_id: @reconciliation.id),
                       class: "btn btn-edit" %>
-
-          <%= form_with url: validate_match_reconciliation_path(@reconciliation),
-                        method: :post,
-                        local: true do %>
-            <%= hidden_field_tag :tx_id, tx.id %>
-            <%= submit_tag "Valider", class: "btn btn-success" %>
-          <% end %>
         </div>
 
       <% else %>
+        <!-- 🔄 CAS : MATCH NON VALIDÉ -->
 
-        <strong>Aucun rapprochement trouvé</strong><br><br>
+        <% if tx.matchable.present? %>
+          <% translated_type =
+               case tx.matchable_type
+               when "Expense" then "Dépense"
+               when "Revenue" then "Revenu"
+               else tx.matchable_type
+               end %>
+
+          <strong><%= translated_type %> correspondant proposée :</strong><br>
+          <em><%= tx.matchable.description %></em><br>
+          Montant : <%= number_to_currency(tx.matchable.amount, unit: "€") %><br>
+          Date : <%= tx.matchable.date&.strftime("%d/%m/%Y") %><br><br>
+
+          <div class="action-buttons">
+            <%= link_to "Modifier cette #{translated_type.downcase}",
+                        edit_polymorphic_path(tx.matchable, reconciliation_id: @reconciliation.id),
+                        class: "btn btn-edit" %>
+
+            <%= form_with url: validate_match_reconciliation_path(@reconciliation),
+                          method: :post,
+                          local: true do %>
+              <%= hidden_field_tag :tx_id, tx.id %>
+              <%= submit_tag "Valider ce rapprochement", class: "btn btn-success" %>
+            <% end %>
+          </div>
+        <% else %>
+          <strong>Aucun rapprochement trouvé automatiquement</strong><br><br>
+        <% end %>
+
+        <!-- Boutons de création seulement SI le match n'est pas validé -->
+        <div class="action-buttons">
+          <%= link_to "Créer dépense",
+                      new_expense_path(
+                        amount: tx.amount.abs,
+                        date: tx.date,
+                        description: tx.description,
+                        reconciliation_id: @reconciliation.id,
+                        tx_id: tx.id
+                      ),
+                      class: "btn btn-create" %>
+
+          <%= link_to "Créer revenu",
+                      new_revenue_path(
+                        amount: tx.amount.abs,
+                        date: tx.date,
+                        description: tx.description,
+                        reconciliation_id: @reconciliation.id,
+                        tx_id: tx.id
+                      ),
+                      class: "btn btn-create" %>
+        </div>
 
       <% end %>
-
-      <!-- BOUTONS TOUJOURS AFFICHÉS -->
-      <div class="action-buttons">
-        <%= link_to "Créer dépense",
-                    new_expense_path(
-                      amount: tx.amount.abs,
-                      date: tx.date,
-                      description: tx.description,
-                      reconciliation_id: @reconciliation.id
-                    ),
-                    class: "btn btn-create" %>
-
-        <%= link_to "Créer revenu",
-                    new_revenue_path(
-                      amount: tx.amount.abs,
-                      date: tx.date,
-                      description: tx.description,
-                      reconciliation_id: @reconciliation.id
-                    ),
-                    class: "btn btn-create" %>
-      </div>
 
     </div>
   </td>

@@ -23,6 +23,6 @@ export default class extends Controller {
     const isNowHidden = detailRow.classList.toggle("hidden")
 
     // Mettre le texte du bouton de façon sûre (préserver emoji)
-    button.textContent = isNowHidden ? "Voir / Modifier" : "⬆️ Masquer"
+    button.textContent = isNowHidden ? "Voir / Modifier" : " Masquer"
   }
 }

@@ -1,12 +1,18 @@
 <%= form_with(model: transaction, local: true, html: { class: "soft-form" }) do |f| %>
   <%= hidden_field_tag :category_type, category_type %>
-  <%= hidden_field_tag :reconciliation_id, @reconciliation_id %>
+  <%= hidden_field_tag :reconciliation_id,
+        (params[:reconciliation_id] || @reconciliation_id),
+        id: "reconciliation_id" %>
 
-
+  <%= hidden_field_tag :tx_id,
+        (params[:tx_id] || @tx_id),
+        id: "tx_id" %>
 
   <div class="form-field">
     <%= f.label :category_id, "Catégorie" %>
-    <%= f.collection_select :category_id, categories, :id, :name, { prompt: "Sélectionnez une catégorie" }, { required: true } %>
+    <%= f.collection_select :category_id, categories, :id, :name,
+          { prompt: "Sélectionnez une catégorie" },
+          { required: true } %>
   </div>
 
   <div class="form-field">
@@ -26,11 +32,11 @@
 
   <div class="form-actions">
     <%= f.submit "Enregistrer", class: "btn btn-info" %>
+
     <% if request.path.include?("revenues") %>
       <%= link_to "Annuler", revenues_path, class: "btn btn-info", role: "button" %>
     <% else %>
       <%= link_to "Annuler", expenses_path, class: "btn btn-info", role: "button" %>
     <% end %>
-
   </div>
 <% end %>

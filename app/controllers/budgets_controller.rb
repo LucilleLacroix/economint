@@ -4,19 +4,19 @@ class BudgetsController < ApplicationController
   before_action :authenticate_user!
   before_action :set_budget, only: [:edit, :update, :destroy]
 
-  # ✅ Liste tous les budgets de l'utilisateur
+  #  Liste tous les budgets de l'utilisateur
   def index
     @budgets = policy_scope(current_user.budgets.includes(:category).order(start_date: :desc))
     @budget = current_user.budgets.new
   end
 
-  # ✅ Nouveau budget (peut venir d'une prévision)
+  #  Nouveau budget (peut venir d'une prévision)
   def new
     @budget = current_user.budgets.new(budget_params_from_forecast)
     authorize @budget
   end
 
-  # ✅ Création
+  #  Création
   def create
     @budget = current_user.budgets.new(budget_params)
     authorize @budget
@@ -28,7 +28,7 @@ class BudgetsController < ApplicationController
     end
   end
 
-  # ✅ Édition
+  # Édition
   def edit
     authorize @budget
     respond_to do |format|
@@ -43,7 +43,7 @@ class BudgetsController < ApplicationController
     end
   end
 
-  # ✅ Mise à jour
+  # Mise à jour
   def update
     authorize @budget
     if @budget.update(budget_params)
@@ -55,7 +55,7 @@ class BudgetsController < ApplicationController
 
   end
 
-  # ✅ Suppression
+  #  Suppression
   def destroy
     authorize @budget
     @budget.destroy

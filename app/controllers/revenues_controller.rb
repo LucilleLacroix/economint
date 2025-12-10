@@ -19,27 +19,34 @@ class RevenuesController < ApplicationController
     end.to_h
 
     @total_revenues = @revenues.sum(:amount)
-    @category_type = "revenue"
-    @categories = current_user.categories.where(category_type: @category_type)
+    @category_type  = "revenue"
+    @categories     = current_user.categories.where(category_type: @category_type)
   end
 
   def new
     @revenue = current_user.revenues.new(
-      amount: params[:amount],
-      date: params[:date] || Date.today,
+      amount:      params[:amount],
+      date:        params[:date] || Date.today,
       description: params[:description]
     )
     authorize @revenue
-    @reconciliation_id = params[:reconciliation_id] # pour redirection après création
+
+    # Pour pré-remplir les hidden fields du form partagé
+    @reconciliation_id = params[:reconciliation_id]
+    @tx_id             = params[:tx_id]
+
     @category_type = "revenue"
-    @categories = current_user.categories.where(category_type: @category_type)
+    @categories    = current_user.categories.where(category_type: @category_type)
   end
 
   def edit
     authorize @revenue
-    @reconciliation_id = params[:reconciliation_id] # pour redirection après modification
+
+    @reconciliation_id = params[:reconciliation_id]
+    @tx_id             = params[:tx_id]
+
     @category_type = "revenue"
-    @categories = current_user.categories.where(category_type: @category_type)
+    @categories    = current_user.categories.where(category_type: @category_type)
   end
 
   def create
@@ -47,34 +54,56 @@ class RevenuesController < ApplicationController
     authorize @revenue
 
     if @revenue.save
-      ReconciliationMatcherService.recalculate_for_user(current_user)
-      # Redirection conditionnelle vers la réconciliation si paramètre présent
-      if params[:reconciliation_id].present?
-        redirect_to reconciliation_path(params[:reconciliation_id]), notice: "Revenu créé avec succès !"
+      reconciliation_id = params[:reconciliation_id].presence
+      tx_id             = params[:tx_id].presence
+
+      if reconciliation_id && tx_id
+        reconciliation = current_user.reconciliations.find_by(id: reconciliation_id)
+
+        if reconciliation
+          tx = reconciliation.transactions.find_by(id: tx_id)
+          if tx
+            tx.update(
+              matchable:       @revenue,
+              match_validated: true
+            )
+          end
+        end
+
+        ReconciliationMatcherService.recalculate_for_user(current_user)
+
+        redirect_to reconciliation_path(reconciliation_id),
+                    notice: "Revenu créé et rapproché avec succès ✅"
       else
+        ReconciliationMatcherService.recalculate_for_user(current_user)
         redirect_to revenues_path, notice: "Revenu créé avec succès !"
       end
     else
-      @category_type = "revenue"
-      @categories = current_user.categories.where(category_type: @category_type)
+      @category_type     = "revenue"
+      @categories        = current_user.categories.where(category_type: @category_type)
+      @reconciliation_id = params[:reconciliation_id]
+      @tx_id             = params[:tx_id]
       render :new, status: :unprocessable_entity
     end
   end
+
 
   def update
     authorize @revenue
 
     if @revenue.update(revenue_params)
-      # Redirection conditionnelle vers la réconciliation si paramètre présent
+      ReconciliationMatcherService.recalculate_for_user(current_user)
+
       if params[:reconciliation_id].present?
-        ReconciliationMatcherService.recalculate_for_user(current_user)
         redirect_to reconciliation_path(params[:reconciliation_id]), notice: "Revenu mis à jour !"
       else
         redirect_to revenues_path, notice: "Revenu mis à jour !"
       end
     else
-      @category_type = "revenue"
-      @categories = current_user.categories.where(category_type: @category_type)
+      @category_type      = "revenue"
+      @categories         = current_user.categories.where(category_type: @category_type)
+      @reconciliation_id  = params[:reconciliation_id]
+      @tx_id              = params[:tx_id]
       render :edit, status: :unprocessable_entity
     end
   end
@@ -86,6 +115,7 @@ class RevenuesController < ApplicationController
     revenues = policy_scope(current_user.revenues.includes(:category))
     data_by_category = revenues.group(:category_id).sum(:amount).map do |cat_id, amount|
       next if amount <= 0
+
       category = current_user.categories.find_by(id: cat_id)
       [category&.name || "Default", amount] if category
     end.compact.to_h
@@ -110,7 +140,6 @@ class RevenuesController < ApplicationController
   end
 
   def revenue_params
-    # Note : on ne touche pas à la table, on ne stocke pas reconciliation_id
     params.require(:revenue).permit(:amount, :description, :date, :category_id)
   end
 end

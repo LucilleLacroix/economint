@@ -1,17 +1,17 @@
 .alert {
-    padding: 1rem;
-    border-radius: 0.6rem;
-    margin-top: 1rem;
-    font-size: 0.9rem;
-    font-weight: 500;
+  margin-top: 1rem;
+  padding: 1rem;
+  border-radius: 0.6rem;
+  font-size: 0.9rem;
+  font-weight: 500;
 
-    &.alert-success {
-      background-color: $success-color;
-      border-left: 4px solid $success-hover;
-    }
-
-    &.alert-error {
-      background-color: $error-color;
-      border-left: 4px solid $error-hover;
-    }
+  &.alert-success {
+    background-color: $success-color;
+    border-left: 4px solid $success-hover;
   }
+
+  &.alert-error {
+    background-color: $error-color;
+    border-left: 4px solid $error-hover;
+  }
+}

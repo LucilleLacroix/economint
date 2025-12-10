@@ -17,7 +17,6 @@ class ReconciliationMatcherService
             date: t.date,
             description: t.description,
             amount: t.amount,
-            type: t.amount < 0 ? 'expense' : 'revenue'
           }
         },
         user,
