@@ -1,5 +1,8 @@
 <tbody id="reconciliation_transactions">
-  <%= render partial: "reconciliations/transaction_row",
-           collection: reconciliation.transactions.order(:date, :id),
-           as: :tx %>
+  <tbody id="reconciliation_transactions">
+    <%= render partial: "reconciliations/transaction_row",
+              collection: reconciliation.transactions.order(date: :asc),
+              as: :tx %>
+  </tbody>
+
 </tbody>

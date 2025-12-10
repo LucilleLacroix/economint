@@ -1,6 +1,8 @@
 class Reconciliation < ApplicationRecord
   belongs_to :user
-  has_many :transactions, dependent: :destroy  
+
+  # Trie automatiquement les transactions par date puis par id
+  has_many :transactions, -> { order(date: :asc, id: :asc) }, dependent: :destroy
 
   validates :name, presence: true
 end
