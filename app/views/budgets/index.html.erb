@@ -1,4 +1,7 @@
 <h1>Mes budgets</h1>
+<div style="margin-top: 1rem; text-align: center;">
+  <%= link_to "Nouveau budget", new_budget_path, class: "btn btn-info " %>
+</div>
 
 <div id="goals_table">
   <table>
@@ -13,23 +16,8 @@
         <th>Actions</th>
       </tr>
     </thead>
-
     <tbody id="budgets">
-      <% @budgets.each do |budget| %>
-        <% row_class =
-             if budget.end_date.present? && budget.end_date < Date.current
-               "budget-row-past"
-             else
-               ""
-             end %>
-
-        <%= render partial: "budget_row",
-                   locals: { budget: budget, row_class: row_class } %>
-      <% end %>
+      <%= render partial: "budget_row", collection: @budgets, as: :budget %>
     </tbody>
   </table>
-</div>
-
-<div style="margin-top: 1rem; text-align: center;">
-  <%= link_to "Nouveau budget", new_budget_path, class: "btn btn-info " %>
 </div>

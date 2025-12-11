@@ -4,8 +4,26 @@
                       .where(date: budget.start_date..budget.end_date)
                       .sum(:amount).to_f %>
 
+<% pess_limit = budget.pessimistic_amount.to_f %>
+<% spent_abs  = spent.abs %>
+
+<%# Déterminer la classe CSS en fonction de l'état du budget %>
+<%
+  computed_row_class =
+    if spent_abs > pess_limit
+      # 1️⃣ Budget dépassé -> gris (peu importe les dates)
+      "budget-row-over"
+    elsif budget.end_date.present? && budget.end_date < Date.current
+      # 2️⃣ Période terminée & budget pas dépassé -> doré
+      "budget-row-gold"
+    else
+      # 3️⃣ Période en cours & budget pas dépassé -> normal
+      ""
+    end
+%>
+
 <tr id="budget_<%= budget.id %>"
-    class="budget-row <%= defined?(row_class) && row_class.present? ? row_class : "" %>"
+    class="budget-row <%= computed_row_class %>"
     data-controller="budget"
     data-budget-opti-value="<%= budget.optimistic_amount %>"
     data-budget-real-value="<%= budget.realistic_amount %>"

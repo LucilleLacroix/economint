@@ -6,8 +6,32 @@ class BudgetsController < ApplicationController
 
   #  Liste tous les budgets de l'utilisateur
   def index
-    @budgets = policy_scope(current_user.budgets.includes(:category).order(start_date: :desc))
+    # On charge les budgets autorisés via Pundit
+    @budgets = policy_scope(current_user.budgets.includes(:category))
+
     @budget = current_user.budgets.new
+
+    # On trie : 0 = normal, 1 = gold, 2 = over
+    @budgets = @budgets.sort_by do |budget|
+      spent = current_user.expenses
+                          .where(category_id: budget.category_id)
+                          .where(date: budget.start_date..budget.end_date)
+                          .sum(:amount)
+                          .to_f
+
+      pess = budget.pessimistic_amount.to_f
+
+      status_weight =
+        if spent > pess
+          2   # budget dépassé → gris
+        elsif budget.end_date.present? && budget.end_date < Date.current
+          1   # période finie + budget non dépassé → doré
+        else
+          0   # période en cours → normal
+        end
+
+      [status_weight, budget.start_date]
+    end
   end
 
   #  Nouveau budget (peut venir d'une prévision)

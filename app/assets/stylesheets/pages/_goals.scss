@@ -4,7 +4,6 @@
    GOALS TABLE / TABLEAU FANCY
 ======================== */
 #goals_table {
-  border: 5px solid red !important;
   width: 90%;
   max-width: 1500px;
   margin: 2rem auto;
@@ -49,19 +48,63 @@
 
   tbody {
     tr {
-      background: rgba(rgb(202, 88, 88) , 0.04);   // ⭐ COULEUR DE BASE NORMALE
+      background: rgba(255, 255, 255, 0.04); // fond normal
       transition: all 0.2s ease;
+
+
 
       &:hover {
         background: rgba($white, 0.08);
         transform: translateY(-1px);
         box-shadow: 0 2px 6px rgba($violet-base, 0.2);
+
       }
-      &.budget-row-past {
-        td {
-          background: rgb(55, 233, 99);
-          color: #e6e6e6;
+
+      /* Budget dépassé (gris) */
+      &.budget-row-over {
+        background: linear-gradient(
+          135deg,
+          #383636 0%,
+          #6b6969 50%,
+          #7e7d7d 100%
+        );
+        opacity: 0.9;
+
+
+      }
+      &.budget-row-over td {
+        color: #13121288;
+        filter: grayscale(0.6);
+        opacity: 0.9;
+        font-weight: 500;
+      }
+
+      /* Période terminée & budget respecté (doré) */
+      &.budget-row-gold {
+        background: linear-gradient(
+          135deg,
+          #f7e8a2 0%,
+          #fce28b 20%,
+          #f5c956 40%,
+          #d9ad3a 60%,
+          #f5c956 80%
+        );
+        border: 2px solid #d9ad3a;
+        box-shadow: 0 0 10px rgba(233, 174, 56, 0.7);
+        animation: borderGlow 2.5s infinite alternate;
+      }
+
+      @keyframes borderGlow {
+        from {
+          box-shadow: 0 0 8px rgba(219, 186, 66, 0.4);
         }
+        to {
+          box-shadow: 0 0 32px rgba(46, 46, 46, 0.9);
+        }
+      }
+      &.budget-row-gold td {
+         color: #c77e1e;
+        font-weight: 600;
       }
     }
 
@@ -72,6 +115,17 @@
       border-bottom: 1px solid rgba($border-color, 0.4);
     }
   }
+
+  /* Animation douce de glow */
+  @keyframes budgetGlow {
+    from {
+      box-shadow: 0 0 4px rgba(0, 255, 120, 0.2);
+    }
+    to {
+      box-shadow: 0 0 14px rgba(0, 255, 120, 0.6);
+    }
+  }
+
 }
 
 /* ========================
