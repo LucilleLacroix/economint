@@ -1,8 +1,10 @@
+@import "../config/colors";
+
 /* Conteneur de barre */
 .budget-progress-container {
   width: 100%;
   height: 18px;
-  background-color: #bdb9f85b; /* fond clair */
+  background-color: #bdb9f85b;
   border-radius: 10px;
   overflow: hidden;
   margin-top: 2px;
@@ -10,49 +12,42 @@
   box-sizing: border-box;
 }
 
-/* Barre optimiste (bleu pastel) */
+/* Barre optimiste */
 .budget-progress-opti {
   width: 0%;
   height: 18px;
-  background: linear-gradient(90deg, #93c5fd 0%, #a5d8ff 50%, #d8b4f2 100%); /* bleu → violet clair */
+  background: linear-gradient(90deg, #93c5fd 0%, #a5d8ff 50%, #d8b4f2 100%);
   border-radius: 6px;
   transition: width 0.5s ease;
   box-sizing: border-box;
-  box-shadow: 0 0 8px white
+  box-shadow: 0 0 8px white;
 }
 
-/* Barre réaliste (violet pastel) */
+/* Barre réaliste */
 .budget-progress-real {
   width: 0%;
   height: 18px;
-  background: linear-gradient(90deg, #d8b4f2 0%, #caa6f9 50%, #fbb6ce 100%); /* violet → rose clair */
+  background: linear-gradient(90deg, #d8b4f2 0%, #caa6f9 50%, #fbb6ce 100%);
   border-radius: 6px;
   transition: width 0.5s ease;
   box-sizing: border-box;
-  box-shadow: 0 0 8px white
+  box-shadow: 0 0 8px white;
 }
 
-/* Barre pessimiste (rose uniquement) */
+/* Barre pessimiste */
 .budget-progress-pess {
   width: 0%;
   height: 18px;
-  background: linear-gradient(90deg, #fbb6ce 0%, #fa95b7 50%, #fa78a3 100%); /* rose uniforme */
+  background: linear-gradient(90deg, #fbb6ce 0%, #fa95b7 50%, #fa78a3 100%);
   border-radius: 6px;
   transition: width 0.5s ease;
   box-sizing: border-box;
-  box-shadow: 0 0 8px white
+  box-shadow: 0 0 8px white;
 }
 
-/* Ajustement du padding par id pour rapprocher les barres */
-[id^="budget-opti-"] {
-  padding: 2px 0 !important;
-}
-
-[id^="budget-real-"] {
-  padding: 2px 0 !important;
-}
-
+/* Ajustements par ID */
+[id^="budget-opti-"],
+[id^="budget-real-"],
 [id^="budget-pess-"] {
   padding: 2px 0 !important;
 }
-

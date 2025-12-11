@@ -1,9 +1,8 @@
 @import "../config/colors";
+@import "../config/mixins";
 
+/*  TABLE STYLÉE (transactions index) */
 
-/* ========================
-   TABLE STYLÉE
-======================== */
 .table-container {
   width: 100%;
   @include flex-center;
@@ -61,7 +60,7 @@
         &:hover {
           transform: translateY(-4px);
           box-shadow: 0 4px 12px rgba($violet-base, 0.25);
-          background-color: rgba($highlight-color, 0.9)
+          background-color: rgba($highlight-color, 0.9);
         }
 
         td {
@@ -77,14 +76,17 @@
   }
 }
 
+/* Boutons "Ajouter", "Gérer les catégories" sous les graphes */
 .actions-container {
   margin-top: 5rem;
   padding: 2rem;
   @include flex-center;
   gap: 15px;
 }
+
+/* Couleur de ligne par catégorie */
 .category-row td {
-  color: var(--row-color)!important;
+  color: var(--row-color) !important;
   transition: all 0.2s ease;
 }
 

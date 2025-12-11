@@ -1,6 +1,7 @@
 @import "../config/colors";
-@import "../config/fonts";
+@import "../config/mixins";
 
+/* Formulaire “soft” générique */
 .soft-form {
   width: 100%;
   max-width: 600px;
@@ -47,9 +48,7 @@
       transition: all 0.2s ease;
 
       &:focus {
-        outline: none;
-        border-color: $primary-color;
-        box-shadow: 0 0 0 3px rgba($primary-color, 0.2);
+        @include input-focus-ring($primary-color);
         background-color: $white;
       }
 
@@ -63,5 +62,41 @@
   .form-actions {
     margin-top: 1.5rem;
     text-align: center;
+  }
+}
+
+/* Form prévision – catégories */
+.category-list.scrollable {
+  max-height: 200px;
+  overflow-y: auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 0.5rem;
+  padding-right: 0.5rem;
+}
+
+.category-item {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.3rem 0.5rem;
+  background: rgba($white, 0.05);
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: background 0.2s ease;
+
+  &:hover {
+    background: rgba($white, 0.1);
+  }
+
+  input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    accent-color: $primary-color;
+  }
+
+  span {
+    font-size: 0.9rem;
+    color: $text-color;
   }
 }

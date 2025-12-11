@@ -1,5 +1,10 @@
-// Import your components CSS files here.
+// Index des composants – un seul import dans application.scss
+
 @import "alert";
 @import "avatar";
-@import "form_legend_clear";
+@import "flash";
 @import "navbar";
+@import "forms";
+@import "periode_selector";
+@import "transaction_table";
+@import "transaction_chart";

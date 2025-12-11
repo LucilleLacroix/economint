@@ -1,7 +1,6 @@
 @import "../config/colors";
-/* ========================
-   CHART CONTAINER
-======================== */
+
+/*CHART CONTAINER*/
 .chart-container {
   width: 100%;
   max-width: 500px;
@@ -11,9 +10,15 @@
   background: transparent;
   border-radius: 1.2rem;
 
-
   canvas {
     width: 100% !important;
     height: 100% !important;
   }
+}
+
+/* Taille spécifique du chart utilisé dans certaines vues */
+#financesChart {
+  width: 500px;
+  height: 500px;
+  margin: 0 auto;
 }

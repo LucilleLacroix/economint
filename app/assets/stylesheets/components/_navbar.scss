@@ -1,4 +1,6 @@
 @import "../config/colors";
+@import "../config/mixins";
+
 .top-navbar {
   position: relative;
   top: 0;
@@ -29,9 +31,8 @@
     font-size: 3rem;
     font-weight: 700;
     color: $white;
-    text-shadow: 0 2px 4px $shadow-soft;
+    text-shadow: 0 2px 4px $shadow-dark;
     @include link-style;
-
 
     &:hover {
       color: $secondary-color;

@@ -1,6 +1,4 @@
-// Define variables for your color scheme
-
-// For example:
+// Bootstrap-like base colors
 $red: #FD1015;
 $blue: #0D6EFD;
 $yellow: #FFC65A;
@@ -9,75 +7,60 @@ $green: #1EDD88;
 $gray: #0E0000;
 $light-gray: #f4f4f4;
 
-// 🎨 Palette principale
+//  Palette principale
 $primary-color: #A8C0FF;
 $primary-hover: #8FAEFF;
 $secondary-color: #CBA6FF;
 $highlight-color: #E5D4FF;
 $violet-base: rgb(104, 66, 96);
 $accent-color: #FF92AA;
-$background-light: rgba($violet-base, 0.1);
 
-// 🌈 Dégradés
-$gradient-pastel: linear-gradient(to right, rgba(168, 192, 255, 0.3), rgba(203, 166, 255, 0.3));
+//  Dégradés
+$gradient-pastel: linear-gradient(
+  to right,
+  rgba(168, 192, 255, 0.3),
+  rgba(203, 166, 255, 0.3)
+);
 $gradient-strong: linear-gradient(280deg, #650981, #CBA6FF);
 $gradient-main: linear-gradient(280deg, #650981, #CBA6FF);
 $gradient-dropdown: linear-gradient(180deg, #A8C0FF, #CBA6FF);
 
-
-// 💚 Succès
+//  Succès
 $success-color: #B8F2D0;
 $success-hover: #9DEBC8;
 
-// 💙 Info
+//  Info
 $info-color: #A0D8FF;
 $info-hover: #85CFFF;
 
-// 💛 Avertissement
+// Avertissement
 $warning-color: #FFF1BA;
 $warning-hover: #FFE88A;
 
-// ❤️ Erreur
+// Erreur
 $error-color: #FFB5C5;
 $error-hover: #FF92AA;
 
-// ⚫ Neutres
+//  Neutres
 $text-color: #2D3A9E;
 $text-muted: #7A7D8C;
 $border-color: #D6D3E1;
-$background-light: #F6F5FF;
+$background-soft: rgba($violet-base, 0.1);
+$background-page: #F6F5FF;
 $white: #FFFFFF;
 $black: #000000;
 
-// ✨ Ombres
+// Ombres & overlays
 $shadow-dark: black;
 $shadow-soft: 0 2px 8px rgba(59, 62, 86, 0.05);
 $shadow-hover: 0 4px 12px rgba(59, 62, 86, 0.08);
 $overlay-dark: rgba(0, 0, 0, 0.2);
 $overlay-light: rgba(255, 255, 255, 0.15);
 
-// 💎 Couleurs spécifiques
+// Couleurs spécifiques
 $navbar-text: #FFFFFF;
 $navbar-hover: #CBA6FF;
 $sidebar-gradient: linear-gradient(280deg, #650981, #CBA6FF);
 $table-header-bg: rgba(104, 66, 96, 0.288);
 $table-body-bg: rgba(104, 66, 96, 0.096);
 $progress-gradient: linear-gradient(90deg, #a8ff78, #78ffd6);
-
-@mixin link-style {
-  text-decoration: none;
-  font-weight: 500;
-  transition: color 0.3s ease;
-}
-@mixin flex-center {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-@mixin pastel-gradient($opacity: 0.3) {
-  background: linear-gradient(
-    to right,
-    rgba($primary-color, $opacity),
-    rgba($secondary-color, $opacity)
-  );
-}

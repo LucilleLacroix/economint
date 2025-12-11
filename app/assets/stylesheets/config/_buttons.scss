@@ -1,5 +1,7 @@
+@import "colors";
+@import "mixins";
 
-/* 💠 Boutons globaux */
+/*  Boutons globaux */
 .btn {
   padding: 0.6rem 1.2rem;
   border-radius: 0.5rem;
@@ -17,48 +19,73 @@
   }
 }
 
-/* ✅ Boutons succès / filtrer */
+/* Variantes génériques */
+.btn-primary {
+  background-color: $primary-color;
+  border: none;
+
+  &:hover {
+    background-color: darken($primary-color, 5%);
+  }
+}
+
+.btn-secondary {
+  background-color: rgba($white, 0.1);
+  color: $text-color;
+  border: 1px solid $border-color;
+
+  &:hover {
+    background-color: rgba($white, 0.2);
+  }
+}
+
+/*  Boutons succès / filtrer */
 .btn-success {
   background-color: $success-color;
+
   &:hover {
     background-color: $success-hover;
   }
 }
 
-/* ℹ️ Boutons info / ajouter / gérer catégories */
+/*  Boutons info / ajouter / gérer catégories */
 .btn-info {
   background-color: $info-color;
+
   &:hover {
     background-color: $info-hover;
   }
 }
 
-/* ❌ Boutons supprimer (spécifique) */
+/*  Boutons supprimer (spécifique) */
 .btn-danger {
   background-color: $error-color;
+
   &:hover {
     background-color: $error-hover;
   }
 }
 
-/* ❤️ Boutons danger / éditer */
+/* Boutons danger / éditer */
 a.btn-supp {
   background-color: $warning-color;
-  color: white;
+  color: $white;
+
   &:hover {
     background-color: $warning-hover;
   }
 }
 
-/* 👌 Pour aligner les boutons dans les conteneurs */
+/*  Pour aligner les boutons */
 .actions-container,
 .filter-container {
-  display: flex;
+  @include flex-center;
   gap: 0.8rem;
   flex-wrap: wrap;
-  justify-content: center;
   margin-top: 1rem;
 }
+
+/* Boutons d’action avec icône */
 .btn-action {
   padding: 0.6rem 1.2rem;
   border-radius: 0.5rem;
@@ -69,22 +96,22 @@ a.btn-supp {
   box-shadow: $shadow-soft;
   color: $white;
   text-align: center;
-
-  &:hover {
-    box-shadow: $shadow-hover;
-    transform: translateY(-1px);
-  } // couleur par défaut de l’icône
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.3rem;
 
   i {
-    pointer-events: none; // empêche les clics sur l’icône
+    pointer-events: none;
   }
 
   &:hover {
     transform: scale(1.1);
+    box-shadow: $shadow-hover;
   }
 
   &.edit {
-    background-color: rgba(255, 193, 7, 0.2); // jaune doux
+    background-color: rgba(255, 193, 7, 0.2);
     color: #ffc107;
 
     &:hover {
@@ -93,7 +120,7 @@ a.btn-supp {
   }
 
   &.delete {
-    background-color: #ffb5c58e; // rouge doux
+    background-color: #ffb5c58e;
     color: $error-hover;
 
     &:hover {
@@ -102,7 +129,7 @@ a.btn-supp {
   }
 
   &.add {
-    background-color: rgba(46, 204, 112, 0.363); // vert doux
+    background-color: rgba(46, 204, 112, 0.363);
     color: #3ce783;
 
     &:hover {
@@ -110,9 +137,8 @@ a.btn-supp {
     }
   }
 }
-/* ========================
-   NAVIGATION BUTTONS
-======================== */
+
+/* NAVIGATION BUTTONS */
 .nav-buttons {
   text-align: center;
   display: flex;

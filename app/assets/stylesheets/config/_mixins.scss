@@ -1,0 +1,33 @@
+@import "colors";
+
+@mixin link-style {
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+@mixin flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+@mixin pastel-gradient($opacity: 0.3) {
+  background: linear-gradient(
+    to right,
+    rgba($primary-color, $opacity),
+    rgba($secondary-color, $opacity)
+  );
+}
+
+@mixin card($radius: 1rem, $shadow: $shadow-soft, $bg: rgba($white, 0.05)) {
+  border-radius: $radius;
+  box-shadow: $shadow;
+  background: $bg;
+}
+
+@mixin input-focus-ring($color: $primary-color) {
+  outline: none;
+  border-color: $color;
+  box-shadow: 0 0 0 3px rgba($color, 0.25);
+}
