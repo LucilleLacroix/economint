@@ -4,15 +4,8 @@
                       .where(date: budget.start_date..budget.end_date)
                       .sum(:amount).to_f %>
 
-<%# Style inline si la période est passée %>
-<% row_style = "" %>
-<% if budget.end_date.present? && budget.end_date < Date.current %>
-  <% row_style = "background: rgba(228, 13, 13, 0.25); color: #e6e6e6;" %>
-<% end %>
-
 <tr id="budget_<%= budget.id %>"
-    class="budget-row"
-    style="<%= row_style %>"
+    class="budget-row <%= defined?(row_class) && row_class.present? ? row_class : "" %>"
     data-controller="budget"
     data-budget-opti-value="<%= budget.optimistic_amount %>"
     data-budget-real-value="<%= budget.realistic_amount %>"

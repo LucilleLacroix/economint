@@ -13,8 +13,19 @@
         <th>Actions</th>
       </tr>
     </thead>
+
     <tbody id="budgets">
-      <%= render partial: "budget_row", collection: @budgets, as: :budget %>
+      <% @budgets.each do |budget| %>
+        <% row_class =
+             if budget.end_date.present? && budget.end_date < Date.current
+               "budget-row-past"
+             else
+               ""
+             end %>
+
+        <%= render partial: "budget_row",
+                   locals: { budget: budget, row_class: row_class } %>
+      <% end %>
     </tbody>
   </table>
 </div>
