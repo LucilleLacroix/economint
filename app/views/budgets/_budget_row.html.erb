@@ -1,29 +1,35 @@
-<tr id="budget_<%= budget.id %>" class="budget-row" data-controller="budget"
+<%# Dépenses sur la période %>
+<% spent = current_user.expenses
+                      .where(category_id: budget.category_id)
+                      .where(date: budget.start_date..budget.end_date)
+                      .sum(:amount).to_f %>
+
+<%# Style inline si la période est passée %>
+<% row_style = "" %>
+<% if budget.end_date.present? && budget.end_date < Date.current %>
+  <% row_style = "background: rgba(228, 13, 13, 0.25); color: #e6e6e6;" %>
+<% end %>
+
+<tr id="budget_<%= budget.id %>"
+    class="budget-row"
+    style="<%= row_style %>"
+    data-controller="budget"
     data-budget-opti-value="<%= budget.optimistic_amount %>"
     data-budget-real-value="<%= budget.realistic_amount %>"
     data-budget-pess-value="<%= budget.pessimistic_amount %>"
-    data-budget-spent-value="<%= current_user.expenses
-      .where(category_id: budget.category_id)
-      .where(date: budget.start_date..budget.end_date)
-      .sum(:amount) %>">
+    data-budget-spent-value="<%= spent %>">
 
   <!-- Catégorie -->
   <td data-label="Catégorie"><%= budget.category.name %></td>
 
   <!-- Période -->
-
-<td data-label="Période">
-  <%= l(budget.start_date, format: :short) %> – <%= l(budget.end_date, format: :short) %>
-</td>
-
-
+  <td data-label="Période">
+    <%= l(budget.start_date, format: :short) %> – <%= l(budget.end_date, format: :short) %>
+  </td>
 
   <!-- Dépenses réelles -->
   <td data-label="Dépenses">
-    <%= number_to_currency(current_user.expenses
-      .where(category_id: budget.category_id)
-      .where(date: budget.start_date..budget.end_date)
-      .sum(:amount)) %>
+    <%= number_to_currency(spent) %>
   </td>
 
   <!-- Optimiste -->
